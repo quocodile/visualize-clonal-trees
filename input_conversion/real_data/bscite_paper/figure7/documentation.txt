@@ -1,0 +1,9 @@
+These mutation histories come from a patient with:
+
+triple-negative breast cancer
+
+Specifically...
+
+7a is implied by hierarchical clustering from the original study.
+7b is inferred with SCITE
+7c is inferred with B-SCITE

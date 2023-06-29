@@ -1,0 +1,11 @@
+These trees come from two cases of...
+
+colorectal cancer with liver metastases...
+
+inferred by B-SCITE.
+
+Specifically...
+
+8a is from CRC1
+
+8b is from CRC2
