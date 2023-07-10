@@ -136,7 +136,7 @@ function visualize_singleview(jsonData, distance_measure, dom_data) {
     var cur_svg = svg_names[i];
     var root = d3.hierarchy(data[i]);
     var tree = d3.tree()
-    if (root.height > 10) {
+    if (root.height > 5) {
       tree.nodeSize([70, 25]);
     }
     else {
