@@ -29,6 +29,7 @@ def get_contributions(g_1,g_2):
     for pair in ad_distinct_set_1:
         anc_mut = pair[0]
         desc_mut = pair[1]
+
         anc_node = utils.get_node_from_mutation(g_1,anc_mut)
         desc_node = utils.get_node_from_mutation(g_1,desc_mut)
 
@@ -37,13 +38,14 @@ def get_contributions(g_1,g_2):
         #MUT ANC---------------------------------------------------------
         mutation_contribution_dict_1[anc_mut]["contribution"] = mutation_contribution_dict_1[anc_mut]["contribution"] + 1  
         #NODE DESC---------------------------------------------------------
-        node_contribution_dict_1[desc_node]["contribution"] = node_contribution_dict_1[desc_node]["contribution"] + 0
+        #node_contribution_dict_1[desc_node]["contribution"] = node_contribution_dict_1[desc_node]["contribution"] + 1
         #MUT DESC---------------------------------------------------------
-        mutation_contribution_dict_1[desc_mut]["contribution"] = mutation_contribution_dict_1[desc_mut]["contribution"] + 0 
+        #mutation_contribution_dict_1[desc_mut]["contribution"] = mutation_contribution_dict_1[desc_mut]["contribution"] + 1 
 
     for pair in ad_distinct_set_2:
         anc_mut = pair[0]
         desc_mut = pair[1]
+        
         anc_node = utils.get_node_from_mutation(g_2,anc_mut)
         desc_node = utils.get_node_from_mutation(g_2,desc_mut)
         #ANCS---------------------------------------------------------
@@ -51,15 +53,17 @@ def get_contributions(g_1,g_2):
         #MUT ANC---------------------------------------------------------
         mutation_contribution_dict_2[anc_mut]["contribution"] = mutation_contribution_dict_2[anc_mut]["contribution"] + 1 
         #DESC---------------------------------------------------------
-        node_contribution_dict_2[desc_node]["contribution"] = node_contribution_dict_2[desc_node]["contribution"] + 0
+        #node_contribution_dict_2[desc_node]["contribution"] = node_contribution_dict_2[desc_node]["contribution"] + 1
         #MUT DESC---------------------------------------------------------
-        mutation_contribution_dict_2[desc_mut]["contribution"] = mutation_contribution_dict_2[desc_mut]["contribution"] + 0 
+        #mutation_contribution_dict_2[desc_mut]["contribution"] = mutation_contribution_dict_2[desc_mut]["contribution"] + 1 
     print("\n","ad_distance", ad_distance)
     print(node_contribution_dict_1)
     print(node_contribution_dict_2)
     return node_contribution_dict_1, node_contribution_dict_2, mutation_contribution_dict_1, mutation_contribution_dict_2, node_mutations_dict_1, node_mutations_dict_2, ad_distance
 
 def get_pair_differences(g_1,g_2):
+
+    
     """
     Required:
         - Two trees
@@ -70,9 +74,17 @@ def get_pair_differences(g_1,g_2):
         Used in get_contributions()
     """
     ad_pair_set_1 = get_anc_desc_pairs(g_1)
+    print("ad pair set 1")
+    print(ad_pair_set_1)
     ad_pair_set_2 = get_anc_desc_pairs(g_2)
+    print("ad pair set 2")
+    print(ad_pair_set_2)
     ad_distinct_set_1 = ad_pair_set_1 - ad_pair_set_2
+    print("ad distinct set 1")
+    print(ad_distinct_set_1)
     ad_distinct_set_2 = ad_pair_set_2 - ad_pair_set_1
+    print("ad distinct set 2")
+    print(ad_distinct_set_2)
     return ad_distinct_set_1, ad_distinct_set_2
 
 def get_anc_desc_pairs(g):
@@ -94,7 +106,9 @@ def get_anc_desc_pairs(g):
     for desc in mutation_anc_dict:
         anc_list = mutation_anc_dict[desc]
         for anc in anc_list:
-            anc_desc_pairs.add((anc, desc))
+            if (anc != desc): #no (mutX,mutX) edges
+                anc_desc_pairs.add((anc, desc))
+                    
 
     return anc_desc_pairs
 
