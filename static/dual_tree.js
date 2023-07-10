@@ -54,13 +54,12 @@ function visualize_singleview(jsonData, distance_measure, dom_data) {
       `<div><span class="${mutation}-mutation-hover-label">${mutation}</span></div>`;
   })
 
-  // sizing all the boxes for the mutation venn diagram
+  // sizing all the divs for each mutation in the mutation venn diagram
   var venn_boxes = document.querySelectorAll("p > div");
   venn_boxes.forEach(box => {
     var text = box.querySelector("span").innerHTML;
     box.style.width = (text.length * 14) + "px";
   })
-  console.log("Boxes", venn_boxes);
 
   var tree1_data = jsonData.node_contribution_dict_1;
   var tree2_data = jsonData.node_contribution_dict_2;
@@ -95,7 +94,10 @@ function visualize_singleview(jsonData, distance_measure, dom_data) {
 
   var t_max = Math.max(max_contribution(dom_data.t1_nodes), max_contribution(dom_data.t2_nodes));
   var t_min = Math.min(min_contribution(dom_data.t1_nodes), min_contribution(dom_data.t2_nodes));
-  fill_tree_scale_color_legend(multi_tree_prefix = "", t_max, t_min);
+  var color_scale = d3.scaleLinear()
+  .domain([t_min, t_max/3, 2*t_max/3, t_max])
+  .range([coloring[0],coloring[1], coloring[2], coloring[3]]);
+  fill_tree_scale_color_legend(multi_tree_prefix = "", t_max, t_min, color_scale);
 
   var svg1 = d3.select('#svg1');
   svg1.call(d3.zoom()
@@ -373,19 +375,19 @@ function visualize_singleview(jsonData, distance_measure, dom_data) {
     switch (distanceMetric.value) {
       case "ancestor_descendant_distance":
         distanceMeasureLabel.innerHTML = "Ancestor Descendant Distance: " + distance;
-        node_colored_tree(d3_nodes, d3_links, t_max, t_min);
+        node_colored_tree(d3_nodes, d3_links, t_max, t_min, color_scale);
         break;
       case "caset_distance": 
         distanceMeasureLabel.innerHTML = "CASet Distance: " + distance;
-        node_colored_tree(d3_nodes, d3_links, t_max, t_min);
+        node_colored_tree(d3_nodes, d3_links, t_max, t_min, color_scale);
         break;
       case "disc_distance": 
         distanceMeasureLabel.innerHTML = "DISC Distance: " + distance;
-        node_colored_tree(d3_nodes, d3_links, t_max, t_min);
+        node_colored_tree(d3_nodes, d3_links, t_max, t_min, color_scale);
         break;
       case "parent_child_distance": 
         distanceMeasureLabel.innerHTML = "Parent-child Distance: " + distance;
-        edge_colored_tree(d3_nodes, d3_links, t_max);
+        edge_colored_tree(d3_nodes, d3_links, t_max, t_min, color_scale);
         break;
       default:
         console.log("Please select a valid distance measure. If you have question email ealexander@carleton.edu");
@@ -395,7 +397,7 @@ function visualize_singleview(jsonData, distance_measure, dom_data) {
 }
 
 // Coloring scheme for DIST, CASet, and ancestor descendant -> node based
-function node_colored_tree(d3_nodes, d3_links, t_max, t_min) {
+function node_colored_tree(d3_nodes, d3_links, t_max, t_min, scale) {
   d3_nodes.selectAll('circle.node')
     .style("stroke", d => {
       if (d.data.contribution > 0) {
@@ -406,9 +408,6 @@ function node_colored_tree(d3_nodes, d3_links, t_max, t_min) {
       }
     })
     .style("fill", function(d) {
-      var scale = d3.scaleLinear()
-      .domain([t_min, t_max/3, 2*t_max/3, t_max])
-      .range([coloring[0],coloring[1], coloring[2], coloring[3]]);
       if (d.data.contribution === 0) {
         return "lightgray";
       }
@@ -421,14 +420,11 @@ function node_colored_tree(d3_nodes, d3_links, t_max, t_min) {
 }
 
 // Coloring scheme for parent child -> edge based
-function edge_colored_tree(d3_nodes, d3_links, t_max, t_min) {
+function edge_colored_tree(d3_nodes, d3_links, t_max, t_min, scale) {
   d3_nodes.selectAll('circle.node').style("stroke", "black").style("fill", "#e6e6e3")
 
   d3_links.selectAll('line.link')
       .style("stroke", function(d) {
-        var scale = d3.scaleLinear()
-        .domain([0, t_max/3, 2*t_max/3, t_max])
-        .range([coloring[0],coloring[1], coloring[2], coloring[3]]);
         if (d.target.data.contribution == 0) {
           return "lightgray";
         }
@@ -687,19 +683,19 @@ function visualize_multiview(jsonData, distance_measure, svg1, svg2, scale, dom_
     switch (distance_measure) {
       case "ancestor_descendant_distance":
         distanceMeasureLabel.innerHTML = "Ancestor Descendant Distance: " + distance;
-        node_colored_tree(d3_nodes, d3_links, t_max, t_min);
+        node_colored_tree(d3_nodes, d3_links, t_max, t_min, color_scale);
         break;
       case "caset_distance": 
         distanceMeasureLabel.innerHTML = "CASet Distance: " + distance;
-        node_colored_tree(d3_nodes, d3_links, t_max, t_min);
+        node_colored_tree(d3_nodes, d3_links, t_max, t_min, color_scale);
         break;
       case "disc_distance": 
         distanceMeasureLabel.innerHTML = "DISC Distance: " + distance;
-        node_colored_tree(d3_nodes, d3_links, t_max);
+        node_colored_tree(d3_nodes, d3_links, t_max, color_scale);
         break;
       case "parent_child_distance": 
         distanceMeasureLabel.innerHTML = "Parent-child Distance: " + distance;
-        edge_colored_tree(d3_nodes, d3_links, t_max);
+        edge_colored_tree(d3_nodes, d3_links, t_max, color_scale);
         break;
       default:
         console.log("Please select a valid distance measure. If you have question email ealexander@carleton.edu");

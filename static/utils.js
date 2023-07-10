@@ -180,17 +180,20 @@ function get_API_base_URL() {
  * @param {string} multi_tree_prefix:  color legend to edit 
  * @param {float} t_max: the value of the highest contribution in the tree 
  */
-function fill_tree_scale_color_legend(multi_tree_prefix = "", t_max, t_min) {
+function fill_tree_scale_color_legend(multi_tree_prefix = "", t_max, t_min, scale) {
   
   var label1 = document.getElementById(`${multi_tree_prefix}_colorLabel1`);
   var label2 = document.getElementById(`${multi_tree_prefix}_colorLabel2`);
   var label3 = document.getElementById(`${multi_tree_prefix}_colorLabel3`);
   var label4 = document.getElementById(`${multi_tree_prefix}_colorLabel4`);
 
-  label1.innerHTML = t_min;
-  label2.innerHTML = Math.round((t_max / 3) * 100) / 100; 
-  label3.innerHTML = Math.round((t_max * 2 / 3) * 100) / 100; 
-  label4.innerHTML = Math.round(t_max * 100) / 100; 
+  label1.innerHTML = Math.round(t_min * 1000000) / 1000000;
+  label2.innerHTML = Math.round(((t_max + t_min)/ 3) * 1000000) / 1000000; 
+  label3.innerHTML = Math.round(((t_max + t_min) * 2 / 3) * 1000000) / 1000000; 
+  label4.innerHTML = Math.round(t_max * 1000000) / 1000000; 
+
+  console.log("Color", scale(t_min));
+  document.querySelector(".legend").style.backgroundImage = `linear-gradient(to right, ${scale(t_min)}, ${scale(Number(label2.innerHTML))}, ${scale(Number(label3.innerHTML))}, ${scale(t_max)})`;
 }
 
 /**
@@ -207,7 +210,7 @@ function fill_in_table(tree_name = "t1", max_branching_factor, height, num_nodes
   var height_entry = document.getElementById(`${tree_name}-height`); 
   var max_branching_factor_entry = document.getElementById(`${tree_name}-branching-factor`);
   height_entry.innerHTML = height;
-  max_branching_factor_entry = max_branching_factor;
+  max_branching_factor_entry.innerHTML = max_branching_factor;
   document.getElementById(`${tree_name}-number-nodes`).innerHTML = num_nodes;
   document.getElementById(`${tree_name}-number-mutations`).innerHTML = num_mutations;
   document.getElementById(`${tree_name}_top5_summary_element`).innerHTML = top_5_mutations;

@@ -302,7 +302,7 @@ button{
     height: 30px;
     width: 400px;
     border: 1px solid black;
-    background-image: linear-gradient(to right, #f0f172, #80bda5, #4180a9, #00429d);
+    /*background-image: linear-gradient(to right, white, #f0f172, #80bda5, #4180a9, #00429d);*/
     margin: auto;
 }
 .legend-labels-container {
@@ -435,8 +435,7 @@ figcaption {
 
 p > div {
   min-width: 30px;
-  min-height: 30px;
-  max-height: 50px;
+  height: 20px;
   float: left;
   margin: 5px;
 }
