@@ -89,8 +89,11 @@ h2{
 #sidebar{
     background-color: #D9DEDE;
     vertical-align: top;
+    min-width: 300px;
     width: 25%;
     height:100%;
+    overflow: auto;
+    resize: horizontal;
 }
 #topbox{
     background-color: #D9DEDE;
