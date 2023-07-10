@@ -33,13 +33,13 @@ def get_contributions(g_1,g_2):
         desc_node = utils.get_node_from_mutation(g_1,desc_mut)
 
         #NODE ANC---------------------------------------------------------
-        node_contribution_dict_1[anc_node]["contribution"] = node_contribution_dict_1[anc_node]["contribution"] + 0.5
+        node_contribution_dict_1[anc_node]["contribution"] = node_contribution_dict_1[anc_node]["contribution"] + 1
         #MUT ANC---------------------------------------------------------
-        mutation_contribution_dict_1[anc_mut]["contribution"] = mutation_contribution_dict_1[anc_mut]["contribution"] + 0.5  
+        mutation_contribution_dict_1[anc_mut]["contribution"] = mutation_contribution_dict_1[anc_mut]["contribution"] + 1  
         #NODE DESC---------------------------------------------------------
-        node_contribution_dict_1[desc_node]["contribution"] = node_contribution_dict_1[desc_node]["contribution"] + 0.5
+        node_contribution_dict_1[desc_node]["contribution"] = node_contribution_dict_1[desc_node]["contribution"] + 0
         #MUT DESC---------------------------------------------------------
-        mutation_contribution_dict_1[desc_mut]["contribution"] = mutation_contribution_dict_1[desc_mut]["contribution"] + 0.5 
+        mutation_contribution_dict_1[desc_mut]["contribution"] = mutation_contribution_dict_1[desc_mut]["contribution"] + 0 
 
     for pair in ad_distinct_set_2:
         anc_mut = pair[0]
@@ -47,13 +47,13 @@ def get_contributions(g_1,g_2):
         anc_node = utils.get_node_from_mutation(g_2,anc_mut)
         desc_node = utils.get_node_from_mutation(g_2,desc_mut)
         #ANCS---------------------------------------------------------
-        node_contribution_dict_2[anc_node]["contribution"] = node_contribution_dict_2[anc_node]["contribution"] + 0.5
+        node_contribution_dict_2[anc_node]["contribution"] = node_contribution_dict_2[anc_node]["contribution"] + 1
         #MUT ANC---------------------------------------------------------
-        mutation_contribution_dict_2[anc_mut]["contribution"] = mutation_contribution_dict_2[anc_mut]["contribution"] + 0.5 
+        mutation_contribution_dict_2[anc_mut]["contribution"] = mutation_contribution_dict_2[anc_mut]["contribution"] + 1 
         #DESC---------------------------------------------------------
-        node_contribution_dict_2[desc_node]["contribution"] = node_contribution_dict_2[desc_node]["contribution"] + 0.5
+        node_contribution_dict_2[desc_node]["contribution"] = node_contribution_dict_2[desc_node]["contribution"] + 0
         #MUT DESC---------------------------------------------------------
-        mutation_contribution_dict_2[desc_mut]["contribution"] = mutation_contribution_dict_2[desc_mut]["contribution"] + 0.5 
+        mutation_contribution_dict_2[desc_mut]["contribution"] = mutation_contribution_dict_2[desc_mut]["contribution"] + 0 
     print("\n","ad_distance", ad_distance)
     print(node_contribution_dict_1)
     print(node_contribution_dict_2)
