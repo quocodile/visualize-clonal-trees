@@ -74,17 +74,9 @@ def get_pair_differences(g_1,g_2):
         Used in get_contributions()
     """
     ad_pair_set_1 = get_anc_desc_pairs(g_1)
-    print("ad pair set 1")
-    print(ad_pair_set_1)
     ad_pair_set_2 = get_anc_desc_pairs(g_2)
-    print("ad pair set 2")
-    print(ad_pair_set_2)
     ad_distinct_set_1 = ad_pair_set_1 - ad_pair_set_2
-    print("ad distinct set 1")
-    print(ad_distinct_set_1)
     ad_distinct_set_2 = ad_pair_set_2 - ad_pair_set_1
-    print("ad distinct set 2")
-    print(ad_distinct_set_2)
     return ad_distinct_set_1, ad_distinct_set_2
 
 def get_anc_desc_pairs(g):
