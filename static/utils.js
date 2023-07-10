@@ -48,6 +48,10 @@ function max_contribution(nodes){
   return d3.max(nodes, function(d) { return d.data.contribution;});
 }
 
+function min_contribution(nodes){
+  return d3.min(d3.filter(nodes, d => d.data.contribution != 0), function(d) { return d.data.contribution;});
+}
+
 /**
  * Returns a string containing the top n contributing mutations
  *
@@ -176,14 +180,14 @@ function get_API_base_URL() {
  * @param {string} multi_tree_prefix:  color legend to edit 
  * @param {float} t_max: the value of the highest contribution in the tree 
  */
-function fill_tree_scale_color_legend(multi_tree_prefix = "", t_max) {
+function fill_tree_scale_color_legend(multi_tree_prefix = "", t_max, t_min) {
   
   var label1 = document.getElementById(`${multi_tree_prefix}_colorLabel1`);
   var label2 = document.getElementById(`${multi_tree_prefix}_colorLabel2`);
   var label3 = document.getElementById(`${multi_tree_prefix}_colorLabel3`);
   var label4 = document.getElementById(`${multi_tree_prefix}_colorLabel4`);
 
-  label1.innerHTML = 0;
+  label1.innerHTML = t_min;
   label2.innerHTML = Math.round((t_max / 3) * 100) / 100; 
   label3.innerHTML = Math.round((t_max * 2 / 3) * 100) / 100; 
   label4.innerHTML = Math.round(t_max * 100) / 100; 
