@@ -432,3 +432,16 @@ figcaption {
     width: 80%;
     margin-left: 15%;
 }
+
+p > div {
+  min-width: 30px;
+  min-height: 30px;
+  max-height: 50px;
+  float: left;
+  margin: 5px;
+}
+
+p > div > span {
+  font-family: Courier New;
+}
+

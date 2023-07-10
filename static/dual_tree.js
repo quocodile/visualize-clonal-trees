@@ -40,20 +40,27 @@ tree2file.addEventListener("change", function () {
 });
 
 function visualize_singleview(jsonData, distance_measure, dom_data) {
-  console.log("poo")
 
-  dom_data.shared_mutations.forEach(mutation => {
+  dom_data.shared_mutations.sort().forEach(mutation => {
     dom_data.shared_label.innerHTML +=  
-      `<span class="${mutation}-mutation-hover-label">${mutation}</span> `;
+      `<div><span class="${mutation}-mutation-hover-label">${mutation}</span></div>`;
   })
-  dom_data.t1_only_mutations.forEach(mutation => {
+  dom_data.t1_only_mutations.sort().forEach(mutation => {
     dom_data.t1_label.innerHTML +=  
-      `<span class="${mutation}-mutation-hover-label">${mutation}</span> `;
+      `<div><span class="${mutation}-mutation-hover-label">${mutation}</span></div>`;
   })
-  dom_data.t2_only_mutations.forEach(mutation => {
+  dom_data.t2_only_mutations.sort().forEach(mutation => {
     dom_data.t2_label.innerHTML +=  
-      `<span class="${mutation}-mutation-hover-label">${mutation}</span> `;
+      `<div><span class="${mutation}-mutation-hover-label">${mutation}</span></div>`;
   })
+
+  // sizing all the boxes for the mutation venn diagram
+  var venn_boxes = document.querySelectorAll("p > div");
+  venn_boxes.forEach(box => {
+    var text = box.querySelector("span").innerHTML;
+    box.style.width = (text.length * 14) + "px";
+  })
+  console.log("Boxes", venn_boxes);
 
   var tree1_data = jsonData.node_contribution_dict_1;
   var tree2_data = jsonData.node_contribution_dict_2;
@@ -69,7 +76,7 @@ function visualize_singleview(jsonData, distance_measure, dom_data) {
       items.style("fill", highlight_color);
       items.style("transition", "color 0.5s");
       items.style("cursor", "pointer");
-      items.style("font-weight", "bold");
+      items.style("font-weight", "999");
       items.style("font-size", "1.40em").style("transition", "font-size 0.5s");
   })
   spans.on('mouseout', (d) => {
