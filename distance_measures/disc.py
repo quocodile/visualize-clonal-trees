@@ -46,6 +46,7 @@ def get_contributions(g_1, g_2):
                     jacc_dist = (len(disc_union) - len(disc_intersection)) / len(disc_union)
                     disc_1_set_minus_2 = disc_1.difference(disc_2)
                     disc_2_set_minus_1 = disc_2.difference(disc_1)
+                    unioned_minus = disc_1_set_minus_2.union(disc_2_set_minus_1)
                     unscaled_disc_distance += jacc_dist
                     #tree 1 contributions
                     for set_minus_1_mut in disc_1_set_minus_2:
