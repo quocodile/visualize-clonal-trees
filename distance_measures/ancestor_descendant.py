@@ -98,8 +98,7 @@ def get_anc_desc_pairs(g):
     for desc in mutation_anc_dict:
         anc_list = mutation_anc_dict[desc]
         for anc in anc_list:
-            if (anc != desc): #no (mutX,mutX) edges
-                anc_desc_pairs.add((anc, desc))
+            anc_desc_pairs.add((anc, desc))
                     
 
     return anc_desc_pairs

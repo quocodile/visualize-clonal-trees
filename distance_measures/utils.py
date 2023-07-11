@@ -69,10 +69,10 @@ def fill_mutation_anc_dict(g, node, dict):
         set of ancestor mutations
     '''
     # Fills node-ancestor dictionary
-    node_dict = fill_node_anc_dict(g, node, dict)
+    node_dict = fill_node_anc_dict(g, node, dict) 
     mutation_dict = {}
     # Fills mutation-ancestor dictionary 
-    for desc in node_dict:
+    for desc in node_dict: 
         anc_set = node_dict[desc]
         desc_mutations = get_mutations_from_node(g, desc)
         for desc_mutation in desc_mutations:
@@ -114,6 +114,7 @@ def fill_node_dict(g, node, node_anc_dict):
     ''' Recursively creates dictionary matching each node
         in g to its ancestor set 
     '''
+    
     for child in g.successors(node):
         child_anc_set = node_anc_dict[node].copy()
         child_anc_set.add(child)
@@ -134,6 +135,7 @@ def fill_mutation_dict(g, node, dict):
             desc_mutation_ancestors = []
             for anc in anc_set:
                 anc_mutations = get_mutations_from_node(g,anc)
-                desc_mutation_ancestors = desc_mutation_ancestors + anc_mutations
+                if (anc != desc): #no (mutX,mutX) ancestry
+                    desc_mutation_ancestors = desc_mutation_ancestors + anc_mutations
             mutation_dict[desc_mutation] = desc_mutation_ancestors
     return mutation_dict
