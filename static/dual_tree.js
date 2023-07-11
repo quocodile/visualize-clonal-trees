@@ -255,37 +255,21 @@ function visualize_singleview(jsonData, distance_measure, dom_data) {
 
     .style("font-size", "0.80em")
     .style("font-family", "Monospace")
-    .style('font-weight', (d) => {
-      var mutation_contribution_dict_1 = jsonData.mutation_contribution_dict_1; 
-      var mutation_contribution_dict_2 = jsonData.mutation_contribution_dict_2; 
-      console.log("max", (mutation_contribution_dict_1, d => d["contribution"]))
-      var max1 = d3.max(Object.values(mutation_contribution_dict_1).map(d => d.contribution));
-      var max2 = d3.max(Object.values(mutation_contribution_dict_2).map(d => d.contribution));
-      if (svg_names[i] == "svg1") {
-        if (mutation_contribution_dict_1[d[0]]["contribution"] > 0) {
-          return mutation_contribution_dict_1[d[0]]["contribution"] / max1 * 900;
-        } 
-      }
-      else if (svg_names[i] == "svg2") {
-        if (mutation_contribution_dict_2[d[0]]["contribution"] > 0) {
-          return mutation_contribution_dict_2[d[0]]["contribution"] / max2 * 900;
-        } 
-      }
-
-      
-    })
+    .style('font-weight', "normal") 
     .style("fill", (d) => {
       console.log(jsonData.mutation_contribution_dict_1);
       console.log(jsonData.mutation_contribution_dict_2);
       var mutation_contribution_dict_1 = jsonData.mutation_contribution_dict_1; 
       var mutation_contribution_dict_2 = jsonData.mutation_contribution_dict_2; 
       if (svg_names[i] == 'svg1') {
+        return no_contribution_color;
         if (mutation_contribution_dict_1[d[0]]["contribution"] > 0) {
           return contribution_color;
         } 
         return no_contribution_color;
       }
       else if (svg_names[i] == "svg2") {
+        return no_contribution_color;
         if (mutation_contribution_dict_2[d[0]]["contribution"] > 0) {
           return contribution_color;
         } 
@@ -318,6 +302,7 @@ function visualize_singleview(jsonData, distance_measure, dom_data) {
           return mutation_table_color;
         }
         else {
+          return no_contribution_color;
           var tree = items[index].ownerSVGElement.id;
           var contribution = items[index].parentNode.__data__.data["contribution"];
           if (tree == 'svg1') {
@@ -642,6 +627,7 @@ function visualize_multiview(jsonData, distance_measure, svg1, svg2, scale, dom_
       }
     })
     .style('font-weight', (d) => {
+      return "normal";
       var mutation_contribution_dict_1 = jsonData.mutation_contribution_dict_1; 
       var mutation_contribution_dict_2 = jsonData.mutation_contribution_dict_2; 
       if (svg_names[i] == svg1) {

@@ -93,6 +93,7 @@ function change_label_fill(data, label) {
     return mutation_table_color;
   }
   else {
+    return no_contribution_color;
     var tree = label.ownerSVGElement.id;
     var contribution = label.parentNode.__data__.data["contribution"];
     if (tree == 'svg1') {
