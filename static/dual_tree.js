@@ -96,7 +96,8 @@ function visualize_singleview(jsonData, distance_measure, dom_data) {
   var t_min = Math.min(min_contribution(dom_data.t1_nodes), min_contribution(dom_data.t2_nodes));
   var color_scale = d3.scaleLinear()
   .domain([t_min, t_max/3, 2*t_max/3, t_max])
-  .range([coloring[0],coloring[1], coloring[2], coloring[3]]);
+  .range([coloring[0],coloring[1], coloring[2], coloring[3]])
+  .interpolate(d3.interpolateHcl);
   fill_tree_scale_color_legend(multi_tree_prefix = "", t_max, t_min, color_scale);
 
   var svg1 = d3.select('#svg1');
@@ -155,11 +156,15 @@ function visualize_singleview(jsonData, distance_measure, dom_data) {
       .join('line')
       .classed('link', true)
       .style("transform", "translate(5, 20), scale(0.5)")
-      .style("stroke-width", () => {
+      .style("stroke-width", (d) => {
         if (distance_measure != "parent_child_distance") {
+          console.log("Data", d);
           return "2px";
         }
         else {
+          if (d.target.data.contribution === 0) {
+            return "2px";
+          }
           return "5px";
         }
       })
