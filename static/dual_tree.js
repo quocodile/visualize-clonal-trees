@@ -381,7 +381,7 @@ function visualize_singleview(jsonData, distance_measure, dom_data) {
         edge_colored_tree(d3_nodes, d3_links, t_max, t_min, color_scale, dom_data.t1_only_mutations, dom_data.t2_only_mutations);
         break;
       default:
-        console.log("Please select a valid distance measure. If you have question email ealexander@carleton.edu");
+        console.log("Please select a valid distance measure. If you have questions email ealexander@carleton.edu");
         break;
     }
   }
@@ -391,7 +391,7 @@ function visualize_singleview(jsonData, distance_measure, dom_data) {
 function node_colored_tree(d3_nodes, d3_links, t_max, t_min, scale, t1_only_mutations, t2_only_mutations) {
     
   d3_nodes.selectAll('circle.node')
-	.style("stroke", d => {
+	.style("stroke",d => {
       if (t1_only_mutations.some(mut => d.data.id.split("_").includes(mut)) || t2_only_mutations.some(mut => d.data.id.split("_").includes(mut))) { //outline tree-distinct mutations in red
         return "red";
       }
