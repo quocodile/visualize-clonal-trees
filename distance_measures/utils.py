@@ -138,10 +138,10 @@ def fill_mutation_dict(g, node, dict):
                 anc_mutations = get_mutations_from_node(g,anc)
 
                 if (anc == desc): #mutations are ancestral to themselves
-                    desc_mutation_ancestors = [desc_mutation] + anc_mutations
-                    
+                    desc_mutation_ancestors = [desc_mutation] + desc_mutation_ancestors
+
                 if (anc != desc): 
                     desc_mutation_ancestors = desc_mutation_ancestors + anc_mutations
             mutation_dict[desc_mutation] = desc_mutation_ancestors
-
+       
     return mutation_dict
