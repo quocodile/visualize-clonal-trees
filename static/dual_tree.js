@@ -258,21 +258,22 @@ function visualize_singleview(jsonData, distance_measure, dom_data) {
     .style('font-weight', "normal") 
     .style("fill", (d) => {
       console.log(jsonData.mutation_contribution_dict_1);
-      console.log(jsonData.mutation_contribution_dict_2);
+	console.log(jsonData.mutation_contribution_dict_2);
+	
       var mutation_contribution_dict_1 = jsonData.mutation_contribution_dict_1; 
       var mutation_contribution_dict_2 = jsonData.mutation_contribution_dict_2; 
       if (svg_names[i] == 'svg1') {
         return no_contribution_color;
         if (mutation_contribution_dict_1[d[0]]["contribution"] > 0) {
           return contribution_color;
-        } 
+        }
         return no_contribution_color;
       }
       else if (svg_names[i] == "svg2") {
         return no_contribution_color;
         if (mutation_contribution_dict_2[d[0]]["contribution"] > 0) {
           return contribution_color;
-        } 
+        }
         return no_contribution_color;
       }
     })
@@ -355,24 +356,24 @@ function visualize_singleview(jsonData, distance_measure, dom_data) {
       t2_top5_mutations = get_top_n_mutations(jsonData.mutation_contribution_dict_2, 5);
       fill_in_table("t2", t2_max_branching_factor, root.height, dom_data.t2_nodes.length, dom_data.t2_mutations.length, t2_top5_mutations);
     }
-
+      
     // Set the coloring scheme based off of the distance measure
     switch (distanceMetric.value) {
       case "ancestor_descendant_distance":
         distanceMeasureLabel.innerHTML = "Ancestor Descendant Distance: " + distance;
-        node_colored_tree(d3_nodes, d3_links, t_max, t_min, color_scale);
+        node_colored_tree(d3_nodes, d3_links, t_max, t_min, color_scale, dom_data.t1_only_mutations, dom_data.t2_only_mutations);
         break;
       case "caset_distance": 
         distanceMeasureLabel.innerHTML = "CASet Distance: " + distance;
-        node_colored_tree(d3_nodes, d3_links, t_max, t_min, color_scale);
+        node_colored_tree(d3_nodes, d3_links, t_max, t_min, color_scale, dom_data.t1_only_mutations, dom_data.t2_only_mutations);
         break;
       case "disc_distance": 
         distanceMeasureLabel.innerHTML = "DISC Distance: " + distance;
-        node_colored_tree(d3_nodes, d3_links, t_max, t_min, color_scale);
+        node_colored_tree(d3_nodes, d3_links, t_max, t_min, color_scale, dom_data.t1_only_mutations, dom_data.t2_only_mutations);
         break;
       case "parent_child_distance": 
         distanceMeasureLabel.innerHTML = "Parent-child Distance: " + distance;
-        edge_colored_tree(d3_nodes, d3_links, t_max, t_min, color_scale);
+        edge_colored_tree(d3_nodes, d3_links, t_max, t_min, color_scale, dom_data.t1_only_mutations, dom_data.t2_only_mutations);
         break;
       default:
         console.log("Please select a valid distance measure. If you have question email ealexander@carleton.edu");
@@ -382,10 +383,16 @@ function visualize_singleview(jsonData, distance_measure, dom_data) {
 }
 
 // Coloring scheme for DIST, CASet, and ancestor descendant -> node based
-function node_colored_tree(d3_nodes, d3_links, t_max, t_min, scale) {
+function node_colored_tree(d3_nodes, d3_links, t_max, t_min, scale, t1_only_mutations, t2_only_mutations) {
+    
   d3_nodes.selectAll('circle.node')
-    .style("stroke", d => {
-      if (d.data.contribution > 0) {
+	.style("stroke", d => {
+      if (t1_only_mutations.some(mut => d.data.id.split("_").includes(mut)) || t2_only_mutations.some(mut => d.data.id.split("_").includes(mut))) { //outline tree-distinct mutations in red
+        return "red";
+      }
+
+	
+      else if (d.data.contribution > 0) {
         return "black";
       }
       else {
@@ -401,12 +408,19 @@ function node_colored_tree(d3_nodes, d3_links, t_max, t_min, scale) {
       }
     })
 
-  d3_links.selectAll('line.link').style("stroke", "black") 
+    d3_links.selectAll('line.link').style("stroke", "black");
 }
 
 // Coloring scheme for parent child -> edge based
-function edge_colored_tree(d3_nodes, d3_links, t_max, t_min, scale) {
-  d3_nodes.selectAll('circle.node').style("stroke", "black").style("fill", "#e6e6e3")
+function edge_colored_tree(d3_nodes, d3_links, t_max, t_min, scale, t1_only_mutations, t2_only_mutations) {
+    d3_nodes.selectAll('circle.node').style("stroke", d => {
+	if (t1_only_mutations.some(mut => d.data.id.split("_").includes(mut)) || t2_only_mutations.some(mut => d.data.id.split("_").includes(mut))) { //outline tree-distinct mutations in red
+	    return "red";
+	}
+	else {
+	    return "black";
+	}
+    }).style("fill", "#e6e6e3")
 
   d3_links.selectAll('line.link')
       .style("stroke", function(d) {
@@ -600,7 +614,7 @@ function visualize_multiview(jsonData, distance_measure, svg1, svg2, scale, dom_
       if (svg_names[i] == svg1) {
         if (mutation_contribution_dict_1[d[0]]["contribution"] > 0) {
           return contribution_color;
-        } 
+        }
         return no_contribution_color;
       }
       else if (svg_names[i] == svg2) {
