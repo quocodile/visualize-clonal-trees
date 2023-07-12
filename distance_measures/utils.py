@@ -128,6 +128,7 @@ def fill_mutation_dict(g, node, dict):
     '''
     node_dict = fill_node_dict(g, node, dict)
     mutation_dict = {}
+    
     for desc in node_dict:
         anc_set = node_dict[desc]
         desc_mutations = get_mutations_from_node(g,desc)
@@ -135,7 +136,12 @@ def fill_mutation_dict(g, node, dict):
             desc_mutation_ancestors = []
             for anc in anc_set:
                 anc_mutations = get_mutations_from_node(g,anc)
-                if (anc != desc): #no (mutX,mutX) ancestry
+
+                if (anc == desc): #mutations are ancestral to themselves
+                    desc_mutation_ancestors = [desc_mutation] + anc_mutations
+                    
+                if (anc != desc): 
                     desc_mutation_ancestors = desc_mutation_ancestors + anc_mutations
             mutation_dict[desc_mutation] = desc_mutation_ancestors
+
     return mutation_dict
