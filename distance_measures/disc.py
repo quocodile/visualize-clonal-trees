@@ -31,16 +31,19 @@ def get_contributions(g_1, g_2):
     mutation_set_2 = utils.get_all_mutations(g_2)
     full_mutation_set = mutation_set_1.union(mutation_set_2)
     number_mutations = len(full_mutation_set)
+    normalizing_factor = 1/(number_mutations*((number_mutations-1))) 
 
-    #actual machinery for disc algorithm
+    # actual machinery for disc algorithm
     unscaled_disc_distance = 0 
+    print(full_mutation_set)
     for mut_1 in full_mutation_set:
+        print(mut_1)
         for mut_2 in full_mutation_set:
             if (not mut_1 == mut_2):
                 disc_1 = get_distinct_ancestor_set(mut_1, mut_2, mutation_anc_dict_1)
                 disc_2 = get_distinct_ancestor_set(mut_1, mut_2, mutation_anc_dict_2)
                 disc_union = disc_1.union(disc_2)
-                #avoid divide by zero errors
+                # avoid divide by zero errors
                 if not len(disc_union)==0: 
                     disc_intersection = disc_1.intersection(disc_2)
                     jacc_dist = (len(disc_union) - len(disc_intersection)) / len(disc_union)
@@ -48,16 +51,17 @@ def get_contributions(g_1, g_2):
                     disc_2_set_minus_1 = disc_2.difference(disc_1)
                     unioned_minus = disc_1_set_minus_2.union(disc_2_set_minus_1)
                     unscaled_disc_distance += jacc_dist
+                    print(mut_1, mut_2, disc_1_set_minus_2, disc_2_set_minus_1) 
                     #tree 1 contributions
                     for set_minus_1_mut in disc_1_set_minus_2:
-                        node_contribution_dict_1[utils.get_node_from_mutation(g_1, set_minus_1_mut)]["contribution"] += jacc_dist / len(disc_1_set_minus_2) /(number_mutations*((number_mutations-1)))
-                        mutation_contribution_dict_1[set_minus_1_mut]["contribution"] += jacc_dist / len(disc_1_set_minus_2) /(number_mutations*((number_mutations-1)))
+                        node_contribution_dict_1[utils.get_node_from_mutation(g_1, set_minus_1_mut)]["contribution"] += jacc_dist / len(unioned_minus) * normalizing_factor 
+                        mutation_contribution_dict_1[set_minus_1_mut]["contribution"] += jacc_dist / len(unioned_minus) * normalizing_factor 
                     #tree 2 contributions
                     for set_minus_2_mut in disc_2_set_minus_1:                
-                        node_contribution_dict_2[utils.get_node_from_mutation(g_2, set_minus_2_mut)]["contribution"] += jacc_dist / len(disc_2_set_minus_1) /(number_mutations*((number_mutations-1)))
-                        mutation_contribution_dict_2[set_minus_2_mut]["contribution"] += jacc_dist / len(disc_2_set_minus_1) /(number_mutations*((number_mutations-1)))
+                        node_contribution_dict_2[utils.get_node_from_mutation(g_2, set_minus_2_mut)]["contribution"] += jacc_dist / len(unioned_minus) * normalizing_factor 
+                        mutation_contribution_dict_2[set_minus_2_mut]["contribution"] += jacc_dist / len(unioned_minus) * normalizing_factor 
     
-    dc_distance = (1/(number_mutations*((number_mutations-1))) * unscaled_disc_distance) #scale dist based on number of mutations
+    dc_distance = (normalizing_factor * unscaled_disc_distance) #scale dist based on number of mutations
     print("\n","dc_distance", dc_distance)
     return node_contribution_dict_1, node_contribution_dict_2, mutation_contribution_dict_1, mutation_contribution_dict_2, node_mutations_dict_1, node_mutations_dict_2, dc_distance
 

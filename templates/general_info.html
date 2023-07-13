@@ -117,7 +117,7 @@
                 </p>
                 <figure>
                   <img class="img-examples" src="{{ url_for('static', filename='CASet-example.png') }}" alt="Example of DISC Visualization">
-                  <figcaption style="margin: auto; text-align: center;">Tree 1 (left) and Tree 2 (right). The only mutation that is contributing is B in Tree 2. This is because of the common ancesto</figcaption>
+                  <figcaption style="margin: auto; text-align: center; width: 800px;">Tree 1 (left) and Tree 2 (right). The only mutation that is contributing is B in Tree 2. This is because of the jaccard distance between the <i>common ancestor sets</i> of B,C and B,D. Specifically, CAS(B,C) in T1 is {A}, and CAS(B,C) in T2 is {A,B}, with the symmetric difference between the two being {B}. Similarly, for CAS(B,D) in T1, we have {A}. In T2, CAS(B,D) is {A,B}. Again, a difference of {B}, contributed by T2.   </figcaption>
                 </figure>
                 <p></p>
             </div>
@@ -139,6 +139,7 @@
                 </p>
                 <figure>
                     <img class="img-examples" src="{{ url_for('static', filename='DISC-example.png') }}" alt="">
+			    <figcaption style="margin: auto; text-align: center; width: 800px;">Tree 1 (left) and Tree 2 (right). Mutation B is contributing in both T1 and T2, and it is the only mutation contributing. This is because of the differences in the <i>distinctly inherited sets</i> between B,C, B,D  C,A and D,A. Note that the order matters here as we performing a set minus operation. The distinctly inherited set for B,C in T1 is {B}, and {} in T2. The symmetric distance is {B}. The distinctly inherited sets for B,D are {B} in T1 and {} in T2. Again, the symmetric difference is {B}. The distinctly inherited set for C,A in T1 is {C} in T1 and {C,B} in T2. Symmetric difference is {B}. The distinctly inherited set for D,A in T1 is {C,D} and {B,C,D} in T2. Symmetric difference is {B}. The 'B' on T1 gets more contribution because jaccard distance is the ratio of symmetric difference to the union.</figcaption>
                 </figure>
             </div>
         </div>
