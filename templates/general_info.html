@@ -117,7 +117,7 @@
                 </p>
                 <figure>
                   <img class="img-examples" src="{{ url_for('static', filename='CASet-example.png') }}" alt="Example of DISC Visualization">
-                  <figcaption style="margin: auto; text-align: center;">Tree 1 (left) and Tree 2 (right). The only mutation that is contributing is B in Tree 2. This is because of the common ancesto</figcaption>
+                  <figcaption style="margin: auto; text-align: center; width: 800px;">Tree 1 (left) and Tree 2 (right). The only mutation that is contributing is B in Tree 2. This is because of the jaccard distance between the <i>common ancestor sets</i> of B,C and B,D. Specifically, CAS(B,C) in T1 is {A}, and CAS(B,C) in T2 is {A,B}, with the symmetric difference between the two being {B}. Similarly, for CAS(B,D) in T1, we have {A}. In T2, CAS(B,D) is {A,B}. Again, a difference of {B}, contributed by T2.   </figcaption>
                 </figure>
                 <p></p>
             </div>
@@ -139,6 +139,7 @@
                 </p>
                 <figure>
                     <img class="img-examples" src="{{ url_for('static', filename='DISC-example.png') }}" alt="">
+			    <figcaption style="margin: auto; text-align: center; width: 800px;">Tree 1 (left) and Tree 2 (right). Mutation B is contributing in both T1 and T2, and it is the only mutation contributing. This is because of the differences in the <i>distinctly inherited sets</i> between B,C and </figcaption>
                 </figure>
             </div>
         </div>
