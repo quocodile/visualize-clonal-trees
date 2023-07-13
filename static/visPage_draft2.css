@@ -1,0 +1,44 @@
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+}
+
+.site-container {
+    display: grid;
+    grid-template-columns: 15% 60% 25%;
+    height: 100%;
+    margin: 0;
+}
+.main-site-columns {
+    margin: 0;
+    border: 1px solid black;
+}
+
+.site-container > .middle-column {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+}
+
+.site-container > .middle-column > div {
+    margin: 0;
+    border: 1px solid black;
+}
+
+.site-container > .middle-column > .tree1_visualization {
+    height: 40%;
+    width: 100%;
+    margin: 0;
+
+}
+
+.site-container > .middle-column > .tree2_visualization {
+    height: 40%;
+    width: 100%;
+}
+
+.site-container > .middle-column > .legend {
+    height: 20%;
+    width: 100%;
+}

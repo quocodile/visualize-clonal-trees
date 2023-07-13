@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/visPage_draft2.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3-dispatch@3"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3-selection@3"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3-drag@3"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <title>Document</title>
+</head>
+<body>
+    <div class="site-container">
+        <div class="main-site-columns left-column">
+            <div class="dropdown distance-measure" id="distance-dropdown">
+                <p> </p>
+                <label id="metric_drp" for="distance_metric"></label>
+                <select name="distance_metric" id="distance_metric" onchange="submit_tree()">
+                    <option value="ancestor_descendant_distance">Ancestor-Descendant</option>
+                    <option value="parent_child_distance" selected>Parent-Child</option>
+                    <option value="caset_distance">CASet</option>
+                    <option value="disc_distance">DISC</option>
+                </select>
+            </div>
+            <div><textarea class="text-box" id="tree1-text" name="" cols="30" rows="10">digraph Tree {
+                1 [label="A"];
+                2 [label="B"];
+                3 [label="C"];
+                4 [label="D"];
+                5 [label="E"];
+                6 [label="F"];
+                7 [label="G"];
+                8 [label="H"];
+                9 [label="I"];
+                10 [label="J"];
+                11 [label="K"];
+                12 [label="L"];
+                13 [label="M"];
+                14 [label="N"];
+                15 [label="O"];
+                16 [label="P"];
+                17 [label="Q"];
+                18 [label="R"];
+                19 [label="S"];
+                20 [label="T"];
+                21 [label="U"];
+                1 -> 2;
+                1 -> 3;
+                2 -> 4;
+                2 -> 5;
+                3 -> 6;
+                3 -> 7;
+                4 -> 8;
+                4 -> 9;
+                5 -> 10;
+                5 -> 11;
+                6 -> 12;
+                6 -> 13;
+                7 -> 14;
+                7 -> 15;
+                8-> 16;
+                8 -> 17;
+                9 -> 18;
+                9 -> 19;
+                10 -> 20;
+                10 -> 21;
+
+
+            }</textarea></div>
+            <div>
+                <textarea class="text-box" id="tree2-text" name="" cols="30" rows="10">digraph Tree {
+                    1 [label="P, T, S, J, C, A"];
+                    2 [label="E, N2, AR, MA"];
+                    3 [label="NT, AF"];
+                    4 [label="CH"];
+                    5 [label="E1, N3"];
+                    6 [label="CX"];
+                    7 [label="TN"];
+                    8 [label="LP, SY"];
+                    9 [label="AU"];
+                    10 [label="TG"];
+                    1 -> 2;
+                    2 -> 3;
+                    2 -> 4;
+                    3 -> 5;
+                    5 -> 8;
+                    5 -> 7;
+                    5 -> 6;
+                    7 -> 9;
+                    4 -> 10;
+                }</textarea>
+            </div>
+        </div>
+        <div class="main-site-columns middle-column">
+            <div class="tree1_visualization" id="tree1_visualization">
+                    <svg id="svg1" width="100%" height="auto" style="background-color: pink;"> 
+                    <g id="tree1_visualization_group" transform="translate(550,50)">
+                        <g class="links"></g>
+                        <g class="nodes"></g>
+                    </g>
+                    </svg>
+            </div>
+            <div class="tree2_visualization"></div>
+            <div class="legend"></div>
+        </div>
+        <div class="main-site-columns right-column"></div>
+    </div>
+    <script src="{{ url_for('static', filename='utils_draft2.js') }}"></script>
+    <script src="{{ url_for('static', filename='set_functions.js') }}"></script>
+    <script src="{{ url_for('static', filename='dual_tree_draft2.js') }}"></script>
+</body>
+</html>
