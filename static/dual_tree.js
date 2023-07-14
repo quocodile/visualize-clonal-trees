@@ -18,8 +18,24 @@ window.onload = () => {
   submit_tree();
 }
 
-submitTreesBtn.onclick = () => {
-  submit_tree();
+document.getElementById('edit-tree1-icon').onclick = () => {
+  var icon = document.getElementById('tree1-text')
+  if (icon.style.display == "none") {
+    icon.style.display = 'block';
+  }
+  else {
+    icon.style.display = 'none';
+  }
+}
+
+document.getElementById('edit-tree2-icon').onclick = () => {
+  var icon = document.getElementById('tree2-text')
+  if (icon.style.display == "none") {
+    icon.style.display = 'block';
+  }
+  else {
+    icon.style.display = 'none';
+  }
 }
 
 tree1file.addEventListener("change", function () {
@@ -136,14 +152,14 @@ function visualize_singleview(jsonData, distance_measure, dom_data) {
   for (var i = 0; i < 2; i++) {
     var cur_svg = svg_names[i];
     var root = d3.hierarchy(data[i]);
-    var tree = d3.tree()
+    var tree = d3.tree();
     if (root.height > 5) {
-      tree.nodeSize([70, 25]);
+      tree.nodeSize([60, 20]);
     }
     else {
-      tree.nodeSize([90, 80]);
+      tree.nodeSize([70, 50]);
     }
-    tree.separation((a, b) => 1.5);
+    tree.separation((a, b) => 3);
     tree(root);
     var d3_nodes = d3.select('#' + svg_names[i] +  ' g.nodes')
     var d3_links = d3.select('#' + svg_names[i] +  ' g.links')
@@ -365,19 +381,19 @@ function visualize_singleview(jsonData, distance_measure, dom_data) {
     // Set the coloring scheme based off of the distance measure
     switch (distanceMetric.value) {
       case "ancestor_descendant_distance":
-        distanceMeasureLabel.innerHTML = "Ancestor Descendant Distance: " + distance;
+        distanceMeasureLabel.innerHTML = distance;
         node_colored_tree(d3_nodes, d3_links, t_max, t_min, color_scale, dom_data.t1_only_mutations, dom_data.t2_only_mutations);
         break;
       case "caset_distance": 
-        distanceMeasureLabel.innerHTML = "CASet Distance: " + distance;
+        distanceMeasureLabel.innerHTML = distance;
         node_colored_tree(d3_nodes, d3_links, t_max, t_min, color_scale, dom_data.t1_only_mutations, dom_data.t2_only_mutations);
         break;
       case "disc_distance": 
-        distanceMeasureLabel.innerHTML = "DISC Distance: " + distance;
+        distanceMeasureLabel.innerHTML = distance;
         node_colored_tree(d3_nodes, d3_links, t_max, t_min, color_scale, dom_data.t1_only_mutations, dom_data.t2_only_mutations);
         break;
       case "parent_child_distance": 
-        distanceMeasureLabel.innerHTML = "Parent-child Distance: " + distance;
+        distanceMeasureLabel.innerHTML = distance;
         edge_colored_tree(d3_nodes, d3_links, t_max, t_min, color_scale, dom_data.t1_only_mutations, dom_data.t2_only_mutations);
         break;
       default:

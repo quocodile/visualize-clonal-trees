@@ -6,7 +6,7 @@ body {
 
 .site-container {
     display: grid;
-    grid-template-columns: 20% 55% 25%;
+    grid-template-columns: 25% 50% 25%;
     height: 100%;
     margin: 0;
 }
@@ -28,7 +28,7 @@ body {
 
 .site-container > .middle-column > .tree1_visualization {
     position: relative;
-    height: 45%;
+    height: 50%;
     width: 100%;
     margin: 0;
 
@@ -36,42 +36,56 @@ body {
 
 .site-container > .middle-column > .tree2_visualization {
     position: relative;
-    height: 45%;
+    height: 50%;
     width: 100%;
 }
 
 .site-container > .middle-column > .legend-component {
-    height: 10%;
     width: 100%;
 }
 
 /* Pertaining to the singleview color legend */
+#distance-evaluation-container {
+  display: flex;
+  margin-left: 20px;
+  width: 250px;
+  height: 30px;
+  align-items: center;
+  padding: 0;
+}
+
+#distance_metric {
+  display: block;
+  margin-top: -16px;
+  height: 30px;
+  width: 150px;
+}
+}
+
 .legend-container {
     display: block;
-    margin: auto;
-    background-color: yellow;
+    margin-left: 20px;
 }
 
 .legend {
     height: 30px;
-    width: 400px;
+    width: 250px;
     border: 1px solid black;
-    margin: auto;
+    margin-left: 20px;
 }
 
 .legend-labels-container {
-    width: 400px;
+    width: 250px;
     height: 20px;
     display: flex;
     justify-content: space-between;
     margin-top: 5px;
-    margin: auto;
+    margin-left: 20px;
 }
 
 #distance-measure-label {
   display: block;
-  margin: auto;
-  margin-bottom: 20px;
+  margin-left: 10px;
   height: 20px;
   width: 400px;
 }
@@ -79,7 +93,7 @@ body {
 .label {
     width: 10px;
     height: 20px;
-    font-size: 15px;
+    font-size: 12px;
 }
 /* Pertaining to the singleview summary statistics */
 #summary-statistics-table {
@@ -103,9 +117,27 @@ body {
   text-align: center;
 }
 
+td {
+  font-weight: normal;
+  font-family: Courier New;
+}
+
+/* Pertainining to the input management */
 .upload-file-icon {
   position: absolute;
   top: 10px;
+  left: 10px;
+}
+
+.edit-file-icon {
+  position: absolute;
+  top: 60px;
+  left: 10px;
+}
+
+.edit-textarea {
+  position: absolute;
+  top: 110px;
   left: 10px;
 }
 
@@ -127,7 +159,6 @@ body {
 .tree-label-info {
     flex: 1;
     height: auto;
-    padding: 10px;
     border: 1px solid black;
 }
 
@@ -135,16 +166,18 @@ body {
     text-align: left;
     font-size: 16px;
     text-decoration: underline;
+    padding-left: 10px;
 }
 
 p > div {
   min-width: 30px;
   height: 20px;
   float: left;
-  margin: 5px;
+  padding-left: 10px;
 }
 
 p > div > span {
   font-family: Courier New;
+  font-size: 13px;
 }
 
