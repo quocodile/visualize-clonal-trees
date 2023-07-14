@@ -390,7 +390,6 @@ function visualize_singleview(jsonData, distance_measure, dom_data) {
 
 // Coloring scheme for DIST, CASet, and ancestor descendant -> node based
 function node_colored_tree(d3_nodes, d3_links, t_max, t_min, scale, t1_only_mutations, t2_only_mutations, svg1, svg2) {
-
     
   d3_nodes.selectAll('circle.node')
 	.style("stroke",d => {
@@ -402,25 +401,31 @@ function node_colored_tree(d3_nodes, d3_links, t_max, t_min, scale, t1_only_muta
       }
     })
 	.style("fill", function(d) {
-      if (d.data.contribution === 0) {
-        return "lightgray";
-      }
-	 if (t1_only_mutations.some(mut => d.data.id.split("_").includes(mut)) || t2_only_mutations.some(mut => d.data.id.split("_").includes(mut))) { //fill tree-distinct nodes with texture
+      
+      if (t1_only_mutations.some(mut => d.data.id.split("_").includes(mut)) || t2_only_mutations.some(mut => d.data.id.split("_").includes(mut))) { //fill tree-distinct nodes with texture
+
+	var background_color  = scale(d.data.contribution);
+	if (d.data.contribution === 0) {
+	      background_color = "lightgray";
+	}
 
 	const texture = textures
 	      .lines()
 	      .size(6)
 	      .strokeWidth(1.5)
-	      .background(scale(d.data.contribution));   
+	      .background(background_color);   
 
 	 //for initializing texture for highlighting
 	 svg1.call(texture);
 	 svg2.call(texture);
 	    
 	 return texture.url();
-	}
+      }
+      if (d.data.contribution === 0) {
+	return "lightgrey";
+      }				
       else {
-        return scale(d.data.contribution);
+	  return scale(d.data.contribution);
       }
 	})
 
@@ -429,6 +434,7 @@ function node_colored_tree(d3_nodes, d3_links, t_max, t_min, scale, t1_only_muta
 
 // Coloring scheme for parent child -> edge based
 function edge_colored_tree(d3_nodes, d3_links, t_max, t_min, scale, t1_only_mutations, t2_only_mutations) {
+    
     d3_nodes.selectAll('circle.node').style("stroke", d => {
 	if (t1_only_mutations.some(mut => d.data.id.split("_").includes(mut)) || t2_only_mutations.some(mut => d.data.id.split("_").includes(mut))) { //outline tree-distinct mutations in red
 	    return "#ad4399";
