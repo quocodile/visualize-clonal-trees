@@ -1,3 +1,4 @@
+
 var tree1TextArea = document.querySelector("#tree1-text");
 var tree2TextArea = document.querySelector("#tree2-text");
 var tree1file = document.getElementById("file1");
@@ -480,6 +481,9 @@ function submit_tree() {
   .then(response => response.json())
   .then(json_data => {
      visualize("single", null, null, json_data, distanceMetric.value, null);
+     console.log("Here!");
+     create_tripartite(json_data.t1_mutations, json_data.t2_mutations, json_data.t1_tripartite_edges, json_data.t2_tripartite_edges);
+     create_heatmap(json_data.t1_mutations, json_data.t2_mutations, json_data.t1_tripartite_edges, json_data.t2_tripartite_edges);
   });
 }
 
@@ -908,3 +912,210 @@ function multiView(dom_data) {
   dom_data.multiview_btn.style.color = btnsDisplayed? "black": "#F5F5F5";
 }
 
+function create_tripartite(t1_muts, t2_muts, t1_tripartite_edges, t2_tripartite_edges) {
+  console.log("Muts", t1_muts, t2_muts)
+  console.log("Edges", t1_tripartite_edges, t2_tripartite_edges)
+  mutation_objects = [] 
+  t1_mutation_objects = [] 
+  t2_mutation_objects = [] 
+  t1_muts.forEach(mut => {
+    mutation_objects.push({"mutation": mut})
+    t1_mutation_objects.push({"mutation": mut})
+  })
+  t2_muts.forEach(mut => {
+    mutation_objects.push({"mutation": mut})
+    t2_mutation_objects.push({"mutation": mut})
+  })
+  import("https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm").then((mod) => {
+    
+  const plot = mod.plot({
+	  width: 500,
+	  height: 600,
+	  marginRight: 100,
+	  marginLeft: 100,
+	  x: {axis: null},
+	  y: {axis: "both",
+            domain: d3.map(intersectOrdering(t1_muts, t2_muts, t1_mutation_objects, t2_mutation_objects), d => d.mutation) 
+          },
+	  marks: [
+	    mod.dot(mutation_objects, {/*fill: 'black' d => colorScale(d.cluster),*/ r: 5, y: 'mutation', x: 1, title: 'mutation', opacity: .4}),
+	    mod.dot(mutation_objects, {/*fill: 'black' d => colorScale(d.cluster),*/ r: 10, y: 'mutation', x: 2, title: 'mutation'}),
+	    mod.dot(mutation_objects, {/*fill: 'black' /*d => colorScale(d.cluster),*/ r: 5, y: 'mutation', x: 3, title: 'mutation', opacity: .4}),   
+	    mod.link(calculateEdgeColorsTripartite(t1_tripartite_edges, t2_tripartite_edges), {x1: 1, x2: 2, y1: d => d['parent'], y2: d => d['child'], stroke: d => d["color"]}), 
+	    mod.link(calculateEdgeColorsTripartite(t1_tripartite_edges, t2_tripartite_edges), {x1: 2, x2: 3, y1: d => d['parent'], y2: d => d['child'], stroke: d => d["color"]})
+	  ]
+  })
+  var div = document.querySelector(".tripartite-component");
+  if (div.lastElementChild) {
+    console.log("Remove a child");
+    div.removeChild(div.lastElementChild);
+  }
+  div.append(plot);
+  });
+
+}
+
+function calculateEdgeColorsTripartite(arr1, arr2) {
+    let edges = Array(),
+      edges_index = 0;
+    for (let i = 0; i < arr1.length; i++) {
+
+      let shared = 0;
+
+      for (let j = 0; j < arr2.length; j++) {
+    
+          if ((arr1[i].parent == arr2[j].parent) && (arr1[i].child == arr2[j].child)) {
+            //then the edge is shared
+            shared = 1;
+
+            //comment out if only the non-shared edges should be displayed
+            //edges[edges_index] = {"parent": arr1[i]["parent"], "child": arr1[i]["child"], "color": "lightgrey", "index": edges_index};
+            //edges_index++;
+          }
+        
+      }
+
+      if (!shared) {
+        edges[edges_index] = {"parent": arr1[i]["parent"], "child": arr1[i]["child"], "color": "#d95f02", "index": edges_index};
+        edges_index++;
+      }
+    }
+
+
+    //also check if there are any edges in arr2 that are not in arr1
+
+    for (let i = 0; i < arr2.length; i++) {
+
+      let shared = 0;
+
+      for (let j = 0; j < arr1.length; j++) {
+    
+          if ((arr2[i].parent == arr1[j].parent) && (arr2[i].child == arr1[j].child)) {
+            //then the edge is shared
+            shared = 1;
+          }
+      }
+
+      if (!shared) {
+        edges[edges_index] = {"parent": arr2[i]["parent"], "child": arr2[i]["child"], "color": "#7570b3", "index": edges_index};
+        edges_index++;
+      }
+    }
+
+  
+
+    return edges;
+
+  
+}
+
+function create_heatmap(t1_muts, t2_muts, t1_tripartite_edges, t2_tripartite_edges) {
+  var total_mutations = []
+  mutation_objects = [] 
+  t1_mutation_objects = [] 
+  t2_mutation_objects = [] 
+  t1_muts.forEach(mut => {
+    mutation_objects.push({"mutation": mut})
+    t1_mutation_objects.push({"mutation": mut})
+    total_mutations.push(mut)
+  })
+  t2_muts.forEach(mut => {
+    mutation_objects.push({"mutation": mut})
+    t2_mutation_objects.push({"mutation": mut})
+    total_mutations.push(mut)
+  })
+  total_mutations = new Set(total_mutations)
+  import("https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm").then((mod) => {
+    
+
+  var plot = mod.plot({
+    padding: 0,
+    width: 400,
+    height: 400,
+    marginLeft: 100,
+    marginTop: 100,
+    x: {axis: "top", label: "Child",  tickRotate: 90, domain: d3.map(intersectOrdering(t1_muts, t2_muts, t1_mutation_objects, t2_mutation_objects), d => d.mutation)},
+    y: {label: "Parent", domain: d3.map(intersectOrdering(t1_muts, t2_muts, t1_mutation_objects, t2_mutation_objects), d => d.mutation)},
+    color: {type: "linear", scheme: "PiYG"},
+    marks: [
+      mod.cell(calculateEdgeColorsHeatMap(t1_tripartite_edges, t2_tripartite_edges, t1_muts, t2_muts, mutation_objects), {x: d => d.child.mutation, y: d => d.parent.mutation, fill: d => d.color, stroke: 'black', strokeWidth: 0.1, inset: 0.5})
+
+    ]
+  }) 
+  var div = document.querySelector(".heatmap-component");
+  if (div.lastElementChild) {
+    console.log("Remove a child");
+    div.removeChild(div.lastElementChild);
+  }
+  div.append(plot);
+  });
+
+}
+function intersectOrdering(mutationsT1, mutationsT2, mutationObjectsT1, mutationObjectsT2) {
+  var lst = []; //makes a copy of mutationsT1
+  mutationObjectsT1.forEach(mutationObject => {
+    if (mutationsT2.includes(mutationObject.mutation)) {
+      lst.push({mutation: mutationObject.mutation, cluster: mutationObject.cluster});
+    }
+  })
+  return lst;
+  
+}
+
+function calculateEdgeColorsHeatMap(edges1, edges2, mutations1, mutations2, total_mutations) {
+    let edges = Array(),
+      edges_index = 0;
+  
+    for (let i = 0; i < total_mutations.length; i++) {
+      for (let j = 0; j < total_mutations.length; j++) {
+
+        let in_tree1 = 0,
+          in_tree2 = 0;
+
+        //current edge is in tree 1
+        if (lookUpIndexEdgesParentChild(edges1, {parent: total_mutations[i].mutation, child: total_mutations[j].mutation}) != -1) {
+          in_tree1 = 1;
+        }
+
+        //check if current edge is in tree 2
+        if (lookUpIndexEdgesParentChild(edges2, {parent: total_mutations[i].mutation, child: total_mutations[j].mutation}) != -1) {
+          in_tree2 = 1;
+        }
+
+        //decide what color depending on if it's: both, just tree1, just tree2, or neither
+
+        //default to neither (empty/white square)
+        let square_color = "white";
+
+        if (in_tree1) { //only in tree 1
+          square_color = "#d95f02";
+        }
+        if (in_tree2) { //only in tree 2
+          square_color = "#7570b3";
+        }
+         if (in_tree1 && in_tree2) { //in both trees
+          square_color = "lightgrey";
+        }
+
+        edges[edges_index] = {"parent": {"mutation": total_mutations[i].mutation}, "child": {"mutation": total_mutations[j].mutation}, "color": square_color, "index": edges_index};
+        edges_index++;
+        
+      }
+    }
+
+  
+
+    return edges;
+
+  
+}
+
+function lookUpIndexEdgesParentChild(arr, obj) {
+  for (let i=0; i<arr.length; i++) {
+    
+    if ((JSON.stringify(arr[i].parent) === JSON.stringify(obj.parent)) && (JSON.stringify(arr[i].child) === JSON.stringify(obj.child))) {
+      return i;
+    }
+  }
+  return -1;
+}

@@ -21,7 +21,19 @@ def dist_main(distance_measure, filename_1, filename_2):
     g_1 = nx.DiGraph(nx.nx_pydot.read_dot(filename_1))
     g_2 = nx.DiGraph(nx.nx_pydot.read_dot(filename_2))
 
+    t1_bipartite_edges = [] 
+    t2_bipartite_edges = [] 
+    t1_mutations = list(utils.get_all_mutations(g_1))
+    t2_mutations = list(utils.get_all_mutations(g_2))
     if distance_measure == "parent_child":
+        # constructing the necessary input data for the tripartite graph
+        t1_pc_pairs = PC.get_parent_child_pairs(g_1)
+        t2_pc_pairs = PC.get_parent_child_pairs(g_2)
+        for edge in t1_pc_pairs: 
+          t1_bipartite_edges.append({"parent": edge[0], "child": edge[1]})
+        for edge in t2_pc_pairs: 
+          t2_bipartite_edges.append({"parent": edge[0], "child": edge[1]})
+        # getting the data to color the edges for the main visualization
         calculated_values = PC.get_contributions(g_1,g_2)
     elif distance_measure == "ancestor_descendant":
         calculated_values = AD.get_contributions(g_1,g_2)
@@ -32,6 +44,7 @@ def dist_main(distance_measure, filename_1, filename_2):
     else:
         print("Not a valid distance measure")
         exit(1)
+    print(t1_bipartite_edges)
 
     node_contribution_dict_1, node_contribution_dict_2, mutation_contribution_dict_1, mutation_contribution_dict_2, node_mutations_dict_1, node_mutations_dict_2, distance = calculated_values
     #Addes node contributions to tree structure
@@ -40,5 +53,5 @@ def dist_main(distance_measure, filename_1, filename_2):
     #Gets trees
     node_contribution_tree_1 = json_graph.tree_data(g_1, root=utils.get_root(g_1))
     node_contribution_tree_2 = json_graph.tree_data(g_2, root=utils.get_root(g_2))
-    return (node_contribution_tree_1, node_contribution_tree_2, mutation_contribution_dict_1, mutation_contribution_dict_2, node_mutations_dict_1, node_mutations_dict_2, distance)
+    return (node_contribution_tree_1, node_contribution_tree_2, mutation_contribution_dict_1, mutation_contribution_dict_2, node_mutations_dict_1, node_mutations_dict_2, distance, t1_mutations, t2_mutations, t1_bipartite_edges, t2_bipartite_edges)
 

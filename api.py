@@ -51,10 +51,10 @@ def calculation_contributions_and_node_mutation_relations(distance_measure):
   write_dot_tree_2_file(tree1_data, tree_1_write_location)
   write_dot_tree_2_file(tree2_data, tree_2_write_location)
 
-  node_contribution_dict_1, node_contribution_dict_2, mutation_contribution_dict_1, mutation_contribution_dict_2, node_mutations_dict_1, node_mutations_dict_2, distance = dist_meas_cont.dist_main(distance_measure, tree_1_write_location, tree_2_write_location)
+  node_contribution_dict_1, node_contribution_dict_2, mutation_contribution_dict_1, mutation_contribution_dict_2, node_mutations_dict_1, node_mutations_dict_2, distance, t1_mutations, t2_mutations, t1_bipartite_edges, t2_bipartite_edges = dist_meas_cont.dist_main(distance_measure, tree_1_write_location, tree_2_write_location)
   #Currently, node_mutations_dict_1 and node_mutations_dict_2 are being calculated but not passed to frontend. There might be a future use for such dictionaries though (line below would pass them along).
   #jsonObject = {"node_contribution_dict_1": node_contribution_dict_1, "node_contribution_dict_2": node_contribution_dict_2, "mutation_contribution_dict_1": mutation_contribution_dict_1, "mutation_contribution_dict_2": mutation_contribution_dict_2, "node_mutations_dict_1":node_mutations_dict_1, "node_mutations_dict_2":node_mutations_dict_2, "distance": distance}
-  jsonObject = {"node_contribution_dict_1": node_contribution_dict_1, "node_contribution_dict_2": node_contribution_dict_2, "mutation_contribution_dict_1": mutation_contribution_dict_1, "mutation_contribution_dict_2": mutation_contribution_dict_2, "distance": distance}
+  jsonObject = {"node_contribution_dict_1": node_contribution_dict_1, "node_contribution_dict_2": node_contribution_dict_2, "mutation_contribution_dict_1": mutation_contribution_dict_1, "mutation_contribution_dict_2": mutation_contribution_dict_2, "distance": distance, "t1_mutations": t1_mutations, "t2_mutations": t2_mutations, "t1_tripartite_edges": t1_bipartite_edges, "t2_tripartite_edges": t2_bipartite_edges}
   return(json.dumps(jsonObject))
 
 @api.route('/parent_child_distance')
