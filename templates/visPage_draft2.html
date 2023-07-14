@@ -94,23 +94,99 @@
                     4 -> 10;
                 }</textarea>
             </div>
+            <div>
+                    <input id="submit-trees-btn" type="submit" value="Save">
+            </div>
+            <div>
+                <table id="summary-statistics-table">
+                    <tr id="table-name">
+                        <th colspan="3">Summary Statistics</th>
+                    </tr>
+                    <tr>
+                        <th></th>
+                        <th>Tree 1</th>
+                        <th>Tree 2</th>
+                    </tr>
+                    <tr>
+                        <th>Branching Factor</th>
+                        <td id="t1-branching-factor"></td>
+                        <td id="t2-branching-factor"></td>
+                    </tr>
+                    <tr>
+                        <th>Height</th>
+                        <td id="t1-height"></td>
+                        <td id="t2-height"></td>
+                    </tr>
+                    <tr>
+                        <th>Number nodes</th>
+                        <td id="t1-number-nodes"></td>
+                        <td id="t2-number-nodes"></td>
+                    </tr>
+                    <tr>
+                        <th>Number mutations</th>
+                        <td id="t1-number-mutations"></td>
+                        <td id="t2-number-mutations"></td>
+                    </tr>
+                    <tr id="top_five">
+                        <th>Top 5 Contributions</th>
+                        <th id="t1_top5_summary_element"></th>
+                        <th id="t2_top5_summary_element"></th>
+                    </tr>
+                </table>
+          </div>
         </div>
         <div class="main-site-columns middle-column">
             <div class="tree1_visualization" id="tree1_visualization">
-                    <svg id="svg1" width="100%" height="auto" style="background-color: pink;"> 
+                <div class="file-upload-container">
+                  <label for="file1">
+                    <img class="upload-file-icon"style="cursor: pointer; width: 30px; height: auto;"src="{{ url_for('static', filename='upload.png') }}" alt="upload icon"> 
+                  </label>
+                  <input style="display: none;" class="custom-file-input" type="file" id="file1" name="file1">
+                </div>
+                    <svg id="svg1" width="100%" height="auto"> 
                     <g id="tree1_visualization_group" transform="translate(550,50)">
                         <g class="links"></g>
                         <g class="nodes"></g>
                     </g>
                     </svg>
             </div>
-            <div class="tree2_visualization"></div>
-            <div class="legend"></div>
+            <div class="tree2_visualization">
+                <div class="file-upload-container">
+                  <label for="file2">
+                    <img class="upload-file-icon"style="cursor: pointer; width: 30px; height: auto;"src="{{ url_for('static', filename='upload.png') }}" alt="upload icon"> 
+                  </label>
+                  <input style="display: none;" class="custom-file-input" type="file" id="file2" name="file2">
+                </div>
+                    <svg id="svg2" width="100%" height="auto"> 
+                    <g id="tree2_visualization_group" transform="translate(550,50)">
+                        <g class="links"></g>
+                        <g class="nodes"></g>
+                    </g>
+                    </svg>
+            </div>
+            <div class="legend-component">
+                <div class="legend-container" class="singleview" id="anyscale">
+                    <div id="distance-measure-label"></div>
+                    <div class="legend"></div>
+                    <div class="legend-labels-container">
+                      <div class="label", id="_colorLabel1">1</div>
+                      <div class="label", id="_colorLabel2">2</div>
+                      <div class="label", Id="_colorLabel3">3</div>
+                      <div class="label", id="_colorLabel4">4</div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="main-site-columns right-column"></div>
+        <div class="main-site-columns right-column">
+                <div id="tree-label-info-container">
+                    <div class="tree-label-info"><h3>Distinct Tree 1 Mutations</h3><p id="tree1-mutations"></p></div>
+                    <div class="tree-label-info"><h3>Shared Tree Mutations</h3><p id="shared-mutations"></p></div>
+                    <div class="tree-label-info"><h3>Distinct Tree 2 Mutations</h3><p id="tree2-mutations"></p></div>
+                </div>
+        </div>
     </div>
-    <script src="{{ url_for('static', filename='utils_draft2.js') }}"></script>
+    <script src="{{ url_for('static', filename='utils.js') }}"></script>
     <script src="{{ url_for('static', filename='set_functions.js') }}"></script>
-    <script src="{{ url_for('static', filename='dual_tree_draft2.js') }}"></script>
+    <script src="{{ url_for('static', filename='dual_tree.js') }}"></script>
 </body>
 </html>

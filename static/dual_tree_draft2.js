@@ -18,18 +18,43 @@ window.onload = () => {
 }
 
 function visualize_singleview(jsonData, distance_measure, dom_data) {
-  console.log("Got in here")
   var tree1_data = jsonData.node_contribution_dict_1;
   var tree2_data = jsonData.node_contribution_dict_2;
   var data = [tree1_data, tree2_data]
 
   var svg1 = d3.select('#svg1');
   svg1.call(d3.zoom()
-    .extent([[0, 0], [700, 700]])
-    .scaleExtent([1, 8])
+    .extent([[-700, -700], [700, 700]])
+    .scaleExtent([1, 20])
+    .on('zoom', zoomed)
   ); 
 
-  var svg_names = ['svg1'];
+  function zoomed({transform}) {
+    var svg1_nodes =  d3.select('#svg1 g.nodes')
+    var svg1_links =  d3.select('#svg1 g.links')
+    svg1_nodes
+      .attr("transform", transform);  
+    svg1_links
+      .attr("transform", transform);
+  };
+
+  var svg2 = d3.select('#svg2');
+  svg2.call(d3.zoom()
+    .extent([[-700, -700], [700, 700]])
+    .scaleExtent([1, 20])
+    .on('zoom', zoomed2)
+  ); 
+
+  function zoomed2({transform}) {
+    var svg1_nodes =  d3.select('#svg2 g.nodes')
+    var svg1_links =  d3.select('#svg2 g.links')
+    svg1_nodes
+      .attr("transform", transform);  
+    svg1_links
+      .attr("transform", transform);
+  };
+
+  var svg_names = ['svg1', 'svg2'];
   for (var i = 0; i < 2; i++) {
     var root = d3.hierarchy(data[i]);
     var tree = d3.tree()

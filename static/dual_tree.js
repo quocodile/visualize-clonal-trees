@@ -446,8 +446,8 @@ function submit_tree() {
   */
   var tree1Input = tree1TextArea.value;
   var tree2Input = tree2TextArea.value;
-  var tree1Type = inputTypeTree1.value;
-  var tree2Type = inputTypeTree2.value;
+  var tree1Type = "newick"//inputTypeTree1.value;
+  var tree2Type = "newick"//inputTypeTree2.value;
 
   var baseURL = get_API_base_URL();
   var url = baseURL + distanceMetric.value + "?";
