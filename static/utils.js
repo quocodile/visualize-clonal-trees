@@ -76,6 +76,7 @@ function get_top_n_mutations(tree_dict, n) {
       output_str = output_str.concat(", ")
     }
   }
+  console.log(output_str);
   return(output_str)
 }
 

@@ -18,6 +18,10 @@ window.onload = () => {
   submit_tree();
 }
 
+function initialize() {
+  document.body.onfocus = submit_tree();
+}
+
 document.getElementById('edit-tree1-icon').onclick = () => {
   var icon = document.getElementById('tree1-text')
   if (icon.style.display == "none") {
@@ -43,8 +47,9 @@ tree1file.addEventListener("change", function () {
     fr.readAsText(this.files[0]);
     fr.onload = function () {
       tree1TextArea.value = fr.result
+      submit_tree();
     };  
-  });
+});
 
 
 tree2file.addEventListener("change", function () {
@@ -52,6 +57,7 @@ tree2file.addEventListener("change", function () {
   fr.readAsText(this.files[0]);
   fr.onload = function () {
     tree2TextArea.value = fr.result
+    submit_tree();
   };  
 });
 

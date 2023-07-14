@@ -12,7 +12,6 @@ body {
 }
 .main-site-columns {
     margin: 0;
-    border: 1px solid black;
 }
 
 .site-container > .middle-column {
@@ -42,6 +41,23 @@ body {
 
 .site-container > .middle-column > .legend-component {
     width: 100%;
+}
+
+.site-container > .right-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.site-container > .right-column > div {
+  border-bottom: 1px solid black;
+}
+
+.site-container > .right-column > .tripartite-component {
+  height: 60%;
+}
+
+.site-container > .right-column > .heatmap-component {
+  height: 40%;
 }
 
 /* Pertaining to the singleview color legend */
@@ -105,21 +121,21 @@ body {
 #summary-statistics-table th{
   border: 1px solid black;
   border-collapse: collapse;
-  padding: 5px;
+  padding: 2px;
   text-align: left;
+  font-size: 15px;
 }
 #summary-statistics-table td{
   border: 1px solid black;
   border-collapse: collapse;
-  padding: 5px;
-}
-#table-name > th{
-  text-align: center;
-}
-
-td {
+  padding: 2px;
   font-weight: normal;
   font-family: Courier New;
+  font-size: 12px;
+}
+
+#table-name > th{
+  text-align: center;
 }
 
 /* Pertainining to the input management */
@@ -148,7 +164,7 @@ td {
 }
 
 #tree-label-info-container {
-    border: 1px solid black;
+    border-bottom: 1px solid black;
     width: 100%;
     height: auto;
     margin-bottom: 20px;
@@ -159,7 +175,7 @@ td {
 .tree-label-info {
     flex: 1;
     height: auto;
-    border: 1px solid black;
+    border-bottom: 1px solid black;
 }
 
 .tree-label-info > h3{

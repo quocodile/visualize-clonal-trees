@@ -51,10 +51,10 @@
                         <td id="t1-number-mutations"></td>
                         <td id="t2-number-mutations"></td>
                     </tr>
-                    <tr id="top_five">
+                    <tr>
                         <th>Top 5 Contributions</th>
-                        <th id="t1_top5_summary_element"></th>
-                        <th id="t2_top5_summary_element"></th>
+                        <td id="t1_top5_summary_element"></td>
+                        <td id="t2_top5_summary_element"></td>
                     </tr>
                 </table>
           </div>
@@ -89,7 +89,7 @@
                   <label for="file1">
                     <img class="upload-file-icon"style="cursor: pointer; width: 30px; height: auto;"src="{{ url_for('static', filename='upload.png') }}" alt="upload icon"> 
                   </label>
-                  <input style="display: none;" class="custom-file-input" type="file" id="file1" name="file1" onchange="submit_tree()">
+                  <input style="display: none;" class="custom-file-input" type="file" id="file1" name="file1">
                 </div>
                 <div>
                     <img class="edit-file-icon" id='edit-tree1-icon' style="cursor: pointer; width: 30px; height: auto;"src="{{ url_for('static', filename='pen.png') }}" alt="edit icon"> 
@@ -110,7 +110,7 @@
                   <label for="file2">
                     <img class="upload-file-icon"style="cursor: pointer; width: 30px; height: auto;"src="{{ url_for('static', filename='upload.png') }}" alt="upload icon"> 
                   </label>
-                  <input style="display: none;" class="custom-file-input" type="file" id="file2" name="file2" onchange="submit_tree()">
+                  <input style="display: none;" class="custom-file-input" type="file" id="file2" name="file2">
                 </div>
                 <div>
                     <img class="edit-file-icon" id='edit-tree2-icon' style="cursor: pointer; width: 30px; height: auto;"src="{{ url_for('static', filename='pen.png') }}" alt="edit icon"> 
@@ -128,6 +128,8 @@
             </div>
         </div>
         <div class="main-site-columns right-column">
+          <div class="tripartite-component"></div>
+          <div class="heatmap-component"></div>
         </div>
     </div>
     <script src="{{ url_for('static', filename='utils.js') }}"></script>
