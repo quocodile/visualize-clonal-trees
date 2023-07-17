@@ -482,7 +482,7 @@ function submit_tree() {
   .then(json_data => {
      visualize("single", null, null, json_data, distanceMetric.value, null);
      console.log("Here!");
-     create_tripartite(json_data.t1_mutations, json_data.t2_mutations, json_data.t1_tripartite_edges, json_data.t2_tripartite_edges);
+     createD3ParentChildTripartite(json_data.t1_mutations, json_data.t2_mutations, json_data.t1_tripartite_edges, json_data.t2_tripartite_edges);
      create_heatmap(json_data.t1_mutations, json_data.t2_mutations, json_data.t1_tripartite_edges, json_data.t2_tripartite_edges);
   });
 }
@@ -1118,4 +1118,137 @@ function lookUpIndexEdgesParentChild(arr, obj) {
     }
   }
   return -1;
+}
+
+// D3 implementation of the tripartite graph
+function createD3ParentChildTripartite(t1_muts, t2_muts, t1_tripartite_edges, t2_tripartite_edges){
+  var total_mutations = []
+  var mutation_objects = [] 
+  var t1_mutation_objects = [] 
+  var t2_mutation_objects = [] 
+  t1_muts.forEach(mut => {
+    mutation_objects.push({"mutation": mut})
+    t1_mutation_objects.push({"mutation": mut})
+    total_mutations.push(mut)
+  })
+  t2_muts.forEach(mut => {
+    mutation_objects.push({"mutation": mut})
+    t2_mutation_objects.push({"mutation": mut})
+    total_mutations.push(mut)
+  })
+  total_mutations = new Set(total_mutations)
+  var height = 450;
+  var width = 350;
+  var margin = { top: 50, left: 100, right: 50 }
+  var svg = d3.create('svg').style('width', width).style('height', height).style('background-color', 'white');
+
+  var mutList = total_mutations 
+  var pc_edges = calculateEdgeColorsTripartite(t1_tripartite_edges, t2_tripartite_edges)
+  
+  var mutationScale = d3.scalePoint().domain(mutList).range([margin.top, height - margin.top])
+  var yAxis = d3.axisLeft(mutationScale)
+
+  var xScale = d3.scalePoint().domain([0, 1, 2]).range([0 + margin.left, width - margin.right])
+  var xAxis = d3.axisBottom(xScale)
+
+  svg.append('g')
+  .attr('transform', `translate(${margin.left}, 0)`)
+  .call(yAxis)
+  .style('display', 'none')
+
+
+  svg.append('g')
+  .attr('transform', `translate(20, ${height - margin.top})`)
+  .call(xAxis)
+  .style('display', 'none')
+
+  svg.selectAll('.left-circles')
+  .data(mutation_objects)
+  .join('circle')
+  .classed('left-circles', true)
+  .attr('r', 5)
+  .attr('cx', xScale(0) + 20)
+  .attr('cy', d => mutationScale(d.mutation))
+  .attr('stroke', 'black')
+  .attr('fill', 'white')
+  .style('opacity', 0.5)
+
+  svg.selectAll('.left-labels')
+  .data(mutation_objects)
+  .join('text')
+  .classed('left-labels', true)
+  .attr('x', xScale(0) - 10)
+  .attr('y', d => mutationScale(d.mutation) + 5)
+  .text(d => d.mutation)
+  .style('font-size', '13px')
+  .attr('text-anchor', 'end')
+  .on('mouseover', function(event, data) {
+    d3.select(this).style('cursor', 'pointer')
+    d3.selectAll('.left-to-middle-edges')
+    .style('opacity', b => {
+      if (b.child === data.mutation) {
+        return 1;
+      }
+      return 0.2;
+    });
+    d3.selectAll('.middle-to-right-edges')
+    .style('opacity', b => {
+      if (b.parent === data.mutation) {
+        return 1;
+      }
+      return 0.2;
+    });
+    d3.selectAll('.middle-circles')
+    .attr('fill', b => {
+      if (b.mutation === data.mutation) {
+        return 'lightgray';
+      }
+      return 'white';
+    });
+  })
+      
+  
+  svg.selectAll('.middle-circles')
+  .data(mutation_objects)
+  .join('circle')
+  .classed('middle-circles', true)
+  .attr('r', 8)
+  .attr('cx', xScale(1) + 20)
+  .attr('cy', d => mutationScale(d.mutation))
+  .attr('stroke', 'black')
+  .attr('fill', 'white')
+
+  svg.selectAll('.right-circles')
+  .data(mutation_objects)
+  .join('circle')
+  .classed('right-circles', true)
+  .attr('r', 5)
+  .attr('cx', xScale(2) + 20)
+  .attr('cy', d => mutationScale(d.mutation))
+  .attr('stroke', 'black')
+  .attr('fill', 'white')
+  .attr('opacity', 0.5)
+
+  svg.selectAll('.left-to-middle-edges')
+  .data(pc_edges)
+  .join('line')
+  .classed('left-to-middle-edges', true)
+  .attr('x1', xScale(0) + 20)
+  .attr('x2', xScale(1) + 20)
+  .attr('y1', d => mutationScale(d.parent))
+  .attr('y2', d => mutationScale(d.child))
+  .attr('stroke', d => d.color)
+
+   svg.selectAll('middle-to-right-edges')
+  .data(pc_edges)
+  .join('line')
+  .classed('middle-to-right-edges', true)
+  .attr('x1', xScale(1) + 20)
+  .attr('x2', xScale(2) + 20)
+  .attr('y1', d => mutationScale(d.parent))
+  .attr('y2', d => mutationScale(d.child))
+  .attr('stroke', d => d.color) 
+
+  var div = document.querySelector(".tripartite-component");
+  div.append(svg.node())
 }
