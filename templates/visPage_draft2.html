@@ -19,11 +19,6 @@
 <body>
     <div class="site-container">
         <div class="main-site-columns left-column">
-	    <div id="tree-label-info-container">
-	        <div class="tree-label-info"><h3>Distinct Tree 1 Mutations</h3><p id="tree1-mutations"></p></div>
-	        <div class="tree-label-info"><h3>Shared Tree Mutations</h3><p id="shared-mutations"></p></div>
-	        <div class="tree-label-info"><h3>Distinct Tree 2 Mutations</h3><p id="tree2-mutations"></p></div>
-	    </div>
             <div>
                 <table id="summary-statistics-table">
                     <tr id="table-name">
@@ -85,6 +80,13 @@
                     </div>
                 </div>
             </div>
+        </div>
+        <div class="main-site-columns second-left-column">
+	    <div id="tree-label-info-container">
+	        <div id="tree1-mutations-container" class="tree-label-info"><h3>Distinct Tree 1 Mutations</h3><p id="tree1-mutations"></p></div>
+	        <div id="shared-mutations-container" class="tree-label-info"><h3>Shared Tree Mutations</h3><p id="shared-mutations"></p></div>
+	        <div id="tree2-mutations-container" class="tree-label-info"><h3>Distinct Tree 2 Mutations</h3><p id="tree2-mutations"></p></div>
+	    </div>
         </div>
         <div class="main-site-columns middle-column">
             <div class="tree1_visualization" id="tree1_visualization">

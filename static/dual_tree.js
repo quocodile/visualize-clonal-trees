@@ -313,9 +313,55 @@ function visualize_singleview(jsonData, distance_measure, dom_data) {
       items.style("cursor", "pointer");
       items.style("font-weight", "bold");
       items.style("font-size", "1.40em").style("transition", "font-size 0.5s");
+
+      tripartite_left_labels = d3.selectAll('.left-labels')
+      tripartite_edges_left_to_middle = d3.selectAll(".left-to-middle-edges")
+      tripartite_edges_middle_to_right = d3.selectAll(".middle-to-right-edges")
+
+      tripartite_left_labels
+      .attr('fill', d => {
+        if (d.mutation === i[0]) {
+          return 'red';
+        }
+        return 'black';
+      })
+      .style('font-size', d => {
+        if (d.mutation === i[0]) {
+          return '1.40em';
+        }
+        return '13px';
+      })
+      .style('font-weight', d => {
+        if (d.mutation === i[0]) {
+          return 'bold';
+        }
+        return 'normal';
+      })
+      tripartite_edges_left_to_middle.style('opacity', d => {
+        console.log(d);
+        if (d.child === i[0]) {
+          return 1;
+        }
+        return 0.1;
+      })
+      tripartite_edges_middle_to_right.style('opacity', d => {
+        console.log(d);
+        if (d.parent === i[0]) {
+          return 1;
+        }
+        return 0.1;
+      })
+
     }) // Here is the hover thing
     .on("mouseout", (d,i) => {
       
+      tripartite_left_labels = d3.selectAll('.left-labels')
+      tripartite_left_labels.attr('fill', 'black').style('font-size', '13px').style('font-weight', 'normal');
+      tripartite_edges_left_to_middle = d3.selectAll(".left-to-middle-edges")
+      tripartite_edges_left_to_middle.style('opacity', 0.1)
+      tripartite_edges_middle_to_right = d3.selectAll(".middle-to-right-edges")
+      tripartite_edges_middle_to_right.style('opacity', 0.1)
+
       var items = d3.selectAll("." + i[0] + "-mutation-hover-label");
       items.style("transition", "color 0.5s");
       items.style("color", mutation_table_color);
@@ -1137,8 +1183,9 @@ function createD3ParentChildTripartite(t1_muts, t2_muts, t1_tripartite_edges, t2
     total_mutations.push(mut)
   })
   total_mutations = new Set(total_mutations)
-  var height = 450;
-  var width = 350;
+  var div = document.querySelector(".tripartite-component");
+  var height = div.offsetHeight;
+  var width = div.offsetWidth;
   var margin = { top: 50, left: 100, right: 50 }
   var svg = d3.create('svg').style('width', width).style('height', height).style('background-color', 'white');
 
@@ -1171,7 +1218,7 @@ function createD3ParentChildTripartite(t1_muts, t2_muts, t1_tripartite_edges, t2
   .attr('cy', d => mutationScale(d.mutation))
   .attr('stroke', 'black')
   .attr('fill', 'white')
-  .style('opacity', 0.5)
+  .style('opacity', 0.2)
 
   svg.selectAll('.left-labels')
   .data(mutation_objects)
@@ -1181,6 +1228,8 @@ function createD3ParentChildTripartite(t1_muts, t2_muts, t1_tripartite_edges, t2
   .attr('y', d => mutationScale(d.mutation) + 5)
   .text(d => d.mutation)
   .style('font-size', '13px')
+  .style('font-family', 'monospace')
+  .style('transition', 'font-size 0.5s')
   .attr('text-anchor', 'end')
   .on('mouseover', function(event, data) {
     d3.select(this).style('cursor', 'pointer')
@@ -1189,14 +1238,14 @@ function createD3ParentChildTripartite(t1_muts, t2_muts, t1_tripartite_edges, t2
       if (b.child === data.mutation) {
         return 1;
       }
-      return 0.2;
+      return 0.1;
     });
     d3.selectAll('.middle-to-right-edges')
     .style('opacity', b => {
       if (b.parent === data.mutation) {
         return 1;
       }
-      return 0.2;
+      return 0.1;
     });
     d3.selectAll('.middle-circles')
     .attr('fill', b => {
@@ -1205,6 +1254,11 @@ function createD3ParentChildTripartite(t1_muts, t2_muts, t1_tripartite_edges, t2
       }
       return 'white';
     });
+  })
+  .on('mouseout', b => {
+    d3.selectAll('.left-to-middle-edges').style('opacity', 0.2);
+    d3.selectAll('.middle-to-right-edges').style('opacity', 0.2);
+    d3.selectAll('.middle-circles').attr('fill', 'white');
   })
       
   
@@ -1227,7 +1281,7 @@ function createD3ParentChildTripartite(t1_muts, t2_muts, t1_tripartite_edges, t2
   .attr('cy', d => mutationScale(d.mutation))
   .attr('stroke', 'black')
   .attr('fill', 'white')
-  .attr('opacity', 0.5)
+  .attr('opacity', 0.2)
 
   svg.selectAll('.left-to-middle-edges')
   .data(pc_edges)
@@ -1250,5 +1304,9 @@ function createD3ParentChildTripartite(t1_muts, t2_muts, t1_tripartite_edges, t2
   .attr('stroke', d => d.color) 
 
   var div = document.querySelector(".tripartite-component");
+  if (div.lastElementChild) {
+    console.log("Remove a child");
+    div.removeChild(div.lastElementChild);
+  }
   div.append(svg.node())
 }
