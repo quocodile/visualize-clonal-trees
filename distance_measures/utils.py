@@ -137,11 +137,12 @@ def fill_mutation_dict(g, node, dict):
             for anc in anc_set:
                 anc_mutations = get_mutations_from_node(g,anc)
 
-                if (anc == desc): #mutations are ancestral to themselves
-                    desc_mutation_ancestors = [desc_mutation] + desc_mutation_ancestors
-
-                if (anc != desc): 
-                    desc_mutation_ancestors = desc_mutation_ancestors + anc_mutations
+                #this would be needed if we wanted to not have mutations in a cluster be ancestral to each other
+                #if (anc == desc): #mutations are ancestral to themselves
+                    #desc_mutation_ancestors = [desc_mutation] + desc_mutation_ancestors
+                #if (anc != desc):
+                
+                desc_mutation_ancestors = desc_mutation_ancestors + anc_mutations
             mutation_dict[desc_mutation] = desc_mutation_ancestors
        
     return mutation_dict
