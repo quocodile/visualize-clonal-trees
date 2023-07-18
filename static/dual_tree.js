@@ -92,27 +92,11 @@ function visualize_singleview(jsonData, distance_measure, dom_data) {
   var spans = d3.selectAll("span");
 
   // Events for hovering over a mutation label
-  spans.on('mouseover', (d) => {
-      var items = d3.selectAll("." + d.target.className);
-      items.style("color",highlight_color);
-      items.style("fill", highlight_color);
-      items.style("transition", "color 0.5s");
-      items.style("cursor", "pointer");
-      items.style("font-weight", "999");
-      items.style("font-size", "1.40em").style("transition", "font-size 0.5s");
+  spans.on('mouseover', function(d) {
+      createLinkedHighlighting(this, d.target.innerHTML)
   })
-  spans.on('mouseout', (d) => {
-      var items = d3.selectAll("." + d.target.className);
-      items.style("transition", "color 0.5s");
-      items.style("color", mutation_table_color);
-      items.style("font-weight", "normal");
-      items.style("font-size", (d, index, items) => {
-        return items[index].localName == "span" ? "1em": "0.7em";
-      });
-      items.style("transition", "font-size 0.5s");
-      items.style("fill", (data, index, items) => {
-        return change_label_fill(data, items[index]);
-      });
+  spans.on('mouseout', function(d) {
+      removeLinkedHighlighting(this, d.target.innerHTML);
   })
 
   var t_max = Math.max(max_contribution(dom_data.t1_nodes), max_contribution(dom_data.t2_nodes));
@@ -305,119 +289,11 @@ function visualize_singleview(jsonData, distance_measure, dom_data) {
         return no_contribution_color;
       }
     })
-    .on("mouseover", (d, i) => {
-      var items = d3.selectAll("." + i[0] + "-mutation-hover-label");
-      items.style("color", highlight_color);
-      items.style("fill", highlight_color);
-      items.style("transition", "color 0.5s");
-      items.style("cursor", "pointer");
-      items.style("font-weight", "bold");
-      items.style("font-size", "1.40em").style("transition", "font-size 0.5s");
-
-      tripartite_left_labels = d3.selectAll('.left-labels')
-      tripartite_edges_left_to_middle = d3.selectAll(".left-to-middle-edges")
-      tripartite_edges_middle_to_right = d3.selectAll(".middle-to-right-edges")
-
-      tripartite_left_labels
-      .attr('fill', d => {
-        if (d.mutation === i[0]) {
-          return 'red';
-        }
-        return 'black';
-      })
-      .style('font-size', d => {
-        if (d.mutation === i[0]) {
-          return '1.40em';
-        }
-        return '13px';
-      })
-      .style('font-weight', d => {
-        if (d.mutation === i[0]) {
-          return 'bold';
-        }
-        return 'normal';
-      })
-      tripartite_edges_left_to_middle.style('opacity', d => {
-        console.log(d);
-        if (d.child === i[0]) {
-          return 1;
-        }
-        return 0.1;
-      })
-      tripartite_edges_middle_to_right.style('opacity', d => {
-        console.log(d);
-        if (d.parent === i[0]) {
-          return 1;
-        }
-        return 0.1;
-      })
-
+    .on("mouseover", function(event, data) {
+      createLinkedHighlighting(this, data[0]); 
     }) // Here is the hover thing
     .on("mouseout", (d,i) => {
-      
-      tripartite_left_labels = d3.selectAll('.left-labels')
-      tripartite_left_labels.attr('fill', 'black').style('font-size', '13px').style('font-weight', 'normal');
-      tripartite_edges_left_to_middle = d3.selectAll(".left-to-middle-edges")
-      tripartite_edges_left_to_middle.style('opacity', 0.1)
-      tripartite_edges_middle_to_right = d3.selectAll(".middle-to-right-edges")
-      tripartite_edges_middle_to_right.style('opacity', 0.1)
-
-      var items = d3.selectAll("." + i[0] + "-mutation-hover-label");
-      items.style("transition", "color 0.5s");
-      items.style("color", mutation_table_color);
-      items.style("font-weight", "normal");
-      items.style("font-size", (d, index, items) => {
-        if (items[index].localName == "span") {
-          return "1em"; 
-        }
-        return "0.7em";
-      }).style("transition", "font-size 0.5s");
-      items.style("fill", (d, index, items) => {
-        if (items[index].localName == "span") {
-          return mutation_table_color;
-        }
-        else {
-          return no_contribution_color;
-          var tree = items[index].ownerSVGElement.id;
-          var contribution = items[index].parentNode.__data__.data["contribution"];
-          if (tree == 'svg1') {
-            var mutation = items[index].__data__[0];
-            var contribution = d[3][mutation]["contribution"];
-            if (contribution > 0) {
-              return contribution_color;
-            }
-            else {
-              return no_contribution_color;
-            }
-          }
-          else {
-            var mutation = items[index].__data__[0];
-            var contribution = d[4][mutation]["contribution"];
-            if (contribution > 0) {
-              return contribution_color;
-            }
-            else {
-              return no_contribution_color;
-            }
-          }
-        }
-      });
-    })
-    .on("click", (d, i) => { 
-        var gene_url = "https://www.genecards.org/cgi-bin/carddisp.pl?gene=" + i[0];
-        window.open(gene_url, "_blank"); 
-    })
-    .attr("x", (d, i, j) => {
-      var index = i;
-      if (index % 2 == 0) {
-        return d[1] + 10;
-      }
-      return d[1] + (j[i-1].__data__[0].length + 10) * 3.5;
-    })
-    .attr("dy", (d, i, j) => {
-      if (i % 2 == 0) {
-        return "1.1em";
-      }
+      removeLinkedHighlighting(this, i[0])
     });
  
     if (svg_names[i] == "svg1") {
@@ -972,7 +848,6 @@ function create_tripartite(t1_muts, t2_muts, t1_tripartite_edges, t2_tripartite_
     mutation_objects.push({"mutation": mut})
     t2_mutation_objects.push({"mutation": mut})
   })
-  import("https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm").then((mod) => {
     
   const plot = mod.plot({
 	  width: 500,
@@ -997,7 +872,6 @@ function create_tripartite(t1_muts, t2_muts, t1_tripartite_edges, t2_tripartite_
     div.removeChild(div.lastElementChild);
   }
   div.append(plot);
-  });
 
 }
 
@@ -1056,6 +930,9 @@ function calculateEdgeColorsTripartite(arr1, arr2) {
 }
 
 function create_heatmap(t1_muts, t2_muts, t1_tripartite_edges, t2_tripartite_edges) {
+  var div = document.querySelector(".heatmap-component");
+  var height = div.offsetHeight;
+  var width = div.offsetWidth;
   var total_mutations = []
   mutation_objects = [] 
   t1_mutation_objects = [] 
@@ -1071,31 +948,76 @@ function create_heatmap(t1_muts, t2_muts, t1_tripartite_edges, t2_tripartite_edg
     total_mutations.push(mut)
   })
   total_mutations = new Set(total_mutations)
-  import("https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm").then((mod) => {
     
+  let margin = {top: 100, left: 100, right: 100, bottom: 100};
 
-  var plot = mod.plot({
-    padding: 0,
-    width: 400,
-    height: 400,
-    marginLeft: 100,
-    marginTop: 100,
-    x: {axis: "top", label: "Child",  tickRotate: 90, domain: d3.map(intersectOrdering(t1_muts, t2_muts, t1_mutation_objects, t2_mutation_objects), d => d.mutation)},
-    y: {label: "Parent", domain: d3.map(intersectOrdering(t1_muts, t2_muts, t1_mutation_objects, t2_mutation_objects), d => d.mutation)},
-    color: {type: "linear", scheme: "PiYG"},
-    marks: [
-      mod.cell(calculateEdgeColorsHeatMap(t1_tripartite_edges, t2_tripartite_edges, t1_muts, t2_muts, mutation_objects), {x: d => d.child.mutation, y: d => d.parent.mutation, fill: d => d.color, stroke: 'black', strokeWidth: 0.1, inset: 0.5})
+  let mutations_list = mutation_objects;
+    mutations_order = total_mutations;
+    edges1 = t1_tripartite_edges;
+    edges2 = t2_tripartite_edges;
+    mutations1 = t1_muts;
+    mutations2 = t2_muts;
 
-    ]
-  }) 
-  var div = document.querySelector(".heatmap-component");
+  console.log(mutations_order);
+  let square_side = (height - margin.bottom) / mutations_order.size;
+
+  let xScale = d3.scalePoint()
+    .domain(mutations_order)
+    .range([margin.left, width - margin.right])
+  
+  let yScale = d3.scalePoint()
+    .domain(mutations_order)
+    .range([margin.bottom, height - margin.top])
+  
+  let svg = d3.create('svg').attr('width', width).attr('height', height).style('margin', 'auto');
+
+  svg.selectAll('.link')
+    .data(calculateEdgeColorsHeatMap(edges1, edges2, mutations1, mutations2, mutations_list))
+    .join('rect')
+    .attr('x' , d => xScale(d.parent.mutation))
+    .attr('y', d => yScale(d.child.mutation))
+    .attr('stroke', "black")
+    .attr("stroke-width", 0.25)
+    .attr('width',  (width - margin.left - margin.right) / mutations_order.size + 'px')  
+    .attr('height', (height - margin.top - margin.bottom) / mutations_order.size + 'px')
+    .attr('fill', d => d.color)
+
+  
+  svg.selectAll('.heatmap-rowLabel')
+    .data(mutations_order)
+    .join('text')
+    .attr("x", 0)
+    .classed("heatmap-rowLabel", true)
+    .attr("y", d => yScale(d) + 15)
+    .text(d => d)
+    .style('font-size',  '13px')
+    .on('mouseover', function(event, data) {
+      console.log(data);
+      createLinkedHighlighting(this, data); 
+    })
+    .on('mouseout', function(event, data) {
+      console.log(data);
+      removeLinkedHighlighting(this, data); 
+    })
+
+  svg.selectAll('text.rotation')
+   .data(mutations_order)
+   .enter()
+   .append('text')
+   .text((d)=>d)
+   .classed('rotation', true)
+   .attr('fill', 'black')
+   .attr('transform', (d,i)=>{
+       return 'translate( '+(xScale(d) + (square_side/4)) +' , '+0+'),'+ 'rotate(90)';})
+   .attr('x', 0)
+   .attr('y',  0)
+   .style('font-size',  '13px')
+  
   if (div.lastElementChild) {
     console.log("Remove a child");
     div.removeChild(div.lastElementChild);
   }
-  div.append(plot);
-  });
-
+  div.append(svg.node());
 }
 function intersectOrdering(mutationsT1, mutationsT2, mutationObjectsT1, mutationObjectsT2) {
   var lst = []; //makes a copy of mutationsT1
@@ -1232,33 +1154,11 @@ function createD3ParentChildTripartite(t1_muts, t2_muts, t1_tripartite_edges, t2
   .style('transition', 'font-size 0.5s')
   .attr('text-anchor', 'end')
   .on('mouseover', function(event, data) {
-    d3.select(this).style('cursor', 'pointer')
-    d3.selectAll('.left-to-middle-edges')
-    .style('opacity', b => {
-      if (b.child === data.mutation) {
-        return 1;
-      }
-      return 0.1;
-    });
-    d3.selectAll('.middle-to-right-edges')
-    .style('opacity', b => {
-      if (b.parent === data.mutation) {
-        return 1;
-      }
-      return 0.1;
-    });
-    d3.selectAll('.middle-circles')
-    .attr('fill', b => {
-      if (b.mutation === data.mutation) {
-        return 'lightgray';
-      }
-      return 'white';
-    });
+    createLinkedHighlighting(this, data.mutation);
   })
   .on('mouseout', b => {
-    d3.selectAll('.left-to-middle-edges').style('opacity', 0.2);
-    d3.selectAll('.middle-to-right-edges').style('opacity', 0.2);
-    d3.selectAll('.middle-circles').attr('fill', 'white');
+    console.log(b.fromElement.__data__.mutation);
+    removeLinkedHighlighting(this, b.fromElement.__data__.mutation);
   })
       
   
@@ -1309,4 +1209,187 @@ function createD3ParentChildTripartite(t1_muts, t2_muts, t1_tripartite_edges, t2
     div.removeChild(div.lastElementChild);
   }
   div.append(svg.node())
+}
+
+
+function createLinkedHighlighting(clickedElement, mutation) {
+    d3.select(clickedElement).style('cursor', 'pointer')
+    d3.selectAll('.left-to-middle-edges')
+    .style('opacity', b => {
+      if (b.child === mutation) {
+        return 1;
+      }
+      return 0.1;
+    });
+    d3.selectAll('.middle-to-right-edges')
+    .style('opacity', b => {
+      if (b.parent === mutation) {
+        return 1;
+      }
+      return 0.1;
+    });
+    d3.selectAll('.middle-circles')
+    .attr('fill', b => {
+      if (b.mutation === mutation) {
+        return 'lightgray';
+      }
+      return 'white';
+    })
+    .attr('r', b => { 
+      if (b.mutation === mutation) {
+        return 12;
+      }
+      return 8;
+    });
+
+    var items = d3.selectAll("." + mutation + "-mutation-hover-label");
+    items.style("color",highlight_color);
+    items.style("fill", highlight_color);
+    items.style("transition", "color 0.5s");
+    items.style("cursor", "pointer");
+    items.style("font-weight", "999");
+    items.style("font-size", "1.40em").style("transition", "font-size 0.5s");
+
+    var tripartite_left_labels = d3.selectAll('.left-labels')
+    tripartite_left_labels
+    .attr('fill', d => {
+      if (d.mutation === mutation) {
+        return 'red';
+      }
+      return 'black';
+    })
+    .style('font-size', d => {
+      if (d.mutation === mutation) {
+        return '1.40em';
+      }
+      return '13px';
+    })
+    .style('font-weight', d => {
+      if (d.mutation === mutation) {
+        return 'bold';
+      }
+      return 'normal';
+    })
+
+    var heatmap_rowLabels = d3.selectAll('.heatmap-rowLabel');
+    heatmap_rowLabels
+    .attr('fill', d => {
+      if (d == mutation) {
+        return 'red';
+      }
+      return 'black';
+    })
+    .style('font-size', d => {
+      if (d == mutation) {
+        return '1em';
+      }
+      return '13px';
+    })
+
+
+}
+
+function removeLinkedHighlighting(clickedElement, mutation) {
+
+    d3.selectAll('.left-to-middle-edges').style('opacity', 0.2);
+    d3.selectAll('.middle-to-right-edges').style('opacity', 0.2);
+    d3.selectAll('.middle-circles').attr('fill', 'white');
+    d3.selectAll('.left-labels').attr('fill', 'black');
+    d3.selectAll('.left-labels').style('font-weight', 'normal');
+    d3.selectAll('.left-labels').style('font-size', '13px');
+
+    d3.selectAll('.heatmap-rowLabel').style('font-size', '13px').attr('fill', 'black');
+   
+
+    tripartite_middle_circles = d3.selectAll('.middle-circles')
+    tripartite_middle_circles.attr('fill', 'white').attr('r', 8)
+    var items = d3.selectAll("." + mutation + "-mutation-hover-label");
+    items.style("transition", "color 0.5s");
+    items.style("color", mutation_table_color);
+    items.style("font-weight", "normal");
+    items.style("font-size", (d, index, items) => {
+      if (items[index].localName == "span") {
+        return "1em"; 
+      }
+      return "0.7em";
+    }).style("transition", "font-size 0.5s");
+    items.style("fill", (d, index, items) => {
+      if (items[index].localName == "span") {
+        return mutation_table_color;
+      }
+      else {
+        return no_contribution_color;
+        var tree = items[index].ownerSVGElement.id;
+        var contribution = items[index].parentNode.__data__.data["contribution"];
+        if (tree == 'svg1') {
+          var mutation = items[index].__data__[0];
+          var contribution = d[3][mutation]["contribution"];
+          if (contribution > 0) {
+            return contribution_color;
+          }
+          else {
+            return no_contribution_color;
+          }
+        }
+        else {
+          var mutation = items[index].__data__[0];
+          var contribution = d[4][mutation]["contribution"];
+          if (contribution > 0) {
+            return contribution_color;
+          }
+          else {
+            return no_contribution_color;
+          }
+        }
+      }
+    });
+}
+
+function calculateEdgeColorsHeatMap(edges1, edges2, mutations1, mutations2, total_mutations) {
+    let edges = Array(),
+      edges_index = 0;
+  
+    for (let i = 0; i < total_mutations.length; i++) {
+      for (let j = 0; j < total_mutations.length; j++) {
+
+        let in_tree1 = 0,
+          in_tree2 = 0;
+
+        //current edge is in tree 1
+        if (lookUpIndexEdgesParentChild(edges1, {parent: total_mutations[i].mutation, child: total_mutations[j].mutation}) != -1) {
+          in_tree1 = 1;
+        }
+
+        //check if current edge is in tree 2
+        if (lookUpIndexEdgesParentChild(edges2, {parent: total_mutations[i].mutation, child: total_mutations[j].mutation}) != -1) {
+          in_tree2 = 1;
+        }
+
+        //decide what color depending on if it's: both, just tree1, just tree2, or neither
+
+        //default to neither (empty/white square)
+        
+        let square_color = "white";
+
+        if (in_tree1) { //only in tree 1
+          square_color = "#d95f02";
+        }
+        if (in_tree2) { //only in tree 2
+          square_color = "#7570b3";
+        }
+         if (in_tree1 && in_tree2) { //in both trees
+          square_color = "lightgrey";
+        }
+
+        edges[edges_index] = {"parent": {"mutation": total_mutations[i].mutation}, "child": {"mutation": total_mutations[j].mutation}, "color": square_color, "index": edges_index};
+        edges_index++;
+        
+      }
+    }
+
+  
+
+    return edges;
+
+  
 }
