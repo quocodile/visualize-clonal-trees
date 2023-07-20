@@ -29,7 +29,10 @@ def get_contributions(g_1, g_2):
     # calculate number_mutations for spreading out contribution
     mutation_set_1 = utils.get_all_mutations(g_1)
     mutation_set_2 = utils.get_all_mutations(g_2)
-    full_mutation_set = mutation_set_1.union(mutation_set_2)
+    full_mutation_set = mutation_set_1 
+    for mutation in mutation_set_2:
+      if mutation not in full_mutation_set:
+        full_mutation_set.append(mutation)
     number_mutations = len(full_mutation_set)
     normalizing_factor = (number_mutations*((number_mutations-1)/2)) # m choose 2
 
