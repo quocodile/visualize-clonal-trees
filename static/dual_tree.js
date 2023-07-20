@@ -289,12 +289,28 @@ function visualize_singleview(jsonData, distance_measure, dom_data) {
         return no_contribution_color;
       }
     })
+    .on("click", function(event, data) {
+      takeToGeneCards(data[0]);
+    })
     .on("mouseover", function(event, data) {
       createLinkedHighlighting(this, data[0]); 
     }) // Here is the hover thing
     .on("mouseout", (d,i) => {
       removeLinkedHighlighting(this, i[0])
+    })
+    .attr("x", (d, i, j) => {
+      var index = i;
+      if (index % 2 == 0) {
+        return d[1] + 10;
+      }
+      return d[1] + (j[i-1].__data__[0].length + 10) * 3.5;
+    })
+    .attr("dy", (d, i, j) => {
+      if (i % 2 == 0) {
+        return "1.1em";
+      }
     });
+
  
     if (svg_names[i] == "svg1") {
       t1_max_branching_factor = get_branching_factor(dom_data.t1_nodes);
@@ -585,6 +601,7 @@ function visualize_multiview(jsonData, distance_measure, svg1, svg2, scale, dom_
       }
     })
     .on("click", (d, i) => { 
+        console.log("Clicked!", i);
         var gene_url = "https://www.genecards.org/cgi-bin/carddisp.pl?gene=" + i;
         window.open(gene_url, "_blank"); 
     })
@@ -1724,4 +1741,9 @@ function lookUpIndexEdgesAncestorDescendant(arr, obj) {
     }
   }
   return -1;
+}
+
+function takeToGeneCards(mutation) {
+  var gene_url = "https://www.genecards.org/cgi-bin/carddisp.pl?gene=" + mutation;
+  window.open(gene_url, "_blank"); 
 }
