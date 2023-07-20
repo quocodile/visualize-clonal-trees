@@ -49,7 +49,10 @@ function max_contribution(nodes){
 }
 
 function min_contribution(nodes){
-  return d3.min(d3.filter(nodes, d => d.data.contribution != 0), function(d) { return d.data.contribution;});
+   
+  var min_cont = d3.min(nodes, function(d) { return d.data.contribution;});
+  // the case that all mutations contribute 0
+  return min_cont;
 }
 
 /**
@@ -189,10 +192,21 @@ function fill_tree_scale_color_legend(multi_tree_prefix = "", t_max, t_min, scal
   var label3 = document.getElementById(`${multi_tree_prefix}_colorLabel3`);
   var label4 = document.getElementById(`${multi_tree_prefix}_colorLabel4`);
 
-  label1.innerHTML = Math.round(t_min * 1000000) / 1000000;
-  label2.innerHTML = Math.round(((t_max + t_min)/ 3) * 1000000) / 1000000; 
-  label3.innerHTML = Math.round(((t_max + t_min) * 2 / 3) * 1000000) / 1000000; 
-  label4.innerHTML = Math.round(t_max * 1000000) / 1000000; 
+  console.log("Here is t_min", t_min);
+  if (t_min) {
+    console.log("Here");
+    label1.innerHTML = Math.round(t_min * 1000000) / 1000000;
+    label2.innerHTML = Math.round(((t_max + t_min)/ 3) * 1000000) / 1000000; 
+    label3.innerHTML = Math.round(((t_max + t_min) * 2 / 3) * 1000000) / 1000000; 
+    label4.innerHTML = Math.round(t_max * 1000000) / 1000000; 
+  }
+  else {
+    console.log("THere", t_max);
+    label1.innerHTML = Math.round(t_max * 1000000) / 1000000; 
+    label2.innerHTML = Math.round(t_max * 1000000) / 1000000; 
+    label3.innerHTML = Math.round(t_max * 1000000) / 1000000; 
+    label4.innerHTML = Math.round(t_max * 1000000) / 1000000; 
+  }
 
   console.log("Color", scale(t_min));
   document.querySelector(".legend").style.backgroundImage = `linear-gradient(to right, ${scale(t_min)}, ${scale(Number(label2.innerHTML))}, ${scale(Number(label3.innerHTML))}, ${scale(t_max)})`;

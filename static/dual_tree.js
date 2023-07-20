@@ -100,11 +100,28 @@ function visualize_singleview(jsonData, distance_measure, dom_data) {
   })
 
   var t_max = Math.max(max_contribution(dom_data.t1_nodes), max_contribution(dom_data.t2_nodes));
-  var t_min = Math.min(min_contribution(dom_data.t1_nodes), min_contribution(dom_data.t2_nodes));
+  var t1_min_cont = min_contribution(d3.filter(dom_data.t1_nodes, d => d.data.contribution != 0))
+  var t2_min_cont = min_contribution(d3.filter(dom_data.t2_nodes, d => d.data.contribution != 0));
+
+  console.log("min conts", t1_min_cont, t2_min_cont);
+  var t_min = 10000000000000000000000000;
+  if (t1_min_cont && t2_min_cont) {
+    t_min = Math.min(t1_min_cont, t2_min_cont);
+  }
+  else if (t1_min_cont) {
+    t_min = t1_min_cont;
+  }
+  else {
+    t_min = t2_min_cont;
+  }
+
+  
+  console.log("Yuh", dom_data.t1_nodes, dom_data.t2_nodes);
   var color_scale = d3.scaleLinear()
   .domain([t_min, t_max/3, 2*t_max/3, t_max])
   .range([coloring[0],coloring[1], coloring[2], coloring[3]])
   .interpolate(d3.interpolateHcl);
+  console.log("color scale", color_scale);
   fill_tree_scale_color_legend(multi_tree_prefix = "", t_max, t_min, color_scale);
 
   var svg1 = d3.select('#svg1');
