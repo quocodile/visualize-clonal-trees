@@ -36,6 +36,14 @@ def dist_main(distance_measure, filename_1, filename_2):
         # getting the data to color the edges for the main visualization
         calculated_values = PC.get_contributions(g_1,g_2)
     elif distance_measure == "ancestor_descendant":
+        # constructing the necessary input data for the tripartite graph
+        t1_ad_pairs = AD.get_anc_desc_pairs(g_1)
+        t2_ad_pairs = AD.get_anc_desc_pairs(g_2)
+        for edge in t1_ad_pairs: 
+          t1_bipartite_edges.append({"ancestor": edge[0], "descendant": edge[1]})
+        for edge in t2_ad_pairs: 
+          t2_bipartite_edges.append({"ancestor": edge[0], "descendant": edge[1]})
+        # getting the data to color the edges for the main visualization
         calculated_values = AD.get_contributions(g_1,g_2)
     elif distance_measure == "caset":
         calculated_values = CASet.get_contributions(g_1,g_2)

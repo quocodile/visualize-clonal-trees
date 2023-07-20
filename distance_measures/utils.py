@@ -105,9 +105,9 @@ def get_node_from_mutation(g, mutation):
 
 def get_all_mutations(g):
     ''' Returns all mutations in tree g, as set of strings '''
-    mutation_set = set()
+    mutation_set = [] 
     for node in g.nodes:
-        mutation_set = mutation_set.union(set(get_mutations_from_node(g, node)))
+        mutation_set = mutation_set + get_mutations_from_node(g, node)
     return mutation_set
 
 def fill_node_dict(g, node, node_anc_dict):

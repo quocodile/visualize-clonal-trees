@@ -402,10 +402,17 @@ function submit_tree() {
   fetch(url)
   .then(response => response.json())
   .then(json_data => {
+     console.log("distance measure", distanceMetric.value);
      visualize("single", null, null, json_data, distanceMetric.value, null);
      console.log("Here!");
-     createD3ParentChildTripartite(json_data.t1_mutations, json_data.t2_mutations, json_data.t1_tripartite_edges, json_data.t2_tripartite_edges);
-     create_heatmap(json_data.t1_mutations, json_data.t2_mutations, json_data.t1_tripartite_edges, json_data.t2_tripartite_edges);
+     if (distanceMetric.value === "parent_child_distance") {
+       createD3ParentChildTripartite(json_data.t1_mutations, json_data.t2_mutations, json_data.t1_tripartite_edges, json_data.t2_tripartite_edges);
+       create_heatmap(json_data.t1_mutations, json_data.t2_mutations, json_data.t1_tripartite_edges, json_data.t2_tripartite_edges);
+     }
+     else if (distanceMetric.value === "ancestor_descendant_distance") {
+       createD3AncestorDescendantTripartite(json_data.t1_mutations, json_data.t2_mutations, json_data.t1_tripartite_edges, json_data.t2_tripartite_edges);
+       createADheatmap(json_data.t1_mutations, json_data.t2_mutations, json_data.t1_tripartite_edges, json_data.t2_tripartite_edges);
+     }
   });
 }
 
@@ -1104,7 +1111,9 @@ function createD3ParentChildTripartite(t1_muts, t2_muts, t1_tripartite_edges, t2
     t2_mutation_objects.push({"mutation": mut})
     total_mutations.push(mut)
   })
+  console.log("total", total_mutations)
   total_mutations = new Set(total_mutations)
+  console.log("total", total_mutations)
   var div = document.querySelector(".tripartite-component");
   var height = div.offsetHeight;
   var width = div.offsetWidth;
@@ -1216,14 +1225,14 @@ function createLinkedHighlighting(clickedElement, mutation) {
     d3.select(clickedElement).style('cursor', 'pointer')
     d3.selectAll('.left-to-middle-edges')
     .style('opacity', b => {
-      if (b.child === mutation) {
+      if (b.child === mutation || b.descendant === mutation) {
         return 1;
       }
       return 0.1;
     });
     d3.selectAll('.middle-to-right-edges')
     .style('opacity', b => {
-      if (b.parent === mutation) {
+      if (b.parent === mutation || b.ancestor === mutation) {
         return 1;
       }
       return 0.1;
@@ -1386,10 +1395,333 @@ function calculateEdgeColorsHeatMap(edges1, edges2, mutations1, mutations2, tota
         
       }
     }
+    return edges;
+}
+
+
+function createD3AncestorDescendantTripartite(t1_muts, t2_muts, t1_tripartite_edges, t2_tripartite_edges) {
+  var total_mutations = []
+  var mutation_objects = [] 
+  var t1_mutation_objects = [] 
+  var t2_mutation_objects = [] 
+  t1_muts.forEach(mut => {
+    mutation_objects.push({"mutation": mut})
+    t1_mutation_objects.push({"mutation": mut})
+    total_mutations.push(mut)
+  })
+  t2_muts.forEach(mut => {
+    mutation_objects.push({"mutation": mut})
+    t2_mutation_objects.push({"mutation": mut})
+    total_mutations.push(mut)
+  })
+  total_mutations = new Set(total_mutations)
+  var div = document.querySelector(".tripartite-component");
+  var height = div.offsetHeight;
+  var width = div.offsetWidth;
+  var margin = { top: 50, left: 100, right: 50 }
+  var svg = d3.create('svg').style('width', width).style('height', height).style('background-color', 'white');
+
+  var mutList = total_mutations 
+  var ad_edges = calculateEdgeColorsAncestorDescendantTripartite(t1_tripartite_edges, t2_tripartite_edges)
+  
+  var mutationScale = d3.scalePoint().domain(mutList).range([margin.top, height - margin.top])
+  var yAxis = d3.axisLeft(mutationScale)
+
+  var xScale = d3.scalePoint().domain([0, 1, 2]).range([0 + margin.left, width - margin.right])
+  var xAxis = d3.axisBottom(xScale)
+
+  svg.append('g')
+  .attr('transform', `translate(${margin.left}, 0)`)
+  .call(yAxis)
+  .style('display', 'none')
+
+
+  svg.append('g')
+  .attr('transform', `translate(20, ${height - margin.top})`)
+  .call(xAxis)
+  .style('display', 'none')
+
+  svg.selectAll('.left-circles')
+  .data(mutation_objects)
+  .join('circle')
+  .classed('left-circles', true)
+  .attr('r', 5)
+  .attr('cx', xScale(0) + 20)
+  .attr('cy', d => mutationScale(d.mutation))
+  .attr('stroke', 'black')
+  .attr('fill', 'white')
+  .style('opacity', 0.2)
+
+  svg.selectAll('.left-labels')
+  .data(mutation_objects)
+  .join('text')
+  .classed('left-labels', true)
+  .attr('x', xScale(0) - 10)
+  .attr('y', d => mutationScale(d.mutation) + 5)
+  .text(d => d.mutation)
+  .style('font-size', '13px')
+  .style('font-family', 'monospace')
+  .style('transition', 'font-size 0.5s')
+  .attr('text-anchor', 'end')
+  .on('mouseover', function(event, data) {
+    createLinkedHighlighting(this, data.mutation);
+  })
+  .on('mouseout', b => {
+    console.log(b.fromElement.__data__.mutation);
+    removeLinkedHighlighting(this, b.fromElement.__data__.mutation);
+  })
+      
+  
+  svg.selectAll('.middle-circles')
+  .data(mutation_objects)
+  .join('circle')
+  .classed('middle-circles', true)
+  .attr('r', 8)
+  .attr('cx', xScale(1) + 20)
+  .attr('cy', d => mutationScale(d.mutation))
+  .attr('stroke', 'black')
+  .attr('fill', 'white')
+
+  svg.selectAll('.right-circles')
+  .data(mutation_objects)
+  .join('circle')
+  .classed('right-circles', true)
+  .attr('r', 5)
+  .attr('cx', xScale(2) + 20)
+  .attr('cy', d => mutationScale(d.mutation))
+  .attr('stroke', 'black')
+  .attr('fill', 'white')
+  .attr('opacity', 0.2)
+
+  svg.selectAll('.left-to-middle-edges')
+  .data(ad_edges)
+  .join('line')
+  .classed('left-to-middle-edges', true)
+  .attr('x1', xScale(0) + 20)
+  .attr('x2', xScale(1) + 20)
+  .attr('y1', d => mutationScale(d.ancestor))
+  .attr('y2', d => mutationScale(d.descendant))
+  .attr('stroke', d => d.color)
+
+   svg.selectAll('middle-to-right-edges')
+  .data(ad_edges)
+  .join('line')
+  .classed('middle-to-right-edges', true)
+  .attr('x1', xScale(1) + 20)
+  .attr('x2', xScale(2) + 20)
+  .attr('y1', d => mutationScale(d.ancestor))
+  .attr('y2', d => mutationScale(d.descendant))
+  .attr('stroke', d => d.color) 
+
+  var div = document.querySelector(".tripartite-component");
+  if (div.lastElementChild) {
+    console.log("Remove a child");
+    div.removeChild(div.lastElementChild);
+  }
+  div.append(svg.node())
+}
+//ANCESTOR DESCENDANT TRIPARTITE
+
+function calculateEdgeColorsAncestorDescendantTripartite(arr1, arr2) {
+    let edges = Array(),
+      edges_index = 0;
+    for (let i = 0; i < arr1.length; i++) {
+
+      let shared = 0;
+
+      for (let j = 0; j < arr2.length; j++) {
+    
+          if ((arr1[i].ancestor == arr2[j].ancestor) && (arr1[i].descendant == arr2[j].descendant)) {
+            //then the edge is shared
+            shared = 1;
+
+            //comment out if only the non-shared edges should be displayed
+            //edges[edges_index] = {"ancestor": arr1[i]["ancestor"], "descendant": arr1[i]["descendant"], "color": "lightgrey", "index": edges_index};
+            //edges_index++;
+          }
+        
+      }
+
+      if (!shared) {
+        edges[edges_index] = {"ancestor": arr1[i]["ancestor"], "descendant": arr1[i]["descendant"], "color": "#d95f02", "index": edges_index};
+        edges_index++;
+      }
+    }
+
+
+    //also check if there are any edges in arr2 that are not in arr1
+
+    for (let i = 0; i < arr2.length; i++) {
+
+      let shared = 0;
+
+      for (let j = 0; j < arr1.length; j++) {
+    
+          if ((arr2[i].ancestor == arr1[j].ancestor) && (arr2[i].descendant == arr1[j].descendant)) {
+            //then the edge is shared
+            shared = 1;
+          }
+      }
+
+      if (!shared) {
+        edges[edges_index] = {"ancestor": arr2[i]["ancestor"], "descendant": arr2[i]["descendant"], "color": "#7570b3", "index": edges_index};
+        edges_index++;
+      }
+    }
 
   
 
     return edges;
 
   
+}
+
+
+function createADheatmap(t1_muts, t2_muts, t1_tripartite_edges, t2_tripartite_edges) {
+  var div = document.querySelector(".heatmap-component");
+  var height = div.offsetHeight;
+  var width = div.offsetWidth;
+  var total_mutations = []
+  mutation_objects = [] 
+  t1_mutation_objects = [] 
+  t2_mutation_objects = [] 
+  t1_muts.forEach(mut => {
+    mutation_objects.push({"mutation": mut})
+    t1_mutation_objects.push({"mutation": mut})
+    total_mutations.push(mut)
+  })
+  t2_muts.forEach(mut => {
+    mutation_objects.push({"mutation": mut})
+    t2_mutation_objects.push({"mutation": mut})
+    total_mutations.push(mut)
+  })
+  total_mutations = new Set(total_mutations)
+    
+  let margin = {top: 100, left: 100, right: 100, bottom: 100};
+
+  let mutations_list = mutation_objects;
+    mutations_order = total_mutations;
+    edges1 = t1_tripartite_edges;
+    edges2 = t2_tripartite_edges;
+    mutations1 = t1_muts;
+    mutations2 = t2_muts;
+
+  console.log(mutations_order);
+  let square_side = (height - margin.bottom) / mutations_order.size;
+
+  let xScale = d3.scalePoint()
+    .domain(mutations_order)
+    .range([margin.left, width - margin.right])
+  
+  let yScale = d3.scalePoint()
+    .domain(mutations_order)
+    .range([margin.bottom, height - margin.top])
+  
+  let svg = d3.create('svg').attr('width', width).attr('height', height).style('margin', 'auto');
+
+  svg.selectAll('.link')
+    .data(calculateEdgeColorsHeatMapAncestorDescendant(edges1, edges2, mutations1, mutations2, mutations_list))
+    .join('rect')
+    .attr('x' , d => xScale(d.ancestor.mutation))
+    .attr('y', d => yScale(d.descendant.mutation))
+    .attr('stroke', "black")
+    .attr("stroke-width", 0.25)
+    .attr('width',  (width - margin.left - margin.right) / mutations_order.size + 'px')  
+    .attr('height', (height - margin.top - margin.bottom) / mutations_order.size + 'px')
+    .attr('fill', d => d.color)
+
+  
+  svg.selectAll('.heatmap-rowLabel')
+    .data(mutations_order)
+    .join('text')
+    .attr("x", 0)
+    .classed("heatmap-rowLabel", true)
+    .attr("y", d => yScale(d) + 15)
+    .text(d => d)
+    .style('font-size',  '13px')
+    .on('mouseover', function(event, data) {
+      console.log(data);
+      createLinkedHighlighting(this, data); 
+    })
+    .on('mouseout', function(event, data) {
+      console.log(data);
+      removeLinkedHighlighting(this, data); 
+    })
+
+  svg.selectAll('text.rotation')
+   .data(mutations_order)
+   .enter()
+   .append('text')
+   .text((d)=>d)
+   .classed('rotation', true)
+   .attr('fill', 'black')
+   .attr('transform', (d,i)=>{
+       return 'translate( '+(xScale(d) + (square_side/4)) +' , '+0+'),'+ 'rotate(90)';})
+   .attr('x', 0)
+   .attr('y',  0)
+   .style('font-size',  '13px')
+  
+  if (div.lastElementChild) {
+    console.log("Remove a child");
+    div.removeChild(div.lastElementChild);
+  }
+  div.append(svg.node());
+}
+
+function calculateEdgeColorsHeatMapAncestorDescendant(edges1, edges2, mutations1, mutations2, total_mutations) {
+    let edges = Array(),
+      edges_index = 0;
+  
+    for (let i = 0; i < total_mutations.length; i++) {
+      for (let j = 0; j < total_mutations.length; j++) {
+
+        let in_tree1 = 0,
+          in_tree2 = 0;
+
+        //current edge is in tree 1
+        if (lookUpIndexEdgesAncestorDescendant(edges1, {ancestor: total_mutations[i].mutation, descendant: total_mutations[j].mutation}) != -1) {
+          in_tree1 = 1;
+        }
+
+        //check if current edge is in tree 2
+        if (lookUpIndexEdgesAncestorDescendant(edges2, {ancestor: total_mutations[i].mutation, descendant: total_mutations[j].mutation}) != -1) {
+          in_tree2 = 1;
+        }
+
+        //decide what color depending on if it's: both, just tree1, just tree2, or neither
+
+        //default to neither (empty/white square)
+        let square_color = "white";
+
+        if (in_tree1) { //only in tree 1
+          square_color = "#d95f02";
+        }
+        if (in_tree2) { //only in tree 2
+          square_color = "#7570b3";
+        }
+         if (in_tree1 && in_tree2) { //in both trees
+          square_color = "lightgrey";
+        }
+
+        edges[edges_index] = {"ancestor": {"mutation": total_mutations[i].mutation}, "descendant": {"mutation": total_mutations[j].mutation}, "color": square_color, "index": edges_index};
+        edges_index++;
+        
+      }
+    }
+
+  
+
+    return edges;
+
+  
+}
+
+function lookUpIndexEdgesAncestorDescendant(arr, obj) {
+  for (let i=0; i<arr.length; i++) {
+    
+    if ((JSON.stringify(arr[i].ancestor) === JSON.stringify(obj.ancestor)) && (JSON.stringify(arr[i].descendant) === JSON.stringify(obj.descendant))) {
+      return i;
+    }
+  }
+  return -1;
 }
