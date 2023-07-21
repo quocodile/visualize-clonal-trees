@@ -282,7 +282,7 @@ function visualize_singleview(jsonData, distance_measure, dom_data) {
       return d[0] + ",";
     })
 
-    .style("font-size", "0.80em")
+    .style("font-size", "0.70em")
     .style("font-family", "Monospace")
     .style('font-weight', "normal") 
     .style("fill", (d) => {
@@ -438,12 +438,15 @@ function submit_tree() {
      console.log("distance measure", distanceMetric.value);
      visualize("single", null, null, json_data, distanceMetric.value, null);
      console.log("Here!");
+     var t1_muts = json_data.t1_mutations;
+     var t2_muts = json_data.t2_mutations;
+     var t1_tripartite_edges = json_data.t1_tripartite_edges;
+     var t2_tripartite_edges = json_data.t2_tripartite_edges;
+     createTripartite(distanceMetric.value, t1_muts, t2_muts, t1_tripartite_edges, t2_tripartite_edges)
      if (distanceMetric.value === "parent_child_distance") {
-       createD3ParentChildTripartite(json_data.t1_mutations, json_data.t2_mutations, json_data.t1_tripartite_edges, json_data.t2_tripartite_edges);
        create_heatmap(json_data.t1_mutations, json_data.t2_mutations, json_data.t1_tripartite_edges, json_data.t2_tripartite_edges);
      }
      else if (distanceMetric.value === "ancestor_descendant_distance") {
-       createD3AncestorDescendantTripartite(json_data.t1_mutations, json_data.t2_mutations, json_data.t1_tripartite_edges, json_data.t2_tripartite_edges);
        createADHeatmapV2(json_data.t1_mutations, json_data.t2_mutations, json_data.t1_tripartite_edges, json_data.t2_tripartite_edges);
      }
   });
@@ -599,7 +602,7 @@ function visualize_multiview(jsonData, distance_measure, svg1, svg2, scale, dom_
       return d[0] + ",";
     })
 
-    .style("font-size", "0.60em")
+    .style("font-size", "0.70em")
     .style("font-family", "Monospace")
     .style("fill", (d) => {
       var mutation_contribution_dict_1 = jsonData.mutation_contribution_dict_1; 
@@ -1129,132 +1132,6 @@ function lookUpIndexEdgesParentChild(arr, obj) {
   return -1;
 }
 
-// D3 implementation of the tripartite graph
-function createD3ParentChildTripartite(t1_muts, t2_muts, t1_tripartite_edges, t2_tripartite_edges){
-  var total_mutations = []
-  var mutation_objects = [] 
-  var t1_mutation_objects = [] 
-  var t2_mutation_objects = [] 
-  t1_muts.forEach(mut => {
-    mutation_objects.push({"mutation": mut})
-    t1_mutation_objects.push({"mutation": mut})
-    total_mutations.push(mut)
-  })
-  t2_muts.forEach(mut => {
-    mutation_objects.push({"mutation": mut})
-    t2_mutation_objects.push({"mutation": mut})
-    total_mutations.push(mut)
-  })
-  console.log("total", total_mutations)
-  total_mutations = new Set(total_mutations)
-  console.log("total", total_mutations)
-  var div = document.querySelector(".tripartite-component");
-  var height = div.offsetHeight;
-  var width = div.offsetWidth;
-  var margin = { top: 50, left: 100, right: 50 }
-  var svg = d3.create('svg').style('width', width).style('height', height).style('background-color', 'white');
-
-  var mutList = total_mutations 
-  var pc_edges = calculateEdgeColorsTripartite(t1_tripartite_edges, t2_tripartite_edges)
-  
-  var mutationScale = d3.scalePoint().domain(mutList).range([margin.top, height - margin.top])
-  var yAxis = d3.axisLeft(mutationScale)
-
-  var xScale = d3.scalePoint().domain([0, 1, 2]).range([0 + margin.left, width - margin.right])
-  var xAxis = d3.axisBottom(xScale)
-
-  svg.append('g')
-  .attr('transform', `translate(${margin.left}, 0)`)
-  .call(yAxis)
-  .style('display', 'none')
-
-
-  svg.append('g')
-  .attr('transform', `translate(20, ${height - margin.top})`)
-  .call(xAxis)
-  .style('display', 'none')
-
-  svg.selectAll('.left-circles')
-  .data(mutation_objects)
-  .join('circle')
-  .classed('left-circles', true)
-  .attr('r', 5)
-  .attr('cx', xScale(0) + 20)
-  .attr('cy', d => mutationScale(d.mutation))
-  .attr('stroke', 'black')
-  .attr('fill', 'white')
-  .style('opacity', 0.2)
-
-  svg.selectAll('.left-labels')
-  .data(mutation_objects)
-  .join('text')
-  .classed('left-labels', true)
-  .attr('x', xScale(0) - 10)
-  .attr('y', d => mutationScale(d.mutation) + 5)
-  .text(d => d.mutation)
-  .style('font-size', '13px')
-  .style('font-family', 'monospace')
-  .style('transition', 'font-size 0.5s')
-  .attr('text-anchor', 'end')
-  .on('mouseover', function(event, data) {
-    createLinkedHighlighting(this, data.mutation);
-  })
-  .on('mouseout', b => {
-    console.log(b.fromElement.__data__.mutation);
-    removeLinkedHighlighting(this, b.fromElement.__data__.mutation);
-  })
-      
-  
-  svg.selectAll('.middle-circles')
-  .data(mutation_objects)
-  .join('circle')
-  .classed('middle-circles', true)
-  .attr('r', 8)
-  .attr('cx', xScale(1) + 20)
-  .attr('cy', d => mutationScale(d.mutation))
-  .attr('stroke', 'black')
-  .attr('fill', 'white')
-
-  svg.selectAll('.right-circles')
-  .data(mutation_objects)
-  .join('circle')
-  .classed('right-circles', true)
-  .attr('r', 5)
-  .attr('cx', xScale(2) + 20)
-  .attr('cy', d => mutationScale(d.mutation))
-  .attr('stroke', 'black')
-  .attr('fill', 'white')
-  .attr('opacity', 0.2)
-
-  svg.selectAll('.left-to-middle-edges')
-  .data(pc_edges)
-  .join('line')
-  .classed('left-to-middle-edges', true)
-  .attr('x1', xScale(0) + 20)
-  .attr('x2', xScale(1) + 20)
-  .attr('y1', d => mutationScale(d.parent))
-  .attr('y2', d => mutationScale(d.child))
-  .attr('stroke', d => d.color)
-
-   svg.selectAll('middle-to-right-edges')
-  .data(pc_edges)
-  .join('line')
-  .classed('middle-to-right-edges', true)
-  .attr('x1', xScale(1) + 20)
-  .attr('x2', xScale(2) + 20)
-  .attr('y1', d => mutationScale(d.parent))
-  .attr('y2', d => mutationScale(d.child))
-  .attr('stroke', d => d.color) 
-
-  var div = document.querySelector(".tripartite-component");
-  if (div.lastElementChild) {
-    console.log("Remove a child");
-    div.removeChild(div.lastElementChild);
-  }
-  div.append(svg.node())
-}
-
-
 function createLinkedHighlighting(clickedElement, mutation) {
     d3.select(clickedElement).style('cursor', 'pointer')
     d3.selectAll('.left-to-middle-edges')
@@ -1329,6 +1206,7 @@ function createLinkedHighlighting(clickedElement, mutation) {
       return '13px';
     })
 
+    /*
     svg.selectAll('.links')
     .style('stroke-width', d => {
       if (d.ancestor.mutation == data || d.descendant.mutation == data) {
@@ -1342,7 +1220,7 @@ function createLinkedHighlighting(clickedElement, mutation) {
       else {
         return 0.2;
       }
-    })
+    })*/
 
 }
 
@@ -1366,7 +1244,7 @@ function removeLinkedHighlighting(clickedElement, mutation) {
     items.style("font-weight", "normal");
     items.style("font-size", (d, index, items) => {
       if (items[index].localName == "span") {
-        return "1em"; 
+        return "0.7em"; 
       }
       return "0.7em";
     }).style("transition", "font-size 0.5s");
@@ -1446,12 +1324,22 @@ function calculateEdgeColorsHeatMap(edges1, edges2, mutations1, mutations2, tota
     return edges;
 }
 
+// D3 implementation of the tripartite graph
+function createTripartite(distanceMeasure, t1_muts, t2_muts, t1_tripartite_edges, t2_tripartite_edges) {
 
-function createD3AncestorDescendantTripartite(t1_muts, t2_muts, t1_tripartite_edges, t2_tripartite_edges) {
-  var total_mutations = []
-  var mutation_objects = [] 
-  var t1_mutation_objects = [] 
-  var t2_mutation_objects = [] 
+  // some default values for styling  
+  var defaultOpacity = 0.2
+  var defaultStroke = "black";
+
+  var div = document.querySelector(".tripartite-component"); // div element that contains tripartite 
+  var height = div.offsetHeight;
+  var width = div.offsetWidth;
+
+  var total_mutations = [];
+  var mutation_objects = [];
+  var t1_mutation_objects = []; 
+  var t2_mutation_objects = []; 
+
   t1_muts.forEach(mut => {
     mutation_objects.push({"mutation": mut})
     t1_mutation_objects.push({"mutation": mut})
@@ -1462,32 +1350,60 @@ function createD3AncestorDescendantTripartite(t1_muts, t2_muts, t1_tripartite_ed
     t2_mutation_objects.push({"mutation": mut})
     total_mutations.push(mut)
   })
-  total_mutations = new Set(total_mutations)
-  var div = document.querySelector(".tripartite-component");
-  var height = div.offsetHeight;
-  var width = div.offsetWidth;
+  total_mutations = new Set(total_mutations) // removes duplicate mutations
+
+  var svg = d3.create('svg')
+              .style('width', width)
+              .style('height', height)
+              .style('background-color', 'white');
   var margin = { top: 50, left: 100, right: 50 }
-  var svg = d3.create('svg').style('width', width).style('height', height).style('background-color', 'white');
 
   var mutList = total_mutations 
-  var ad_edges = calculateEdgeColorsAncestorDescendantTripartite(t1_tripartite_edges, t2_tripartite_edges)
-  
+  var colored_edges = '' // deciding orange or purple edge
+  console.log(distanceMeasure);
+  if (distanceMeasure === "parent_child_distance") {
+    colored_edges = calculateEdgeColorsTripartite(t1_tripartite_edges, t2_tripartite_edges);
+  }
+  else if (distanceMeasure === "ancestor_descendant_distance") {
+    colored_edges = calculateEdgeColorsAncestorDescendantTripartite(t1_tripartite_edges, t2_tripartite_edges) 
+  }
+
+  // defines x and y axis of tripartite graph
   var mutationScale = d3.scalePoint().domain(mutList).range([margin.top, height - margin.top])
   var yAxis = d3.axisLeft(mutationScale)
 
   var xScale = d3.scalePoint().domain([0, 1, 2]).range([0 + margin.left, width - margin.right])
   var xAxis = d3.axisBottom(xScale)
 
+  // positioning the axes
   svg.append('g')
   .attr('transform', `translate(${margin.left}, 0)`)
   .call(yAxis)
   .style('display', 'none')
 
-
   svg.append('g')
   .attr('transform', `translate(20, ${height - margin.top})`)
   .call(xAxis)
   .style('display', 'none')
+
+  // creating tripartite graph
+  svg.selectAll('.left-labels')
+  .data(mutation_objects)
+  .join('text')
+  .classed('left-labels', true)
+  .attr('x', xScale(0) - 10)
+  .attr('y', d => mutationScale(d.mutation) + 5)
+  .attr('text-anchor', 'end')
+  .text(d => d.mutation)
+  .style('font-size', '13px')
+  .style('font-family', 'monospace')
+  .style('transition', 'font-size 0.5s')
+  .on('mouseover', function(event, data) {
+    createLinkedHighlighting(this, data.mutation);
+  })
+  .on('mouseout', function(event, data) {
+    removeLinkedHighlighting(this, data.mutation);
+  });
 
   svg.selectAll('.left-circles')
   .data(mutation_objects)
@@ -1496,30 +1412,10 @@ function createD3AncestorDescendantTripartite(t1_muts, t2_muts, t1_tripartite_ed
   .attr('r', 5)
   .attr('cx', xScale(0) + 20)
   .attr('cy', d => mutationScale(d.mutation))
-  .attr('stroke', 'black')
+  .attr('stroke', defaultStroke)
   .attr('fill', 'white')
-  .style('opacity', 0.2)
+  .style('opacity', defaultOpacity);
 
-  svg.selectAll('.left-labels')
-  .data(mutation_objects)
-  .join('text')
-  .classed('left-labels', true)
-  .attr('x', xScale(0) - 10)
-  .attr('y', d => mutationScale(d.mutation) + 5)
-  .text(d => d.mutation)
-  .style('font-size', '13px')
-  .style('font-family', 'monospace')
-  .style('transition', 'font-size 0.5s')
-  .attr('text-anchor', 'end')
-  .on('mouseover', function(event, data) {
-    createLinkedHighlighting(this, data.mutation);
-  })
-  .on('mouseout', b => {
-    console.log(b.fromElement.__data__.mutation);
-    removeLinkedHighlighting(this, b.fromElement.__data__.mutation);
-  })
-      
-  
   svg.selectAll('.middle-circles')
   .data(mutation_objects)
   .join('circle')
@@ -1527,7 +1423,7 @@ function createD3AncestorDescendantTripartite(t1_muts, t2_muts, t1_tripartite_ed
   .attr('r', 8)
   .attr('cx', xScale(1) + 20)
   .attr('cy', d => mutationScale(d.mutation))
-  .attr('stroke', 'black')
+  .attr('stroke', defaultStroke)
   .attr('fill', 'white')
 
   svg.selectAll('.right-circles')
@@ -1537,37 +1433,65 @@ function createD3AncestorDescendantTripartite(t1_muts, t2_muts, t1_tripartite_ed
   .attr('r', 5)
   .attr('cx', xScale(2) + 20)
   .attr('cy', d => mutationScale(d.mutation))
-  .attr('stroke', 'black')
+  .attr('stroke', defaultStroke)
   .attr('fill', 'white')
-  .attr('opacity', 0.2)
+  .attr('opacity', defaultOpacity)
 
   svg.selectAll('.left-to-middle-edges')
-  .data(ad_edges)
+  .data(colored_edges)
   .join('line')
   .classed('left-to-middle-edges', true)
   .attr('x1', xScale(0) + 20)
   .attr('x2', xScale(1) + 20)
-  .attr('y1', d => mutationScale(d.ancestor))
-  .attr('y2', d => mutationScale(d.descendant))
+  .attr('y1', d => {
+    if (distanceMeasure === "parent_child_distance") {
+      return mutationScale(d.parent)
+    }
+    else if (distanceMeasure === "ancestor_descendant_distance"){
+      return mutationScale(d.ancestor)
+    }
+  })
+  .attr('y2', d => {
+    if (distanceMeasure === "parent_child_distance") {
+      return mutationScale(d.child)
+    }
+    else if (distanceMeasure === "ancestor_descendant_distance"){
+      return mutationScale(d.descendant)
+    }
+  })
   .attr('stroke', d => d.color)
 
    svg.selectAll('middle-to-right-edges')
-  .data(ad_edges)
+  .data(colored_edges)
   .join('line')
   .classed('middle-to-right-edges', true)
   .attr('x1', xScale(1) + 20)
   .attr('x2', xScale(2) + 20)
-  .attr('y1', d => mutationScale(d.ancestor))
-  .attr('y2', d => mutationScale(d.descendant))
+  .attr('y1', d => {
+    if (distanceMeasure === "parent_child_distance") {
+      return mutationScale(d.parent)
+    }
+    else if (distanceMeasure === "ancestor_descendant_distance"){
+      return mutationScale(d.ancestor)
+    }
+  })
+  .attr('y2', d => {
+    if (distanceMeasure === "parent_child_distance") {
+      return mutationScale(d.child)
+    }
+    else if (distanceMeasure === "ancestor_descendant_distance"){
+      return mutationScale(d.descendant)
+    }
+  })
   .attr('stroke', d => d.color) 
 
-  var div = document.querySelector(".tripartite-component");
+  // adding the tripartite to the DOM
   if (div.lastElementChild) {
-    console.log("Remove a child");
     div.removeChild(div.lastElementChild);
   }
   div.append(svg.node())
 }
+
 //ANCESTOR DESCENDANT TRIPARTITE
 
 function calculateEdgeColorsAncestorDescendantTripartite(arr1, arr2) {

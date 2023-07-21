@@ -74,7 +74,8 @@ body {
   display: block;
   margin-top: -16px;
   height: 30px;
-  width: 150px;
+  min-width: 100px;
+  width: 80%;
 }
 }
 
@@ -85,7 +86,8 @@ body {
 
 .legend {
     height: 30px;
-    width: 250px;
+    min-width: 100px;
+    width: 80%;
     border: 1px solid black;
     margin-left: 20px;
 }
@@ -166,14 +168,17 @@ body {
 
 #tree1-mutations-container {
   box-shadow: inset 0 0 5px #d95f02; 
+  overflow: scroll;
 }
 
 #tree2-mutations-container {
   box-shadow: inset 0 0 5px #7570b3; 
+  overflow: scroll;
 }
 
 #shared-mutations-container {
   box-shadow: inset 0 0 5px black; 
+  overflow: scroll;
 }
 
 #tree-label-info-container {
@@ -208,6 +213,6 @@ p > div {
 
 p > div > span {
   font-family: Monospace;
-  font-size: 13px;
+  font-size: 0.7em;
 }
 
