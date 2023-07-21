@@ -1854,7 +1854,7 @@ function createADHeatmapV2(t1_muts, t2_muts, t1_tripartite_edges, t2_tripartite_
    .on('mouseover', function(event, data) { handleMouseOver(this, data)})
    .on('mouseout', function(event, data) { handleMouseOut(this, data)})
 
-  
+  /*  
   function handleMouseOver(hoveredElement, data) {
     d3.select(hoveredElement).style('cursor', 'pointer')
     svg.selectAll('.heatmap-links')
@@ -1921,6 +1921,7 @@ function createADHeatmapV2(t1_muts, t2_muts, t1_tripartite_edges, t2_tripartite_
     })
     .style("font-size", font_size);
   }
+  */
   
   if (div.lastElementChild) {
     console.log("Remove a child");
@@ -2001,8 +2002,15 @@ function createPCHeatmapV2(t1_muts, t2_muts, t1_tripartite_edges, t2_tripartite_
     .style("font-family", "Monospace")
     .style("font-size", font_size)
 
-  .on('mouseover', function(event, data) { handleMouseOver(this, data)})
-  .on('mouseout', function(event, data) { handleMouseOut(this, data)})
+  //.on('mouseover', function(event, data) { handleMouseOver(this, data)})
+  .on('mouseover', function(event, data) { 
+    //handleMouseOver(this, data)
+    createLinkedHighlighting(this, data);
+  })
+  .on('mouseout', function(event, data) { 
+    //handleMouseOut(this, data)
+    removeLinkedHighlighting(this, data);
+  })
 
   svg.selectAll('.columnLabel')
    .data(mutations_order)
@@ -2020,10 +2028,16 @@ function createPCHeatmapV2(t1_muts, t2_muts, t1_tripartite_edges, t2_tripartite_
      //gives angle of rotation and also specifies the point that is rotated around
      return 'rotate(-60,'+(xScale(d)+(square_side/2))+','+(margin.bottom - padding)+')'
    })
-   .on('mouseover', function(event, data) { handleMouseOver(this, data)})
-   .on('mouseout', function(event, data) { handleMouseOut(this, data)})
+   .on('mouseover', function(event, data) { 
+     //handleMouseOver(this, data)
+     createLinkedHighlighting(this, data);
+   })
+   .on('mouseout', function(event, data) { 
+     //handleMouseOut(this, data)
+     removeLinkedHighlighting(this, data);
+   })
 
-  
+  /* 
   function handleMouseOver(hoveredElement, data) {
     d3.select(hoveredElement).style('cursor', 'pointer')
     svg.selectAll('.heatmap-links')
@@ -2090,6 +2104,7 @@ function createPCHeatmapV2(t1_muts, t2_muts, t1_tripartite_edges, t2_tripartite_
     })
     .style("font-size", font_size);
   }
+  */
   
   if (div.lastElementChild) {
     console.log("Remove a child");
