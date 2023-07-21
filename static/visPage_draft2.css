@@ -130,7 +130,7 @@ body {
   border-collapse: collapse;
   padding: 2px;
   font-weight: normal;
-  font-family: Courier New;
+  font-family: Monospace;
   font-size: 12px;
 }
 
@@ -207,7 +207,7 @@ p > div {
 }
 
 p > div > span {
-  font-family: Courier New;
+  font-family: Monospace;
   font-size: 13px;
 }
 
