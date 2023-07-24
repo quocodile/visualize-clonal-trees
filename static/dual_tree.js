@@ -1163,7 +1163,13 @@ function createLinkedHighlighting(clickedElement, mutation) {
         return 12;
       }
       return 8;
-    });
+    })
+    .style('z-index', b => { 
+      if (b.mutation === mutation) {
+        return 1;
+      }
+      return 0;
+    })
 
     var items = d3.selectAll("." + mutation + "-mutation-hover-label");
     items.style("color",highlight_color);
@@ -1287,7 +1293,7 @@ function removeLinkedHighlighting(clickedElement, mutation) {
     items.style("font-weight", "normal");
     items.style("font-size", (d, index, items) => {
       if (items[index].localName == "span") {
-        return "0.7em"; 
+        return "13px"; 
       }
       return "0.7em";
     }).style("transition", "font-size 0.5s");
@@ -1832,8 +1838,8 @@ function createADHeatmapV2(t1_muts, t2_muts, t1_tripartite_edges, t2_tripartite_
     .style("font-family", "Monospace")
     .style("font-size", font_size)
 
-  .on('mouseover', function(event, data) { handleMouseOver(this, data)})
-  .on('mouseout', function(event, data) { handleMouseOut(this, data)})
+  .on('mouseover', function(event, data) { createLinkedHighlighting(this, data)})
+  .on('mouseout', function(event, data) { removeLinkedHighlighting(this, data)})
 
   svg.selectAll('.columnLabel')
    .data(mutations_order)
@@ -1851,77 +1857,9 @@ function createADHeatmapV2(t1_muts, t2_muts, t1_tripartite_edges, t2_tripartite_
      //gives angle of rotation and also specifies the point that is rotated around
      return 'rotate(-60,'+(xScale(d)+(square_side/2))+','+(margin.bottom - padding)+')'
    })
-   .on('mouseover', function(event, data) { handleMouseOver(this, data)})
-   .on('mouseout', function(event, data) { handleMouseOut(this, data)})
+   .on('mouseover', function(event, data) { createLinkedHighlighting(this, data)})
+   .on('mouseout', function(event, data) { removeLinkedHighlighting(this, data)})
 
-  
-  function handleMouseOver(hoveredElement, data) {
-    d3.select(hoveredElement).style('cursor', 'pointer')
-    svg.selectAll('.heatmap-links')
-    .style('stroke-width', d => {
-      if (d.ancestor.mutation == data || d.descendant.mutation == data) {
-        return 2;
-      }
-    })
-    .style('opacity', d => {
-      if (d.ancestor.mutation == data || d.descendant.mutation == data) {
-        return 1;
-      }
-      else {
-        return 0.2;
-      }
-    })
-
-    svg.selectAll('.rowLabel')
-    .attr('fill', d => {
-      if (d == data) {
-        return "red";
-      }
-    })
-    .style("font-size", d => {
-      if (d == data) {
-        return expanded;
-      }
-      return font_size;
-    })
-
-    svg.selectAll('.columnLabel')
-    .attr('fill', d => {
-      if (d == data) {
-        return "red";
-      }
-    })
-    .style("font-size", d => {
-      if (d == data) {
-        return expanded;
-      }
-      return font_size;
-    });
-  }
-  
-  function handleMouseOut(hoveredElement, data) {
-    d3.select(hoveredElement).style('cursor', 'pointer')
-    d3.selectAll('.heatmap-links')
-    .style('stroke-width', d => {
-      return "0.25";
-    })
-    .style('opacity', d => {
-      return 0.2;
-    })
-
-    svg.selectAll('.rowLabel')
-    .attr('fill', d => {
-      return "black";
-    })
-    .style("font-size", font_size)
-
-    svg.selectAll('.columnLabel')
-    .attr('fill', d => {
-      return "black";
-    })
-    .style("font-size", font_size);
-  }
-  
   if (div.lastElementChild) {
     console.log("Remove a child");
     div.removeChild(div.lastElementChild);
@@ -2001,8 +1939,8 @@ function createPCHeatmapV2(t1_muts, t2_muts, t1_tripartite_edges, t2_tripartite_
     .style("font-family", "Monospace")
     .style("font-size", font_size)
 
-  .on('mouseover', function(event, data) { handleMouseOver(this, data)})
-  .on('mouseout', function(event, data) { handleMouseOut(this, data)})
+  .on('mouseover', function(event, data) { createLinkedHighlighting(this, data)})
+  .on('mouseout', function(event, data) { removeLinkedHighlighting(this, data)})
 
   svg.selectAll('.columnLabel')
    .data(mutations_order)
@@ -2020,76 +1958,8 @@ function createPCHeatmapV2(t1_muts, t2_muts, t1_tripartite_edges, t2_tripartite_
      //gives angle of rotation and also specifies the point that is rotated around
      return 'rotate(-60,'+(xScale(d)+(square_side/2))+','+(margin.bottom - padding)+')'
    })
-   .on('mouseover', function(event, data) { handleMouseOver(this, data)})
-   .on('mouseout', function(event, data) { handleMouseOut(this, data)})
-
-  
-  function handleMouseOver(hoveredElement, data) {
-    d3.select(hoveredElement).style('cursor', 'pointer')
-    svg.selectAll('.heatmap-links')
-    .style('stroke-width', d => {
-      if (d.parent.mutation == data || d.child.mutation == data) {
-        return 2;
-      }
-    })
-    .style('opacity', d => {
-      if (d.parent.mutation == data || d.child.mutation == data) {
-        return 1;
-      }
-      else {
-        return 0.2;
-      }
-    })
-
-    svg.selectAll('.rowLabel')
-    .attr('fill', d => {
-      if (d == data) {
-        return "red";
-      }
-    })
-    .style("font-size", d => {
-      if (d == data) {
-        return expanded;
-      }
-      return font_size;
-    })
-
-    svg.selectAll('.columnLabel')
-    .attr('fill', d => {
-      if (d == data) {
-        return "red";
-      }
-    })
-    .style("font-size", d => {
-      if (d == data) {
-        return expanded;
-      }
-      return font_size;
-    });
-  }
-  
-  function handleMouseOut(hoveredElement, data) {
-    d3.select(hoveredElement).style('cursor', 'pointer')
-    d3.selectAll('.heatmap-links')
-    .style('stroke-width', d => {
-      return "0.25";
-    })
-    .style('opacity', d => {
-      return 0.2;
-    })
-
-    svg.selectAll('.rowLabel')
-    .attr('fill', d => {
-      return "black";
-    })
-    .style("font-size", font_size)
-
-    svg.selectAll('.columnLabel')
-    .attr('fill', d => {
-      return "black";
-    })
-    .style("font-size", font_size);
-  }
+   .on('mouseover', function(event, data) { createLinkedHighlighting(this, data)})
+   .on('mouseout', function(event, data) { removeLinkedHighlighting(this, data)})
   
   if (div.lastElementChild) {
     console.log("Remove a child");
