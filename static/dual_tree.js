@@ -345,17 +345,18 @@ function visualize_singleview(jsonData, distance_measure, dom_data) {
     switch (distanceMetric.value) {
       case "ancestor_descendant_distance":
         distanceMeasureLabel.innerHTML = distance;
-        node_colored_tree(d3_nodes, d3_links, t_max, t_min, color_scale, dom_data.t1_only_mutations, dom_data.t2_only_mutations);
+        node_colored_tree(d3_nodes, d3_links, t_max, t_min, color_scale, dom_data.t1_only_mutations, dom_data.t2_only_mutations, svg1, svg2);
         break;
       case "caset_distance": 
         distanceMeasureLabel.innerHTML = distance;
-        node_colored_tree(d3_nodes, d3_links, t_max, t_min, color_scale, dom_data.t1_only_mutations, dom_data.t2_only_mutations);
+        node_colored_tree(d3_nodes, d3_links, t_max, t_min, color_scale, dom_data.t1_only_mutations, dom_data.t2_only_mutations, svg1, svg2);
         break;
       case "disc_distance": 
         distanceMeasureLabel.innerHTML = distance;
-        node_colored_tree(d3_nodes, d3_links, t_max, t_min, color_scale, dom_data.t1_only_mutations, dom_data.t2_only_mutations);
+        node_colored_tree(d3_nodes, d3_links, t_max, t_min, color_scale, dom_data.t1_only_mutations, dom_data.t2_only_mutations, svg1, svg2);
         break;
       case "parent_child_distance": 
+        cons
         distanceMeasureLabel.innerHTML = distance;
         edge_colored_tree(d3_nodes, d3_links, t_max, t_min, color_scale, dom_data.t1_only_mutations, dom_data.t2_only_mutations);
         break;
