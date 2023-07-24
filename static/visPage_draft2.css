@@ -163,7 +163,7 @@ body {
 #tree1-mutations, #tree2-mutations, #shared-mutations {
     word-wrap: break-word;
     margin: 0;
-    font-size: 0.7em;
+    font-size: 16px;
 }
 
 #tree1-mutations-container {
@@ -211,8 +211,9 @@ p > div {
   padding-left: 10px;
 }
 
+/* The mutations in the venn diagram */
 p > div > span {
   font-family: Monospace;
-  font-size: 0.7em;
+  font-size: 13px;
 }
 
