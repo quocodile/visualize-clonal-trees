@@ -24,7 +24,7 @@ app = flask.Flask(__name__, static_folder='static', template_folder='templates')
 # This route delivers the user your site's home page.
 @app.route('/')
 def home():
-    return flask.render_template('visPage_draft2.html')
+    return flask.render_template('index.html')
 
 @app.route('/general_info')
 def general_info():

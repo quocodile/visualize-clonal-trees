@@ -1,7 +1,7 @@
 digraph Tree {
   1 [label="PTEN, TBX3, SETBP1, JAK1, CDH6, AKAP9"];
   2 [label="ECM2, NOTCH3, ARAF, NOTCH2, MAP2K7"];
-  3 [label="NTRK, AFF4"];
+  3 [label="NTRK1, AFF4"];
   4 [label="CHRM5"];
   5 [label="ECM1"];
   6 [label="CBX4"];
