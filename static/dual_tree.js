@@ -1938,7 +1938,6 @@ function createPCHeatmapV2(t1_muts, t2_muts, t1_tripartite_edges, t2_tripartite_
     .attr('alignment-baseline', 'middle')
     .style("font-family", "Monospace")
     .style("font-size", font_size)
-
   .on('mouseover', function(event, data) { createLinkedHighlighting(this, data)})
   .on('mouseout', function(event, data) { removeLinkedHighlighting(this, data)})
 
