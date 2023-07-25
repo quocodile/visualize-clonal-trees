@@ -344,19 +344,19 @@ function visualize_singleview(jsonData, distance_measure, dom_data) {
     // Set the coloring scheme based off of the distance measure
     switch (distanceMetric.value) {
       case "ancestor_descendant_distance":
-        distanceMeasureLabel.innerHTML = distance;
+        distanceMeasureLabel.innerHTML = distance.toExponential(3);
         node_colored_tree(d3_nodes, d3_links, t_max, t_min, color_scale, dom_data.t1_only_mutations, dom_data.t2_only_mutations, svg1, svg2);
         break;
       case "caset_distance": 
-        distanceMeasureLabel.innerHTML = distance;
+        distanceMeasureLabel.innerHTML = distance.toExponential(3);
         node_colored_tree(d3_nodes, d3_links, t_max, t_min, color_scale, dom_data.t1_only_mutations, dom_data.t2_only_mutations, svg1, svg2);
         break;
       case "disc_distance": 
-        distanceMeasureLabel.innerHTML = distance;
+        distanceMeasureLabel.innerHTML = distance.toExponential(3);
         node_colored_tree(d3_nodes, d3_links, t_max, t_min, color_scale, dom_data.t1_only_mutations, dom_data.t2_only_mutations, svg1, svg2);
         break;
       case "parent_child_distance": 
-        distanceMeasureLabel.innerHTML = distance;
+        distanceMeasureLabel.innerHTML = distance.toExponential(3);
         edge_colored_tree(d3_nodes, d3_links, t_max, t_min, color_scale, dom_data.t1_only_mutations, dom_data.t2_only_mutations);
         break;
       default:
@@ -767,6 +767,9 @@ function visualize(viewtype, svg1, svg2, json_data, distance_measure, scale) {
   var tree2_data = json_data.node_contribution_dict_2;
   var data = [tree1_data, tree2_data]
   var distance = json_data.distance;
+  console.log("DIST", distance)
+  distance = distance.toExponential();
+  console.log("DIST", distance)
 
   var t1_nodes = d3.hierarchy(tree1_data).descendants();
   var t1_mutations = getAllMutations(t1_nodes);

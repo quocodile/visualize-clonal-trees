@@ -187,29 +187,50 @@ function get_API_base_URL() {
  */
 function fill_tree_scale_color_legend(multi_tree_prefix = "", t_max, t_min, scale) {
   
-  var label1 = document.getElementById(`${multi_tree_prefix}_colorLabel1`);
-  var label2 = document.getElementById(`${multi_tree_prefix}_colorLabel2`);
-  var label3 = document.getElementById(`${multi_tree_prefix}_colorLabel3`);
-  var label4 = document.getElementById(`${multi_tree_prefix}_colorLabel4`);
-
-  console.log("Here is t_min", t_min);
+  var label1_lst = Array.from(document.getElementsByClassName(`${multi_tree_prefix}_colorLabel1`));
+  var label2_lst  = Array.from(document.getElementsByClassName(`${multi_tree_prefix}_colorLabel2`));
+  var label3_lst = Array.from(document.getElementsByClassName(`${multi_tree_prefix}_colorLabel3`));
+  var label4_lst = Array.from(document.getElementsByClassName(`${multi_tree_prefix}_colorLabel4`));
+  
+  
+  console.log(label1_lst);
   if (t_min) {
-    console.log("Here");
-    label1.innerHTML = Math.round(t_min * 1000000) / 1000000;
-    label2.innerHTML = Math.round(((t_max + t_min)/ 3) * 1000000) / 1000000; 
-    label3.innerHTML = Math.round(((t_max + t_min) * 2 / 3) * 1000000) / 1000000; 
-    label4.innerHTML = Math.round(t_max * 1000000) / 1000000; 
+    var label1_value = Math.round(t_min * 100) / 100;
+    label1_value.toExponential()
+    var label2_value = Math.round(((t_max + t_min)/ 3) * 100) / 100;
+    label2_value.toExponential()
+    var label3_value = Math.round(((t_max + t_min) * 2 / 3) * 100) / 100;
+    label3_value.toExponential()
+    var label4_value = Math.round(t_max * 100) / 100;
+    label4_value.toExponential()
+    label1_lst.forEach(label1 => {
+      console.log("Label1", label1)
+      label1.innerHTML = label1_value;
+      console.log("Label1", label1)
+    })
+    label2_lst.forEach(label2 => {
+      label2.innerHTML = label2_value; 
+    })
+    label3_lst.forEach(label3 => {
+      label3.innerHTML = label3_value; 
+    })
+    label4_lst.forEach(label4 => {
+      label4.innerHTML = label4_value; 
+    })
+    document.querySelectorAll(".legend").forEach(element => {
+      console.log("Legend", element);
+      element.style.backgroundImage = `linear-gradient(to right, ${scale(t_min)}, ${scale(Number(label2_value))}, ${scale(Number(label3_value))}, ${scale(t_max)})`;
+    })
   }
   else {
-    console.log("THere", t_max);
-    label1.innerHTML = Math.round(t_max * 1000000) / 1000000; 
-    label2.innerHTML = Math.round(t_max * 1000000) / 1000000; 
-    label3.innerHTML = Math.round(t_max * 1000000) / 1000000; 
-    label4.innerHTML = Math.round(t_max * 1000000) / 1000000; 
+    var labels = document.querySelectorAll('.label');
+    labels.forEach(label => {
+      label.innerHTML = Math.round(t_max * 1000000) / 1000000; 
+    })
+    // label2.innerHTML = Math.round(t_max * 1000000) / 1000000; 
+    // label3.innerHTML = Math.round(t_max * 1000000) / 1000000; 
+    // label4.innerHTML = Math.round(t_max * 1000000) / 1000000; 
   }
-
-  console.log("Color", scale(t_min));
-  document.querySelector(".legend").style.backgroundImage = `linear-gradient(to right, ${scale(t_min)}, ${scale(Number(label2.innerHTML))}, ${scale(Number(label3.innerHTML))}, ${scale(t_max)})`;
 }
 
 /**
