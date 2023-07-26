@@ -1441,13 +1441,12 @@ function createTripartite(distanceMeasure, t1_muts, t2_muts, t1_tripartite_edges
 
   var svg = d3.create('svg')
               .style('width', width)
-              .style('height', height)
+              .style('height', '99%')
               .style('background-color', 'white');
   var margin = { top: 50, left: 100, right: 50 }
 
   var mutList = total_mutations 
   var colored_edges = '' // deciding orange or purple edge
-  console.log(distanceMeasure);
   if (distanceMeasure === "parent_child_distance") {
     colored_edges = calculateEdgeColorsTripartite(t1_tripartite_edges, t2_tripartite_edges);
   }
@@ -1677,7 +1676,7 @@ function createADheatmap(t1_muts, t2_muts, t1_tripartite_edges, t2_tripartite_ed
     .domain(mutations_order)
     .range([margin.bottom, height - margin.top])
   
-  let svg = d3.create('svg').attr('width', width).attr('height', height).style('margin', 'auto');
+  let svg = d3.create('svg').attr('width', width).attr('height', '100%').style('margin', 'auto');
 
   svg.selectAll('.link')
     .data(calculateEdgeColorsHeatMapAncestorDescendant(edges1, edges2, mutations1, mutations2, mutations_list))
@@ -1829,7 +1828,7 @@ function createADHeatmapV2(t1_muts, t2_muts, t1_tripartite_edges, t2_tripartite_
     .domain(mutations_order)
     .range([margin.bottom, height - margin.top])
   
-  let svg = d3.create('svg').attr('width', width).attr('height', height);
+  let svg = d3.create('svg').attr('width', width).attr('height', '99%');
 
   svg.selectAll('.heatmap-links')
     .data(calculateEdgeColorsHeatMapAncestorDescendant(edges1, edges2, mutations1, mutations2, mutations_list))
@@ -1930,7 +1929,7 @@ function createPCHeatmapV2(t1_muts, t2_muts, t1_tripartite_edges, t2_tripartite_
     .domain(mutations_order)
     .range([margin.bottom, height - margin.top])
   
-  let svg = d3.create('svg').attr('width', width).attr('height', height);
+  let svg = d3.create('svg').attr('width', width).attr('height', '99%');
 
   svg.selectAll('.heatmap-links')
     .data(calculateEdgeColorsHeatMap(edges1, edges2, mutations1, mutations2, mutations_list))
