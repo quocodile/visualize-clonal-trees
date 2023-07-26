@@ -460,6 +460,26 @@ function submit_tree() {
      var t1_tripartite_edges = json_data.t1_tripartite_edges;
      var t2_tripartite_edges = json_data.t2_tripartite_edges;
      createTripartite(distanceMetric.value, t1_muts, t2_muts, t1_tripartite_edges, t2_tripartite_edges)
+     document.getElementById("intersection").onchange = () => {
+       console.log("Changed!");
+       createTripartite(distanceMetric.value, t1_muts, t2_muts, t1_tripartite_edges, t2_tripartite_edges)
+       if (distanceMetric.value == "parent_child_distance") {
+         createPCHeatmapV2(json_data.t1_mutations, json_data.t2_mutations, json_data.t1_tripartite_edges, json_data.t2_tripartite_edges);
+       }
+       else if (distanceMetric.value === "ancestor_descendant_distance") {
+         createADHeatmapV2(json_data.t1_mutations, json_data.t2_mutations, json_data.t1_tripartite_edges, json_data.t2_tripartite_edges);
+       }
+     }
+     document.getElementById("union").onchange = () => {
+       console.log("Changed!");
+       createTripartite(distanceMetric.value, t1_muts, t2_muts, t1_tripartite_edges, t2_tripartite_edges)
+       if (distanceMetric.value == "parent_child_distance") {
+         createPCHeatmapV2(json_data.t1_mutations, json_data.t2_mutations, json_data.t1_tripartite_edges, json_data.t2_tripartite_edges);
+       }
+       else if (distanceMetric.value === "ancestor_descendant_distance") {
+         createADHeatmapV2(json_data.t1_mutations, json_data.t2_mutations, json_data.t1_tripartite_edges, json_data.t2_tripartite_edges);
+       }
+     }
      if (distanceMetric.value === "parent_child_distance") {
        //create_heatmap(json_data.t1_mutations, json_data.t2_mutations, json_data.t1_tripartite_edges, json_data.t2_tripartite_edges);
        createPCHeatmapV2(json_data.t1_mutations, json_data.t2_mutations, json_data.t1_tripartite_edges, json_data.t2_tripartite_edges);
