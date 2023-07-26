@@ -1088,11 +1088,25 @@ function intersectOrdering(mutationsT1, mutationsT2, mutationObjectsT1, mutation
   var lst = []; //makes a copy of mutationsT1
   mutationObjectsT1.forEach(mutationObject => {
     if (mutationsT2.includes(mutationObject.mutation)) {
-      lst.push({mutation: mutationObject.mutation, cluster: mutationObject.cluster});
+      lst.push({mutation: mutationObject.mutation});
     }
   })
   return lst;
   
+}
+
+function unionOrdering(mutationsT1, mutationsT2) {
+  // makes a copy of t1 mutations
+  var lst = [];
+  mutationsT1.forEach(mutation => {
+    lst.push({mutation});
+  })
+  mutationsT2.forEach(mutation => {
+    if (!mutationsT1.includes(mutation)) {
+      lst.push({mutation});
+    }
+  })
+  return lst;
 }
 
 function calculateEdgeColorsHeatMap(edges1, edges2, mutations1, mutations2, total_mutations) {
@@ -1430,14 +1444,69 @@ function createTripartite(distanceMeasure, t1_muts, t2_muts, t1_tripartite_edges
   t1_muts.forEach(mut => {
     mutation_objects.push({"mutation": mut})
     t1_mutation_objects.push({"mutation": mut})
-    total_mutations.push(mut)
+    //total_mutations.push(mut)
   })
   t2_muts.forEach(mut => {
     mutation_objects.push({"mutation": mut})
     t2_mutation_objects.push({"mutation": mut})
-    total_mutations.push(mut)
+    //total_mutations.push(mut)
   })
-  total_mutations = new Set(total_mutations) // removes duplicate mutations
+  var mutation_ordering = document.getElementById("intersection");
+  if (mutation_ordering.checked) {
+    if (distanceMeasure === "parent_child_distance") {
+      console.log("Yuh");
+      total_mutations = d3.map(intersectOrdering(t1_muts, t2_muts, t1_mutation_objects, t2_mutation_objects), d => d.mutation); 
+      t1_tripartite_edges = d3.filter(t1_tripartite_edges, d => {
+        return total_mutations.includes(d.parent) && total_mutations.includes(d.child);
+      })
+      t2_tripartite_edges = d3.filter(t2_tripartite_edges, d => {
+        return total_mutations.includes(d.parent) && total_mutations.includes(d.child);
+      })
+    }
+    else if (distanceMeasure === "ancestor_descendant_distance"){
+      total_mutations = d3.map(intersectOrdering(t1_muts, t2_muts, t1_mutation_objects, t2_mutation_objects), d => d.mutation); 
+      console.log("Here", total_mutations)
+      t1_tripartite_edges = d3.filter(t1_tripartite_edges, d => {
+        return total_mutations.includes(d.ancestor) && total_mutations.includes(d.descendant);
+      })
+      t2_tripartite_edges = d3.filter(t2_tripartite_edges, d => {
+        return total_mutations.includes(d.ancestor) && total_mutations.includes(d.descendant);
+      })
+    }
+  }
+  else {
+    if (distanceMeasure === "parent_child_distance") {
+      total_mutations = d3.map(unionOrdering(t1_muts, t2_muts, t1_mutation_objects, t2_mutation_objects), d => d.mutation); 
+      t1_tripartite_edges = d3.filter(t1_tripartite_edges, d => {
+        return total_mutations.includes(d.parent) && total_mutations.includes(d.child);
+      })
+      t2_tripartite_edges = d3.filter(t2_tripartite_edges, d => {
+        return total_mutations.includes(d.parent) && total_mutations.includes(d.child);
+      })
+    }
+    else if (distanceMeasure === "ancestor_descendant_distance") {
+      total_mutations = d3.map(unionOrdering(t1_muts, t2_muts, t1_mutation_objects, t2_mutation_objects), d => d.mutation); 
+      t1_tripartite_edges = d3.filter(t1_tripartite_edges, d => {
+        return total_mutations.includes(d.ancestor) && total_mutations.includes(d.descendant);
+      })
+      t2_tripartite_edges = d3.filter(t2_tripartite_edges, d => {
+        return total_mutations.includes(d.ancestor) && total_mutations.includes(d.descendant);
+      })
+    }
+  }
+  total_mutations = Array.from(new Set(total_mutations)) // removes duplicate mutations
+  t1_mutation_objects = d3.filter(t1_mutation_objects, d => {
+    return total_mutations.includes(d.mutation)
+  })
+  t2_mutation_objects = d3.filter(t2_mutation_objects, d => {
+    return total_mutations.includes(d.mutation)
+  })
+  mutation_objects = d3.filter(mutation_objects, d => {
+    return total_mutations.includes(d.mutation)
+  })
+  console.log(total_mutations);
+  console.log(t1_tripartite_edges)
+  console.log(t2_tripartite_edges)
 
   var svg = d3.create('svg')
               .style('width', width)
@@ -1806,7 +1875,30 @@ function createADHeatmapV2(t1_muts, t2_muts, t1_tripartite_edges, t2_tripartite_
     t2_mutation_objects.push({"mutation": mut})
     total_mutations.push(mut)
   })
+  var mutation_ordering = document.getElementById("intersection");
+  if (mutation_ordering.checked) {
+      total_mutations = d3.map(intersectOrdering(t1_muts, t2_muts, t1_mutation_objects, t2_mutation_objects), d => d.mutation); 
+      console.log("Here", total_mutations)
+      t1_tripartite_edges = d3.filter(t1_tripartite_edges, d => {
+        return total_mutations.includes(d.ancestor) && total_mutations.includes(d.descendant);
+      })
+      t2_tripartite_edges = d3.filter(t2_tripartite_edges, d => {
+        return total_mutations.includes(d.ancestor) && total_mutations.includes(d.descendant);
+      })
+  }
+  else {
+      total_mutations = d3.map(unionOrdering(t1_muts, t2_muts, t1_mutation_objects, t2_mutation_objects), d => d.mutation); 
+      t1_tripartite_edges = d3.filter(t1_tripartite_edges, d => {
+        return total_mutations.includes(d.ancestor) && total_mutations.includes(d.descendant);
+      })
+      t2_tripartite_edges = d3.filter(t2_tripartite_edges, d => {
+        return total_mutations.includes(d.ancestor) && total_mutations.includes(d.descendant);
+      })
+  }
   total_mutations = new Set(total_mutations)
+  mutation_objects = d3.filter(mutation_objects, d => {
+    return total_mutations.has(d.mutation) 
+  })
 
   let mutations_list = mutation_objects,
     mutations_order = total_mutations,
@@ -1907,7 +1999,29 @@ function createPCHeatmapV2(t1_muts, t2_muts, t1_tripartite_edges, t2_tripartite_
     t2_mutation_objects.push({"mutation": mut})
     total_mutations.push(mut)
   })
-  total_mutations = new Set(total_mutations)
+  var mutation_ordering = document.getElementById("intersection");
+  if (mutation_ordering.checked) {
+      total_mutations = d3.map(intersectOrdering(t1_muts, t2_muts, t1_mutation_objects, t2_mutation_objects), d => d.mutation); 
+      t1_tripartite_edges = d3.filter(t1_tripartite_edges, d => {
+        return total_mutations.includes(d.parent) && total_mutations.includes(d.child);
+      })
+      t2_tripartite_edges = d3.filter(t2_tripartite_edges, d => {
+        return total_mutations.includes(d.parent) && total_mutations.includes(d.child);
+      })
+  }
+  else {
+      total_mutations = d3.map(unionOrdering(t1_muts, t2_muts, t1_mutation_objects, t2_mutation_objects), d => d.mutation); 
+      t1_tripartite_edges = d3.filter(t1_tripartite_edges, d => {
+        return total_mutations.includes(d.parent) && total_mutations.includes(d.child);
+      })
+      t2_tripartite_edges = d3.filter(t2_tripartite_edges, d => {
+        return total_mutations.includes(d.parent) && total_mutations.includes(d.child);
+      })
+  }
+  total_mutations = new Set(total_mutations);
+  mutation_objects = d3.filter(mutation_objects, d => {
+    return total_mutations.has(d.mutation) 
+  })
 
   let mutations_list = mutation_objects,
     mutations_order = total_mutations,
