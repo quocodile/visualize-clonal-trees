@@ -1187,7 +1187,8 @@ function lookUpIndexEdgesParentChild(arr, obj) {
   return -1;
 }
 
-function createLinkedHighlighting(clickedElement, mutation) {
+function createLinkedHighlighting(clickedElement, mutation, xScale=null, yScale=null){
+    
     let font_size = '0.90em',
         expanded = '1.2em';
     d3.select(clickedElement).style('cursor', 'pointer')
@@ -1269,6 +1270,7 @@ function createLinkedHighlighting(clickedElement, mutation) {
       return '13px';
     })
 
+    /*
     d3.selectAll('.heatmap-links')
     .style('stroke-width', d => {
       if ('ancestor' in d) {
@@ -1296,6 +1298,23 @@ function createLinkedHighlighting(clickedElement, mutation) {
         return 0.3
       }
     })
+    */
+
+    if ((xScale != null) && (yScale != null)) {
+
+	console.log("hello")
+    
+    d3.selectAll('.columnHighlight')
+    .attr('x', xScale(mutation))
+    .style('stroke-width', 2)
+    .style('opacity', 1)
+    
+    d3.selectAll('.rowHighlight')
+    .attr('y', yScale(mutation))
+    .style('stroke-width', 2)
+    .style('opacity', 1)
+
+    }
 
     d3.selectAll('.rowLabel')
     .attr('fill', d => {
@@ -1382,6 +1401,7 @@ function removeLinkedHighlighting(clickedElement, mutation) {
       }
     });
 
+    /*
     d3.selectAll('.heatmap-links')
     .style('stroke-width', d => {
       return "0.25";
@@ -1389,6 +1409,14 @@ function removeLinkedHighlighting(clickedElement, mutation) {
     .style('opacity', d => {
       return 0.2;
     })
+    */
+
+    d3.selectAll('.columnHighlight')
+    .style('opacity', 0);
+
+    d3.selectAll('.rowHighlight')
+    .style('opacity', 0);
+    
     d3.selectAll('.rowLabel')
     .attr('fill', d => {
       return "black";
@@ -1969,8 +1997,11 @@ function createADHeatmapV2(t1_muts, t2_muts, t1_tripartite_edges, t2_tripartite_
     .style("font-family", "Monospace")
     .style("font-size", font_size)
 
-  .on('mouseover', function(event, data) { createLinkedHighlighting(this, data)})
-  .on('mouseout', function(event, data) { removeLinkedHighlighting(this, data)})
+	.on('mouseover', function(event, data) {
+	    console.log("hi there")
+	    console.log(xScale(data))
+		return createLinkedHighlighting(this, data, xScale, yScale)})
+  .on('mouseout', function(event, data) { return removeLinkedHighlighting(this, data)})
 
   svg.selectAll('.columnLabel')
    .data(mutations_order)
@@ -1988,8 +2019,35 @@ function createADHeatmapV2(t1_muts, t2_muts, t1_tripartite_edges, t2_tripartite_
      //gives angle of rotation and also specifies the point that is rotated around
      return 'rotate(-60,'+(xScale(d)+(square_side/2))+','+(margin.bottom - padding)+')'
    })
-   .on('mouseover', function(event, data) { createLinkedHighlighting(this, data)})
+	    .on('mouseover', function(event, data) { createLinkedHighlighting(this, data, xScale, yScale)})
    .on('mouseout', function(event, data) { removeLinkedHighlighting(this, data)})
+
+
+    svg.selectAll('.columnHighlight')
+    .data(mutations_list)
+    .join('rect')
+    .classed('columnHighlight', true)
+    .attr('x' , d => margin.left)
+    .attr('y', d => yScale(d.mutation))
+    .attr('stroke', "black")
+    .attr("stroke-width", 1)
+    .attr('width', square_side)  
+    .attr('height', square_side)
+    .attr('fill', 'transparent')
+    .style('opacity', 0);
+
+  svg.selectAll('.rowHighlight')
+    .data(mutations_list)
+    .join('rect')
+    .classed('rowHighlight', true)
+    .attr('x' , d => xScale(d.mutation))
+    .attr('y', d => margin.bottom)
+    .attr('stroke', "black")
+    .attr("stroke-width", 1)
+    .attr('width', square_side)  
+    .attr('height', square_side)
+    .attr('fill', 'transparent')
+    .style('opacity', 0);
 
   if (div.lastElementChild) {
     console.log("Remove a child");
@@ -2078,7 +2136,6 @@ function createPCHeatmapV2(t1_muts, t2_muts, t1_tripartite_edges, t2_tripartite_
     .attr('fill', d => d.color)
     .style('opacity', 0.5);
 
-  
   svg.selectAll('.rowLabel')
     .data(mutations_order)
     .join('text')
@@ -2091,7 +2148,7 @@ function createPCHeatmapV2(t1_muts, t2_muts, t1_tripartite_edges, t2_tripartite_
     .attr('alignment-baseline', 'middle')
     .style("font-family", "Monospace")
     .style("font-size", font_size)
-  .on('mouseover', function(event, data) { createLinkedHighlighting(this, data)})
+	.on('mouseover', function(event, data) { createLinkedHighlighting(this, data, xScale, yScale)})
   .on('mouseout', function(event, data) { removeLinkedHighlighting(this, data)})
 
   svg.selectAll('.columnLabel')
@@ -2110,8 +2167,35 @@ function createPCHeatmapV2(t1_muts, t2_muts, t1_tripartite_edges, t2_tripartite_
      //gives angle of rotation and also specifies the point that is rotated around
      return 'rotate(-60,'+(xScale(d)+(square_side/2))+','+(margin.bottom - padding)+')'
    })
-   .on('mouseover', function(event, data) { createLinkedHighlighting(this, data)})
+	.on('mouseover', function(event, data) { createLinkedHighlighting(this, data, xScale, yScale)})
    .on('mouseout', function(event, data) { removeLinkedHighlighting(this, data)})
+
+
+     svg.selectAll('.columnHighlight')
+    .data(mutations_list)
+    .join('rect')
+    .classed('columnHighlight', true)
+    .attr('x' , d => margin.left)
+    .attr('y', d => yScale(d.mutation))
+    .attr('stroke', "black")
+    .attr("stroke-width", 1)
+    .attr('width', square_side)  
+    .attr('height', square_side)
+    .attr('fill', 'transparent')
+    .style('opacity', 0);
+
+  svg.selectAll('.rowHighlight')
+    .data(mutations_list)
+    .join('rect')
+    .classed('rowHighlight', true)
+    .attr('x' , d => xScale(d.mutation))
+    .attr('y', d => margin.bottom)
+    .attr('stroke', "black")
+    .attr("stroke-width", 1)
+    .attr('width', square_side)  
+    .attr('height', square_side)
+    .attr('fill', 'transparent')
+    .style('opacity', 0);
   
   if (div.lastElementChild) {
     console.log("Remove a child");
