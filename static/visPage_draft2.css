@@ -1,4 +1,9 @@
-body {
+html {
+  margin: 0;
+  padding: 0;
+} 
+
+body { 
     margin: 0;
     padding: 0;
     height: 100vh;
@@ -10,8 +15,10 @@ body {
     height: 100%;
     margin: 0;
 }
+
 .main-site-columns {
     margin: 0;
+    height: 100%;
 }
 
 .site-container > .middle-column {
@@ -22,7 +29,7 @@ body {
 
 .site-container > .middle-column > div {
     margin: 0;
-    border: 1px solid black;
+    /*border: 1px solid black;*/
 }
 
 .site-container > .middle-column > .tree1_visualization {
@@ -39,6 +46,25 @@ body {
     box-shadow: inset 0 0 10px #7570b3; 
 }
 
+
+.site-container > .right-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.site-container > .right-column > div {
+  /*border-bottom: 1px solid black;*/
+}
+
+.site-container > .right-column > .tripartite-component {
+  height: 60%;
+}
+
+.site-container > .right-column > .heatmap-component {
+  height: 40%;
+}
+
+/* Pertaining to the singleview color legend */
 .site-container > .middle-column > .tree1_visualization > .legend-component {
     position: absolute;
     bottom: 10px;
@@ -53,24 +79,6 @@ body {
     width: 280px;
 }
 
-.site-container > .right-column {
-  display: flex;
-  flex-direction: column;
-}
-
-.site-container > .right-column > div {
-  border-bottom: 1px solid black;
-}
-
-.site-container > .right-column > .tripartite-component {
-  height: 60%;
-}
-
-.site-container > .right-column > .heatmap-component {
-  height: 40%;
-}
-
-/* Pertaining to the singleview color legend */
 #distance-evaluation-container {
   display: flex;
   margin-left: 20px;
@@ -95,7 +103,7 @@ body {
 }
 
 .legend {
-    height: 30px;
+    height: 15px;
     min-width: 100px;
     width: 200px;
     border: 1px solid black;
@@ -192,10 +200,9 @@ body {
 }
 
 #tree-label-info-container {
-    border-bottom: 1px solid black;
+    /*border-bottom: 1px solid black;*/
     width: 100%;
     height: 100%;
-    margin-bottom: 20px;
     display: flex;
     flex-direction: column;
 }
@@ -203,7 +210,7 @@ body {
 .tree-label-info {
     flex: 1;
     height: auto;
-    border-bottom: 1px solid black;
+    /*border-bottom: 1px solid black;*/
     height: calc(100% / 3);
 }
 
