@@ -1167,7 +1167,7 @@ function lookUpIndexEdgesParentChild(arr, obj) {
   return -1;
 }
 
-function createLinkedHighlighting(clickedElement, mutation, xScale, yScale) {
+function createLinkedHighlighting(clickedElement, mutation, xScale=null, yScale=null){
     
     let font_size = '0.90em',
         expanded = '1.2em';
@@ -1280,7 +1280,7 @@ function createLinkedHighlighting(clickedElement, mutation, xScale, yScale) {
     })
     */
 
-    if ((xScale != 1) && (yScale != 1)) {
+    if ((xScale != null) && (yScale != null)) {
 
 	console.log("hello")
     
