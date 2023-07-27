@@ -1187,7 +1187,7 @@ function lookUpIndexEdgesParentChild(arr, obj) {
   return -1;
 }
 
-function createLinkedHighlighting(clickedElement, mutation, xScale=null, yScale=null){
+function createLinkedHighlighting(clickedElement, mutation){
     
     let font_size = '0.90em',
         expanded = '1.2em';
@@ -1255,6 +1255,7 @@ function createLinkedHighlighting(clickedElement, mutation, xScale=null, yScale=
       return 'normal';
     })
 
+    /*
     var heatmap_rowLabels = d3.selectAll('.heatmap-rowLabel');
     heatmap_rowLabels
     .attr('fill', d => {
@@ -1269,6 +1270,7 @@ function createLinkedHighlighting(clickedElement, mutation, xScale=null, yScale=
       }
       return '13px';
     })
+*/
 
     /*
     d3.selectAll('.heatmap-links')
@@ -1299,23 +1301,56 @@ function createLinkedHighlighting(clickedElement, mutation, xScale=null, yScale=
       }
     })
     */
-
+    
+/*
     if ((xScale != null) && (yScale != null)) {
 
-	console.log("hello")
+	//compute xScale(mutation) once
+
+	let xPos = xScale(mutation),
+	    yPos = yScale(mutation);
+	
     
     d3.selectAll('.columnHighlight')
-    .attr('x', xScale(mutation))
+    .attr('x', xPos)
     .style('stroke-width', 2)
     .style('opacity', 1)
     
     d3.selectAll('.rowHighlight')
-    .attr('y', yScale(mutation))
+    .attr('y', yPos)
     .style('stroke-width', 2)
     .style('opacity', 1)
 
-    }
 
+    }
+*/
+
+    let mutation_class = '.'+mutation+'-mutation-hover-label';
+
+    let highlight_row = '.'+mutation+'-highlight-row',
+	highlight_column = '.'+mutation+'-highlight-column';
+
+     d3.selectAll('.heatmap-links'+highlight_row)
+    //.attr('x', xScale(data))
+    //.style('opacity', 1)
+    .attr("stroke-width", 2)
+
+    d3.selectAll('.heatmap-links'+highlight_column)
+    //.attr('y', yScale(data))
+    //.style('opacity', 1)
+    .attr("stroke-width", 2)
+
+    d3.selectAll('.rowLabel'+mutation_class)
+    .attr('fill', 'red')
+    .style("font-size", expanded)
+
+    d3.selectAll('.columnLabel'+mutation_class)
+    .attr('fill', 'red')
+    .style("font-size", expanded)
+
+    //have a class for each mutation
+
+    /*
     d3.selectAll('.rowLabel')
     .attr('fill', d => {
       if (d == mutation) {
@@ -1341,6 +1376,7 @@ function createLinkedHighlighting(clickedElement, mutation, xScale=null, yScale=
       }
       return font_size;
     });
+*/
 
 }
 
@@ -1411,12 +1447,20 @@ function removeLinkedHighlighting(clickedElement, mutation) {
     })
     */
 
+    /*
     d3.selectAll('.columnHighlight')
     .style('opacity', 0);
 
     d3.selectAll('.rowHighlight')
-    .style('opacity', 0);
-    
+	.style('opacity', 0);
+*/
+
+    let mutation_class = '.'+mutation+'-mutation-hover-label';
+
+        let highlight_row = '.'+mutation+'-highlight-row',
+      highlight_column = '.'+mutation+'-highlight-column';
+
+    /*
     d3.selectAll('.rowLabel')
     .attr('fill', d => {
       return "black";
@@ -1426,6 +1470,23 @@ function removeLinkedHighlighting(clickedElement, mutation) {
     .attr('fill', d => {
       return "black";
     })
+    .style("font-size", font_size);
+    */
+
+    d3.selectAll('.heatmap-links'+highlight_row)
+    //.style('opacity', 0);
+    .attr("stroke-width", .25)
+
+    d3.selectAll('.heatmap-links'+highlight_column)
+    //.style('opacity', 0);
+    .attr("stroke-width", .25)
+
+    d3.selectAll('.rowLabel'+mutation_class)
+    .attr('fill', 'black')
+    .style("font-size", font_size)
+
+    d3.selectAll('.columnLabel'+mutation_class)
+    .attr('fill', "black")
     .style("font-size", font_size);
 }
 
@@ -1973,7 +2034,9 @@ function createADHeatmapV2(t1_muts, t2_muts, t1_tripartite_edges, t2_tripartite_
   svg.selectAll('.heatmap-links')
     .data(calculateEdgeColorsHeatMapAncestorDescendant(edges1, edges2, mutations1, mutations2, mutations_list))
     .join('rect')
-    .classed('heatmap-links', true)
+	//.classed('heatmap-links', true)
+        .attr('class', d => 'links '+d.ancestor.mutation+'-highlight-row '+d.descendant.mutation+'-highlight-column')
+
     .attr('x' , d => xScale(d.descendant.mutation))
     .attr('y', d => yScale(d.ancestor.mutation))
     .attr('stroke', "black")
@@ -1981,13 +2044,18 @@ function createADHeatmapV2(t1_muts, t2_muts, t1_tripartite_edges, t2_tripartite_
     .attr('width', (width - margin.left - margin.right) / mutations_order.size + 'px') 
     .attr('height', (height - margin.top - margin.bottom) / mutations_order.size + 'px')
     .attr('fill', d => d.color)
-    .style('opacity', 0.5);
+	.style('opacity', 0.5);
+
+
+    //can make something global so that xScale doesn't have to be passed and linked to svg
 
   
   svg.selectAll('.rowLabel')
     .data(mutations_order)
-    .join('text')
-    .classed('rowLabel', true)
+	.join('text')
+        .attr('class', d => 'rowLabel '+d+'-mutation-hover-label')
+
+    //.classed('rowLabel', true)
     .attr('fill', 'black')
     .attr("x", margin.left - padding)
     .attr("y", d => yScale(d) + (square_side/2))
@@ -1998,9 +2066,9 @@ function createADHeatmapV2(t1_muts, t2_muts, t1_tripartite_edges, t2_tripartite_
     .style("font-size", font_size)
 
 	.on('mouseover', function(event, data) {
-	    console.log("hi there")
-	    console.log(xScale(data))
-		return createLinkedHighlighting(this, data, xScale, yScale)})
+	    //console.log("hi there")
+	    //console.log(xScale(data))
+		return createLinkedHighlighting(this, data)})
   .on('mouseout', function(event, data) { return removeLinkedHighlighting(this, data)})
 
   svg.selectAll('.columnLabel')
@@ -2010,8 +2078,9 @@ function createADHeatmapV2(t1_muts, t2_muts, t1_tripartite_edges, t2_tripartite_
    .text(d=>d)
    .style("font-family", "Monospace")
    .style("font-size", font_size)
-   .classed('rotation', true)
-   .classed('columnLabel', true)
+	.classed('rotation', true)
+    .attr('class', d => 'columnLabel '+d+'-mutation-hover-label')
+   //.classed('columnLabel', true)
    .attr('fill', 'black')
    .attr('x', d => xScale(d) + (square_side/2))
    .attr('y', margin.bottom - padding)
@@ -2019,10 +2088,11 @@ function createADHeatmapV2(t1_muts, t2_muts, t1_tripartite_edges, t2_tripartite_
      //gives angle of rotation and also specifies the point that is rotated around
      return 'rotate(-60,'+(xScale(d)+(square_side/2))+','+(margin.bottom - padding)+')'
    })
-	    .on('mouseover', function(event, data) { createLinkedHighlighting(this, data, xScale, yScale)})
+	    .on('mouseover', function(event, data) { createLinkedHighlighting(this, data)})
    .on('mouseout', function(event, data) { removeLinkedHighlighting(this, data)})
 
 
+    /*
     svg.selectAll('.columnHighlight')
     .data(mutations_list)
     .join('rect')
@@ -2048,6 +2118,7 @@ function createADHeatmapV2(t1_muts, t2_muts, t1_tripartite_edges, t2_tripartite_
     .attr('height', square_side)
     .attr('fill', 'transparent')
     .style('opacity', 0);
+*/
 
   if (div.lastElementChild) {
     console.log("Remove a child");
@@ -2125,8 +2196,9 @@ function createPCHeatmapV2(t1_muts, t2_muts, t1_tripartite_edges, t2_tripartite_
 
   svg.selectAll('.heatmap-links')
     .data(calculateEdgeColorsHeatMap(edges1, edges2, mutations1, mutations2, mutations_list))
-    .join('rect')
-    .classed('heatmap-links', true)
+	.join('rect')
+    .attr('class', d => 'heatmap-links '+d.parent.mutation+'-highlight-row '+d.child.mutation+'-highlight-column')
+    //.classed('heatmap-links', true)
     .attr('x' , d => xScale(d.parent.mutation))
     .attr('y', d => yScale(d.child.mutation))
     .attr('stroke', "black")
@@ -2138,8 +2210,10 @@ function createPCHeatmapV2(t1_muts, t2_muts, t1_tripartite_edges, t2_tripartite_
 
   svg.selectAll('.rowLabel')
     .data(mutations_order)
-    .join('text')
-    .classed('rowLabel', true)
+	.join('text')
+       .attr('class', d => 'rowLabel '+d+'-mutation-hover-label')
+
+    //.classed('rowLabel', true)
     .attr('fill', 'black')
     .attr("x", margin.left - padding)
     .attr("y", d => yScale(d) + (square_side/2))
@@ -2148,7 +2222,7 @@ function createPCHeatmapV2(t1_muts, t2_muts, t1_tripartite_edges, t2_tripartite_
     .attr('alignment-baseline', 'middle')
     .style("font-family", "Monospace")
     .style("font-size", font_size)
-	.on('mouseover', function(event, data) { createLinkedHighlighting(this, data, xScale, yScale)})
+	.on('mouseover', function(event, data) { createLinkedHighlighting(this, data)})
   .on('mouseout', function(event, data) { removeLinkedHighlighting(this, data)})
 
   svg.selectAll('.columnLabel')
@@ -2158,8 +2232,10 @@ function createPCHeatmapV2(t1_muts, t2_muts, t1_tripartite_edges, t2_tripartite_
    .text(d=>d)
    .style("font-family", "Monospace")
    .style("font-size", font_size)
-   .classed('rotation', true)
-   .classed('columnLabel', true)
+	.classed('rotation', true)
+       .attr('class', d => 'columnLabel '+d+'-mutation-hover-label')
+
+   //.classed('columnLabel', true)
    .attr('fill', 'black')
    .attr('x', d => xScale(d) + (square_side/2))
    .attr('y', margin.bottom - padding)
@@ -2167,10 +2243,11 @@ function createPCHeatmapV2(t1_muts, t2_muts, t1_tripartite_edges, t2_tripartite_
      //gives angle of rotation and also specifies the point that is rotated around
      return 'rotate(-60,'+(xScale(d)+(square_side/2))+','+(margin.bottom - padding)+')'
    })
-	.on('mouseover', function(event, data) { createLinkedHighlighting(this, data, xScale, yScale)})
+	.on('mouseover', function(event, data) { createLinkedHighlighting(this, data)})
    .on('mouseout', function(event, data) { removeLinkedHighlighting(this, data)})
 
 
+    /*
      svg.selectAll('.columnHighlight')
     .data(mutations_list)
     .join('rect')
@@ -2183,7 +2260,9 @@ function createPCHeatmapV2(t1_muts, t2_muts, t1_tripartite_edges, t2_tripartite_
     .attr('height', square_side)
     .attr('fill', 'transparent')
     .style('opacity', 0);
+*/
 
+    /*
   svg.selectAll('.rowHighlight')
     .data(mutations_list)
     .join('rect')
@@ -2196,6 +2275,7 @@ function createPCHeatmapV2(t1_muts, t2_muts, t1_tripartite_edges, t2_tripartite_
     .attr('height', square_side)
     .attr('fill', 'transparent')
     .style('opacity', 0);
+*/
   
   if (div.lastElementChild) {
     console.log("Remove a child");
