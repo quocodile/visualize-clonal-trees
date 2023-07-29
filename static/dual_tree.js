@@ -2141,32 +2141,22 @@ function createPCHeatmapV2(t1_muts, t2_muts, t1_tripartite_edges, t2_tripartite_
   t1_muts.forEach(mut => {
     mutation_objects.push({"mutation": mut})
     t1_mutation_objects.push({"mutation": mut})
-    total_mutations.push(mut)
   })
   t2_muts.forEach(mut => {
     mutation_objects.push({"mutation": mut})
     t2_mutation_objects.push({"mutation": mut})
-    total_mutations.push(mut)
   })
   var mutation_ordering = document.getElementById("intersection");
   if (mutation_ordering.checked) {
       total_mutations = d3.map(intersectOrdering(t1_muts, t2_muts, t1_mutation_objects, t2_mutation_objects), d => d.mutation); 
-      t1_tripartite_edges = d3.filter(t1_tripartite_edges, d => {
-        return total_mutations.includes(d.parent) && total_mutations.includes(d.child);
-      })
-      t2_tripartite_edges = d3.filter(t2_tripartite_edges, d => {
-        return total_mutations.includes(d.parent) && total_mutations.includes(d.child);
-      })
   }
   else {
       total_mutations = d3.map(unionOrdering(t1_muts, t2_muts, t1_mutation_objects, t2_mutation_objects), d => d.mutation); 
-      t1_tripartite_edges = d3.filter(t1_tripartite_edges, d => {
-        return total_mutations.includes(d.parent) && total_mutations.includes(d.child);
-      })
-      t2_tripartite_edges = d3.filter(t2_tripartite_edges, d => {
-        return total_mutations.includes(d.parent) && total_mutations.includes(d.child);
-      })
   }
+
+  // filtering to match with the option of mutation intersect or union
+  t1_tripartite_edges = filterEdges("parent_child_distance", t1_tripartite_edges, total_mutations);
+  t2_tripartite_edges = filterEdges("parent_child_distance", t2_tripartite_edges, total_mutations);
   total_mutations = new Set(total_mutations);
   mutation_objects = d3.filter(mutation_objects, d => {
     return total_mutations.has(d.mutation) 
@@ -2282,4 +2272,64 @@ function createPCHeatmapV2(t1_muts, t2_muts, t1_tripartite_edges, t2_tripartite_
     div.removeChild(div.lastElementChild);
   }
   div.append(svg.node());
+}
+
+function filterEdges(distanceMeasure, edges, mutations) {
+  var filtered_edges = []
+  if (distanceMeasure === "parent_child_distance") {
+    filtered_edges = d3.filter(edges, edge => {
+      return mutations.includes(edge.parent) && mutations.includes(edge.child)
+    })
+  }
+  else if (distanceMeasure === "ancestor_descendant_distance") {
+    filtered_edges = d3.filter(edges, edge => {
+      return mutations.includes(edge.ancestor) && mutations.includes(edge.descendant)
+    })
+  }
+  return filtered_edges;
+}
+
+function createHeatmap(distanceMeasure, t1_muts, t2_muts, t1_edges, t2_edges) {
+  var div = document.querySelector(".heatmap-component");
+  var width = div.offsetWidth;
+  var height = div.offsetHeight;
+  var margin = {top: 50, left: 100, right: 50, bottom: 80};
+  var padding = 10;
+
+  // data that we'll feed into the visualization 
+  var mutation_objects = [] 
+  var t1_mutation_objects = [] 
+  var t2_mutation_objects = [] 
+  var total_mutations = [] 
+
+  // taking the union or the intersection of the mutation sets  
+  var intersection_radio_btn = document.getElementById("intersection");
+  if (intersection_radio_btn.checked) {
+      total_mutations = d3.map(intersectOrdering(t1_muts, t2_muts, t1_mutation_objects, t2_mutation_objects), d => d.mutation); 
+  }
+  else {
+      total_mutations = d3.map(unionOrdering(t1_muts, t2_muts, t1_mutation_objects, t2_mutation_objects), d => d.mutation); 
+  }
+
+  // initializing some dictionaries 
+  t1_muts.forEach(mut => {
+    t1_mutation_objects.push({"mutation": mut});
+  })
+  t2_muts.forEach(mut => {
+    t2_mutation_objects.push({"mutation": mut});
+  })
+  total_mutations.forEach(mut => {
+    mutation_objects.push({"mutation": mut});
+  })
+
+  // setting the mutations 
+  t1_filtered_edges = filterEdges(distanceMeasure, t1_edges, total_mutations)
+  t2_filtered_edges = filterEdges(distanceMeasure, t2_edges, total_mutations)
+
+  // some default values for styling
+  let font_size = '0.90em',
+      expanded = '1.2em';
+
+  // default dimensions of each square in the heatmap 
+  const square_side = (height - margin.bottom) / mutations_order.size;
 }
