@@ -137,6 +137,13 @@
           <div class="heatmap-component"></div>
         </div>
     </div>
+    <div id="modal-container" class="modal hidden">
+      <div id="manual-edit-modal">
+        <button class="btn-close">x</button>
+        <textarea class="text-box" style="display: block;" id="manual-edit-textarea" name="" cols="10" rows="10"></textarea>
+        <button class="btn-submit">Save</button>
+      </div> 
+    </div>
     <script src="{{ url_for('static', filename='utils.js') }}"></script>
     <script src="{{ url_for('static', filename='set_functions.js') }}"></script>
     <script src="{{ url_for('static', filename='dual_tree.js') }}"></script>
