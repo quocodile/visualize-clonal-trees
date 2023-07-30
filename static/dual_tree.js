@@ -65,6 +65,29 @@ tree2file.addEventListener("change", function () {
 
 function visualize_singleview(jsonData, distance_measure, dom_data) {
 
+  // distance measure explanation
+  var explanationContainer = document.getElementById("distance-explanation");
+  var explanation = explanationContainer.querySelector("p");
+  var linkToPaper = document.createElement('p');
+
+  // the explanations
+  var explanations = {
+    "parent_child_distance": "The parent-child distance measure sums the number of parent-child pairs that are present in one tree but not the other. In our implementation, every unique parent-child pair contributes 1 to an edge between two nodes.",
+    "ancestor_descendant_distance": "The ancestor-descendant distance measure sums the number of ancestor-descendant pairs that are present in one tree but not the other. In our implementation, each unique ancestor-descendant pair contributes 1 to the node. The contribution of each node is determined by the number of contributing ancestor-descendant pairs it appears in." 
+  } 
+
+  if (distance_measure === "parent_child_distance") {
+    explanation.innerHTML = explanations.parent_child_distance;
+    // linkToPaper.innerHTML = "The original paper is linked <a href='https://dl.acm.org/doi/abs/10.1145/3233547.3233584' target='_blank'>here</a>." 
+    // explanationContainer.append(linkToPaper);
+  }
+  else if (distance_measure === "ancestor_descendant_distance") {
+    explanation.innerHTML = explanations.ancestor_descendant_distance;
+    // linkToPaper.innerHTML = "The original paper is linked <a href='https://dl.acm.org/doi/abs/10.1145/3233547.3233584' target='_blank'>here</a>." 
+    // explanationContainer.append(linkToPaper);
+  }
+  
+
   dom_data.shared_mutations.sort().forEach(mutation => {
     dom_data.shared_label.innerHTML +=  
       `<div><span class="${mutation}-mutation-hover-label">${mutation}</span></div>`;
