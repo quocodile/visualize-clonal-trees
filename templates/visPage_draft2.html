@@ -10,10 +10,10 @@
     <script src="https://cdn.jsdelivr.net/npm/d3-selection@3"></script>
     <script src="https://cdn.jsdelivr.net/npm/d3-drag@3"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://unpkg.com/textures@1.2.0/dist/textures.js"></script>
     <script type="module">
       import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6/+esm";
     </script>
-
     <title>Document</title>
 </head>
 <body>
@@ -71,14 +71,10 @@
 			    </div>
 			    <div id="distance-measure-label"></div>
                     </div>
-                    <div class="legend"></div>
-                    <div class="legend-labels-container">
-                      <div class="label", id="_colorLabel1">1</div>
-                      <div class="label", id="_colorLabel2">2</div>
-                      <div class="label", Id="_colorLabel3">3</div>
-                      <div class="label", id="_colorLabel4">4</div>
-                    </div>
                 </div>
+            </div>
+            <div class="distance-explanation" id="distance-explanation">
+            <p></p>
             </div>
         </div>
         <div class="main-site-columns second-left-column">
@@ -103,12 +99,23 @@
 		      </textarea>
                     </div>
                 </div>
-                    <svg id="svg1" width="100%" height="auto"> 
+                    <svg id="svg1" width="100%" height="99%"> 
                     <g id="tree1_visualization_group" transform="translate(550,30)">
                         <g class="links"></g>
                         <g class="nodes"></g>
                     </g>
                     </svg>
+                <div class="legend-component">
+                    <div class="legend-container" class="singleview" id="anyscale">
+                        <div class="legend"></div>
+                        <div class="legend-labels-container">
+                          <div class="label _colorLabel1" class="_colorLabel1">1</div>
+                          <div class="label _colorLabel2">2</div>
+                          <div class="label _colorLabel3">3</div>
+                          <div class="label _colorLabel4">4</div>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="tree2_visualization">
                 <div class="file-upload-container">
@@ -124,15 +131,38 @@
 			</textarea>
 		    </div>
                 </div>
-                    <svg id="svg2" width="100%" height="auto"> 
-                    <g id="tree2_visualization_group" transform="translate(550,30)">
-                        <g class="links"></g>
-                        <g class="nodes"></g>
-                    </g>
-                    </svg>
+                <svg id="svg2" width="100%" height="99%"> 
+                <g id="tree2_visualization_group" transform="translate(550,30)">
+                    <g class="links"></g>
+                    <g class="nodes"></g>
+                </g>
+                </svg>
+                <div class="legend-component">
+                    <div class="legend-container" class="singleview" id="anyscale">
+                        <div class="legend"></div>
+                        <div class="legend-labels-container">
+                          <div class="label _colorLabel1">1</div>
+                          <div class="label _colorLabel2">2</div>
+                          <div class="label _colorLabel3">3</div>
+                          <div class="label _colorLabel4">4</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="main-site-columns right-column">
+          <div class="intersection-union-option">
+            <div>
+              <div>
+                <input type="radio" id="intersection" name="intersection-union" value="intersection" checked>
+                <label for="intersection-union-option">Intersection</label>
+              </div>
+              <div>
+                <input type="radio" id="union" name="intersection-union" value="union">
+                <label for="intersection-union-option">Union</label>
+              </div>
+            </div>
+          </div>
           <div class="tripartite-component"></div>
           <div class="heatmap-component"></div>
         </div>
