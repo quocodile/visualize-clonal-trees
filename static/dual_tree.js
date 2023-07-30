@@ -1,6 +1,6 @@
 
-var tree1TextArea = document.querySelector("#tree1-text");
-var tree2TextArea = document.querySelector("#tree2-text");
+var tree1TextArea = document.querySelector("#t1-manual-edit-textarea");
+var tree2TextArea = document.querySelector("#t2-manual-edit-textarea");
 var tree1file = document.getElementById("file1");
 var tree2file = document.getElementById("file2");
 var inputTypeTree1 = document.getElementById("input-type-tree1");
@@ -20,28 +20,24 @@ window.onload = () => {
   submit_tree();
 }
 
+function closeManualEditModal() {
+  document.getElementById("modal-container").style.display = "none";
+  document.getElementById("t1-manual-edit-textarea").style.display = "none";
+  document.getElementById("t2-manual-edit-textarea").style.display = "none";
+}
+
 function initialize() {
   document.body.onfocus = submit_tree();
 }
 
 document.getElementById('edit-tree1-icon').onclick = () => {
-  var icon = document.getElementById('tree1-text')
-  if (icon.style.display == "none") {
-    icon.style.display = 'block';
-  }
-  else {
-    icon.style.display = 'none';
-  }
+  document.getElementById("modal-container").style.display = "flex";
+  document.getElementById("t1-manual-edit-textarea").style.display = "block";
 }
 
 document.getElementById('edit-tree2-icon').onclick = () => {
-  var icon = document.getElementById('tree2-text')
-  if (icon.style.display == "none") {
-    icon.style.display = 'block';
-  }
-  else {
-    icon.style.display = 'none';
-  }
+  document.getElementById("modal-container").style.display = "flex";
+  document.getElementById("t2-manual-edit-textarea").style.display = "block";
 }
 
 tree1file.addEventListener("change", function () {

@@ -225,7 +225,7 @@ p > div > span {
   position: absolute;
   top: 0;
   backdrop-filter: blur(3px);
-  display: flex;
+  display: none;
   justify-content: center;
   align-items: center;
 }
@@ -233,6 +233,7 @@ p > div > span {
 #manual-edit-modal {
   width: 40%;
   height: 40%;
+  min-height: 450px;
   background-color: white;
   border-radius: 15px;
   display: flex;
@@ -241,10 +242,18 @@ p > div > span {
   position: relative;
 }
 
-#manual-edit-modal > #manual-edit-textarea {
+#manual-edit-modal > .manual-edit-textarea {
   width: 95%; 
   height: 70%;
   border-radius: 5px;
+}
+
+#manual-edit-modal > #t1-manual-edit-textarea {
+  display: none;
+}
+
+#manual-edit-modal > #t2-manual-edit-textarea {
+  display: none;
 }
 
 .btn-close {
