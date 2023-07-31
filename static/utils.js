@@ -179,6 +179,13 @@ function get_API_base_URL() {
   return baseURL;
 }
 
+function formatNumber(number) {
+  if (number > 100000 || number < 0.00001) {
+    return number.toExponential(3);
+  }
+  return Math.round(number * 100000) / 100000;
+}
+
 /**
  * Sets value of color legend depending on distance evaluation
  *
@@ -196,13 +203,13 @@ function fill_tree_scale_color_legend(multi_tree_prefix = "", t_max, t_min, scal
   console.log(label1_lst);
   if (t_min) {
     var label1_value = Math.round(t_min * 100) / 100;
-    label1_value.toExponential()
     var label2_value = Math.round(((t_max + t_min)/ 3) * 100) / 100;
-    label2_value.toExponential()
     var label3_value = Math.round(((t_max + t_min) * 2 / 3) * 100) / 100;
-    label3_value.toExponential()
     var label4_value = Math.round(t_max * 100) / 100;
-    label4_value.toExponential()
+    label1_value = formatNumber(label1_value);
+    label2_value = formatNumber(label2_value);
+    label3_value = formatNumber(label3_value);
+    label4_value = formatNumber(label4_value);
     label1_lst.forEach(label1 => {
       console.log("Label1", label1)
       label1.innerHTML = label1_value;
