@@ -453,6 +453,7 @@ function edge_colored_tree(d3_nodes, d3_links, t_max, t_min, scale, t1_only_muta
 }
 
 function submit_tree() {
+  closeManualEditModal();
   /*
     Send trees to api in order to get
     data for input into d3 visualizations
