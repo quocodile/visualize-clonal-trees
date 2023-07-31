@@ -2031,8 +2031,14 @@ function createADHeatmapV2(t1_muts, t2_muts, t1_tripartite_edges, t2_tripartite_
   mutation_objects = d3.filter(mutation_objects, d => {
     return total_mutations.has(d.mutation) 
   })
+  mutation_objects_dups_removed = []
+  mutation_objects.forEach(obj => {
+    if (d3.filter(mutation_objects_dups_removed, d => d.mutation === obj.mutation).length === 0){
+      mutation_objects_dups_removed.push(obj);
+    }	
+  })
 
-  let mutations_list = mutation_objects,
+  let mutations_list = mutation_objects_dups_removed,
     mutations_order = total_mutations,
     edges1 = t1_tripartite_edges,
     edges2 = t2_tripartite_edges,
@@ -2184,8 +2190,14 @@ function createPCHeatmapV2(t1_muts, t2_muts, t1_tripartite_edges, t2_tripartite_
   mutation_objects = d3.filter(mutation_objects, d => {
     return total_mutations.has(d.mutation) 
   })
+  mutation_objects_dups_removed = []
+  mutation_objects.forEach(obj => {
+    if (d3.filter(mutation_objects_dups_removed, d => d.mutation === obj.mutation).length === 0){
+      mutation_objects_dups_removed.push(obj);
+    }	
+  })
 
-  let mutations_list = mutation_objects,
+  let mutations_list = mutation_objects_dups_removed,
     mutations_order = total_mutations,
     edges1 = t1_tripartite_edges,
     edges2 = t2_tripartite_edges,
@@ -2207,6 +2219,12 @@ function createPCHeatmapV2(t1_muts, t2_muts, t1_tripartite_edges, t2_tripartite_
   
   let svg = d3.create('svg').attr('width', width).attr('height', '99%');
 
+  console.log("edges1", edges1)
+  console.log("edges2", edges2)
+  console.log("muts1", mutations1)
+  console.log("muts2", mutations2)
+  
+  console.log("EDGES", calculateEdgeColorsHeatMap(edges1, edges2, mutations1, mutations2, mutations_list))
   svg.selectAll('.heatmap-links')
     .data(calculateEdgeColorsHeatMap(edges1, edges2, mutations1, mutations2, mutations_list))
 	.join('rect')
