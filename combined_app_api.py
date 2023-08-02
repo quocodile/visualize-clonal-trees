@@ -115,7 +115,6 @@ def run_parent_child_distance():
     string representing tree2 
   """
   
-  #return calculation_contributions_and_node_mutation_relations("parent_child")
   return formatHandling("parent_child")
   
 @app.route('/api/ancestor_descendant_distance')
@@ -134,7 +133,7 @@ def run_ancestor_descendant_distance():
     string representing tree1 and the
     string representing tree2 
   """
-  return calculation_contributions_and_node_mutation_relations("ancestor_descendant")
+  return formatHandling("ancestor_descendant")
 
 @app.route('/api/caset_distance')
 def run_caset_distance():
@@ -152,7 +151,7 @@ def run_caset_distance():
     string representing tree1 and the
     string representing tree2 
   """
-  return calculation_contributions_and_node_mutation_relations("caset")
+  return formatHandling("caset")
 
 @app.route('/api/disc_distance')
 def run_disc_distance():
@@ -170,7 +169,7 @@ def run_disc_distance():
     string representing tree1 and the
     string representing tree2 
   """
-  return calculation_contributions_and_node_mutation_relations("disc")
+  return formatHandling("disc")
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser('A tiny Flask application, including API')
