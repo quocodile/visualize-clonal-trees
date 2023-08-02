@@ -479,32 +479,14 @@ function submit_tree() {
      var t1_tripartite_edges = json_data.t1_tripartite_edges;
      var t2_tripartite_edges = json_data.t2_tripartite_edges;
      createTripartite(distanceMetric.value, t1_muts, t2_muts, t1_tripartite_edges, t2_tripartite_edges)
+     createHeatmap(distanceMetric.value, t1_muts, t2_muts, t1_tripartite_edges, t2_tripartite_edges);
      document.getElementById("intersection").onchange = () => {
-       console.log("Changed!");
        createTripartite(distanceMetric.value, t1_muts, t2_muts, t1_tripartite_edges, t2_tripartite_edges)
-       if (distanceMetric.value == "parent_child_distance") {
-         createPCHeatmapV2(json_data.t1_mutations, json_data.t2_mutations, json_data.t1_tripartite_edges, json_data.t2_tripartite_edges);
-       }
-       else if (distanceMetric.value === "ancestor_descendant_distance") {
-         createADHeatmapV2(json_data.t1_mutations, json_data.t2_mutations, json_data.t1_tripartite_edges, json_data.t2_tripartite_edges);
-       }
+       createHeatmap(distanceMetric.value, t1_muts, t2_muts, t1_tripartite_edges, t2_tripartite_edges);
      }
      document.getElementById("union").onchange = () => {
-       console.log("Changed!");
-       createTripartite(distanceMetric.value, t1_muts, t2_muts, t1_tripartite_edges, t2_tripartite_edges)
-       if (distanceMetric.value == "parent_child_distance") {
-         createPCHeatmapV2(json_data.t1_mutations, json_data.t2_mutations, json_data.t1_tripartite_edges, json_data.t2_tripartite_edges);
-       }
-       else if (distanceMetric.value === "ancestor_descendant_distance") {
-         createADHeatmapV2(json_data.t1_mutations, json_data.t2_mutations, json_data.t1_tripartite_edges, json_data.t2_tripartite_edges);
-       }
-     }
-     if (distanceMetric.value === "parent_child_distance") {
-       //create_heatmap(json_data.t1_mutations, json_data.t2_mutations, json_data.t1_tripartite_edges, json_data.t2_tripartite_edges);
-       createPCHeatmapV2(json_data.t1_mutations, json_data.t2_mutations, json_data.t1_tripartite_edges, json_data.t2_tripartite_edges);
-     }
-     else if (distanceMetric.value === "ancestor_descendant_distance") {
-       createADHeatmapV2(json_data.t1_mutations, json_data.t2_mutations, json_data.t1_tripartite_edges, json_data.t2_tripartite_edges);
+       createTripartite(distanceMetric.value, t1_muts, t2_muts, t1_tripartite_edges, t2_tripartite_edges);
+       createHeatmap(distanceMetric.value, t1_muts, t2_muts, t1_tripartite_edges, t2_tripartite_edges);
      }
   });
 }
@@ -1274,89 +1256,15 @@ function createLinkedHighlighting(clickedElement, mutation){
       return 'normal';
     })
 
-    /*
-    var heatmap_rowLabels = d3.selectAll('.heatmap-rowLabel');
-    heatmap_rowLabels
-    .attr('fill', d => {
-      if (d == mutation) {
-        return 'red';
-      }
-      return 'black';
-    })
-    .style('font-size', d => {
-      if (d == mutation) {
-        return '1em';
-      }
-      return '13px';
-    })
-*/
-
-    /*
-    d3.selectAll('.heatmap-links')
-    .style('stroke-width', d => {
-      if ('ancestor' in d) {
-        if (d.ancestor.mutation == mutation || d.descendant.mutation == mutation) {
-          return 2;
-        }
-      } 
-      if ('parent' in d) {
-        if (d.parent.mutation == mutation || d.child.mutation == mutation) {
-          return 2;
-        }
-      }
-    })
-    .style('opacity', d => {
-      if ('ancestor' in d) {
-        if (d.ancestor.mutation == mutation || d.descendant.mutation == mutation) {
-          return 1;
-        }
-        return 0.2
-      } 
-      if ('parent' in d) {
-        if (d.parent.mutation == mutation || d.child.mutation == mutation) {
-          return 1;
-        }
-        return 0.3
-      }
-    })
-    */
-    
-/*
-    if ((xScale != null) && (yScale != null)) {
-
-	//compute xScale(mutation) once
-
-	let xPos = xScale(mutation),
-	    yPos = yScale(mutation);
-	
-    
-    d3.selectAll('.columnHighlight')
-    .attr('x', xPos)
-    .style('stroke-width', 2)
-    .style('opacity', 1)
-    
-    d3.selectAll('.rowHighlight')
-    .attr('y', yPos)
-    .style('stroke-width', 2)
-    .style('opacity', 1)
-
-
-    }
-*/
-
     let mutation_class = '.'+mutation+'-mutation-hover-label';
 
     let highlight_row = '.'+mutation+'-highlight-row',
 	highlight_column = '.'+mutation+'-highlight-column';
 
      d3.selectAll('.heatmap-links'+highlight_row)
-    //.attr('x', xScale(data))
-    //.style('opacity', 1)
     .attr("stroke-width", 2)
 
     d3.selectAll('.heatmap-links'+highlight_column)
-    //.attr('y', yScale(data))
-    //.style('opacity', 1)
     .attr("stroke-width", 2)
 
     d3.selectAll('.rowLabel'+mutation_class)
@@ -1366,37 +1274,6 @@ function createLinkedHighlighting(clickedElement, mutation){
     d3.selectAll('.columnLabel'+mutation_class)
     .attr('fill', 'red')
     .style("font-size", expanded)
-
-    //have a class for each mutation
-
-    /*
-    d3.selectAll('.rowLabel')
-    .attr('fill', d => {
-      if (d == mutation) {
-        return "red";
-      }
-    })
-    .style("font-size", d => {
-      if (d == mutation) {
-        return expanded;
-      }
-      return font_size;
-    })
-
-    d3.selectAll('.columnLabel')
-    .attr('fill', d => {
-      if (d == mutation) {
-        return "red";
-      }
-    })
-    .style("font-size", d => {
-      if (d == mutation) {
-        return expanded;
-      }
-      return font_size;
-    });
-*/
-
 }
 
 function removeLinkedHighlighting(clickedElement, mutation) {
@@ -1831,99 +1708,6 @@ function calculateEdgeColorsAncestorDescendantTripartite(arr1, arr2) {
   
 }
 
-
-function createADheatmap(t1_muts, t2_muts, t1_tripartite_edges, t2_tripartite_edges) {
-  var div = document.querySelector(".heatmap-component");
-  var height = div.offsetHeight;
-  var width = div.offsetWidth;
-  var total_mutations = []
-  mutation_objects = [] 
-  t1_mutation_objects = [] 
-  t2_mutation_objects = [] 
-  t1_muts.forEach(mut => {
-    mutation_objects.push({"mutation": mut})
-    t1_mutation_objects.push({"mutation": mut})
-    total_mutations.push(mut)
-  })
-  t2_muts.forEach(mut => {
-    if (!t1_muts.includes(mut)) {
-      mutation_objects.push({"mutation": mut})
-      total_mutations.push(mut)
-    }
-    t2_mutation_objects.push({"mutation": mut})
-  })
-  total_mutations = new Set(total_mutations)
-    
-  let margin = {top: 100, left: 100, right: 100, bottom: 100};
-
-  let mutations_list = mutation_objects;
-    mutations_order = total_mutations;
-    edges1 = t1_tripartite_edges;
-    edges2 = t2_tripartite_edges;
-    mutations1 = t1_muts;
-    mutations2 = t2_muts;
-
-  let square_side = (height - margin.bottom) / mutations_order.size;
-
-  let xScale = d3.scalePoint()
-    .domain(mutations_order)
-    .range([margin.left, width - margin.right])
-  
-  let yScale = d3.scalePoint()
-    .domain(mutations_order)
-    .range([margin.bottom, height - margin.top])
-  
-  let svg = d3.create('svg').attr('width', width).attr('height', '100%').style('margin', 'auto');
-
-  svg.selectAll('.link')
-    .data(calculateEdgeColorsHeatMapAncestorDescendant(edges1, edges2, mutations1, mutations2, mutations_list))
-    .join('rect')
-    .attr('x' , d => xScale(d.ancestor.mutation))
-    .attr('y', d => yScale(d.descendant.mutation))
-    .attr('stroke', "black")
-    .attr("stroke-width", 0.25)
-    .attr('width',  (width - margin.left - margin.right) / mutations_order.size + 'px')  
-    .attr('height', (height - margin.top - margin.bottom) / mutations_order.size + 'px')
-    .attr('fill', d => d.color)
-
-  
-  svg.selectAll('.heatmap-rowLabel')
-    .data(mutations_order)
-    .join('text')
-    .attr("x", 0)
-    .classed("heatmap-rowLabel", true)
-    .attr("y", d => yScale(d) + 15)
-    .text(d => d)
-    .style('font-size',  '13px')
-    .on('mouseover', function(event, data) {
-      console.log(data);
-      createLinkedHighlighting(this, data); 
-    })
-    .on('mouseout', function(event, data) {
-      console.log(data);
-      removeLinkedHighlighting(this, data); 
-    })
-
-  svg.selectAll('text.rotation')
-   .data(mutations_order)
-   .enter()
-   .append('text')
-   .text((d)=>d)
-   .classed('rotation', true)
-   .attr('fill', 'black')
-   .attr('transform', (d,i)=>{
-       return 'translate( '+(xScale(d) + (square_side/4)) +' , '+0+'),'+ 'rotate(90)';})
-   .attr('x', 0)
-   .attr('y',  0)
-   .style('font-size',  '13px')
-  
-  if (div.lastElementChild) {
-    console.log("Remove a child");
-    div.removeChild(div.lastElementChild);
-  }
-  div.append(svg.node());
-}
-
 function calculateEdgeColorsHeatMapAncestorDescendant(edges1, edges2, mutations1, mutations2, total_mutations) {
     let edges = Array(),
       edges_index = 0;
@@ -1982,335 +1766,6 @@ function takeToGeneCards(mutation) {
   window.open(gene_url, "_blank"); 
 }
 
-function createADHeatmapV2(t1_muts, t2_muts, t1_tripartite_edges, t2_tripartite_edges) {
-  var div = document.querySelector(".heatmap-component");
-  var width = div.offsetWidth;
-  var height = div.offsetHeight;
-  var margin = {top: 50, left: 100, right: 50, bottom: 80};
-  var padding = 10;
-
-  var mutation_objects = [] 
-  var t1_mutation_objects = [] 
-  var t2_mutation_objects = [] 
-  var total_mutations = [] 
-  t1_muts.forEach(mut => {
-    mutation_objects.push({"mutation": mut})
-    t1_mutation_objects.push({"mutation": mut})
-    total_mutations.push(mut)
-  })
-  t2_muts.forEach(mut => {
-    mutation_objects.push({"mutation": mut})
-    t2_mutation_objects.push({"mutation": mut})
-    total_mutations.push(mut)
-  })
-  var mutation_ordering = document.getElementById("intersection");
-  if (mutation_ordering.checked) {
-      total_mutations = d3.map(intersectOrdering(t1_muts, t2_muts, t1_mutation_objects, t2_mutation_objects), d => d.mutation); 
-      console.log("Here", total_mutations)
-      t1_tripartite_edges = d3.filter(t1_tripartite_edges, d => {
-        return total_mutations.includes(d.ancestor) && total_mutations.includes(d.descendant);
-      })
-      t2_tripartite_edges = d3.filter(t2_tripartite_edges, d => {
-        return total_mutations.includes(d.ancestor) && total_mutations.includes(d.descendant);
-      })
-  }
-  else {
-      total_mutations = d3.map(unionOrdering(t1_muts, t2_muts, t1_mutation_objects, t2_mutation_objects), d => d.mutation); 
-      t1_tripartite_edges = d3.filter(t1_tripartite_edges, d => {
-        return total_mutations.includes(d.ancestor) && total_mutations.includes(d.descendant);
-      })
-      t2_tripartite_edges = d3.filter(t2_tripartite_edges, d => {
-        return total_mutations.includes(d.ancestor) && total_mutations.includes(d.descendant);
-      })
-  }
-  total_mutations = new Set(total_mutations)
-  mutation_objects = d3.filter(mutation_objects, d => {
-    return total_mutations.has(d.mutation) 
-  })
-  mutation_objects_dups_removed = []
-  mutation_objects.forEach(obj => {
-    if (d3.filter(mutation_objects_dups_removed, d => d.mutation === obj.mutation).length === 0){
-      mutation_objects_dups_removed.push(obj);
-    }	
-  })
-
-  let mutations_list = mutation_objects_dups_removed,
-    mutations_order = total_mutations,
-    edges1 = t1_tripartite_edges,
-    edges2 = t2_tripartite_edges,
-    mutations1 = t1_muts,
-    mutations2 = t2_muts;
-
-  let font_size = '0.90em',
-    expanded = '1.2em';
-
-  const square_side = (height - margin.bottom) / mutations_order.size;
-
-  let xScale = d3.scalePoint()
-    .domain(mutations_order)
-    .range([margin.left, width - margin.right])
-  
-  let yScale = d3.scalePoint()
-    .domain(mutations_order)
-    .range([margin.bottom, height - margin.top])
-  
-  let svg = d3.create('svg').attr('width', width).attr('height', '99%');
-
-  svg.selectAll('.heatmap-links')
-    .data(calculateEdgeColorsHeatMapAncestorDescendant(edges1, edges2, mutations1, mutations2, mutations_list))
-    .join('rect')
-	//.classed('heatmap-links', true)
-        .attr('class', d => 'links '+d.ancestor.mutation+'-highlight-row '+d.descendant.mutation+'-highlight-column')
-
-    .attr('x' , d => xScale(d.descendant.mutation))
-    .attr('y', d => yScale(d.ancestor.mutation))
-    .attr('stroke', "black")
-    .attr("stroke-width", 0.25)
-    .attr('width', (width - margin.left - margin.right) / mutations_order.size + 'px') 
-    .attr('height', (height - margin.top - margin.bottom) / mutations_order.size + 'px')
-    .attr('fill', d => d.color)
-	.style('opacity', 0.5);
-
-
-    //can make something global so that xScale doesn't have to be passed and linked to svg
-
-  
-  svg.selectAll('.rowLabel')
-    .data(mutations_order)
-	.join('text')
-        .attr('class', d => 'rowLabel '+d+'-mutation-hover-label')
-
-    //.classed('rowLabel', true)
-    .attr('fill', 'black')
-    .attr("x", margin.left - padding)
-    .attr("y", d => yScale(d) + (square_side/2))
-    .text(d => d)
-    .attr('text-anchor', 'end')
-    .attr('alignment-baseline', 'middle')
-    .style("font-family", "Monospace")
-    .style("font-size", font_size)
-
-	.on('mouseover', function(event, data) {
-	    //console.log("hi there")
-	    //console.log(xScale(data))
-		return createLinkedHighlighting(this, data)})
-  .on('mouseout', function(event, data) { return removeLinkedHighlighting(this, data)})
-
-  svg.selectAll('.columnLabel')
-   .data(mutations_order)
-   .enter()
-   .append('text')
-   .text(d=>d)
-   .style("font-family", "Monospace")
-   .style("font-size", font_size)
-	.classed('rotation', true)
-    .attr('class', d => 'columnLabel '+d+'-mutation-hover-label')
-   //.classed('columnLabel', true)
-   .attr('fill', 'black')
-   .attr('x', d => xScale(d) + (square_side/2))
-   .attr('y', margin.bottom - padding)
-   .attr('transform', (d,i) => {
-     //gives angle of rotation and also specifies the point that is rotated around
-     return 'rotate(-60,'+(xScale(d)+(square_side/2))+','+(margin.bottom - padding)+')'
-   })
-	    .on('mouseover', function(event, data) { createLinkedHighlighting(this, data)})
-   .on('mouseout', function(event, data) { removeLinkedHighlighting(this, data)})
-
-
-    /*
-    svg.selectAll('.columnHighlight')
-    .data(mutations_list)
-    .join('rect')
-    .classed('columnHighlight', true)
-    .attr('x' , d => margin.left)
-    .attr('y', d => yScale(d.mutation))
-    .attr('stroke', "black")
-    .attr("stroke-width", 1)
-    .attr('width', square_side)  
-    .attr('height', square_side)
-    .attr('fill', 'transparent')
-    .style('opacity', 0);
-
-  svg.selectAll('.rowHighlight')
-    .data(mutations_list)
-    .join('rect')
-    .classed('rowHighlight', true)
-    .attr('x' , d => xScale(d.mutation))
-    .attr('y', d => margin.bottom)
-    .attr('stroke', "black")
-    .attr("stroke-width", 1)
-    .attr('width', square_side)  
-    .attr('height', square_side)
-    .attr('fill', 'transparent')
-    .style('opacity', 0);
-*/
-
-  if (div.lastElementChild) {
-    console.log("Remove a child");
-    div.removeChild(div.lastElementChild);
-  }
-  div.append(svg.node());
-}
-
-function createPCHeatmapV2(t1_muts, t2_muts, t1_tripartite_edges, t2_tripartite_edges) {
-  var div = document.querySelector(".heatmap-component");
-  var width = div.offsetWidth;
-  var height = div.offsetHeight;
-  var margin = {top: 50, left: 100, right: 50, bottom: 80};
-  var padding = 10;
-
-  var mutation_objects = [] 
-  var t1_mutation_objects = [] 
-  var t2_mutation_objects = [] 
-  var total_mutations = [] 
-  t1_muts.forEach(mut => {
-    mutation_objects.push({"mutation": mut})
-    t1_mutation_objects.push({"mutation": mut})
-  })
-  t2_muts.forEach(mut => {
-    mutation_objects.push({"mutation": mut})
-    t2_mutation_objects.push({"mutation": mut})
-  })
-  var mutation_ordering = document.getElementById("intersection");
-  if (mutation_ordering.checked) {
-      total_mutations = d3.map(intersectOrdering(t1_muts, t2_muts, t1_mutation_objects, t2_mutation_objects), d => d.mutation); 
-  }
-  else {
-      total_mutations = d3.map(unionOrdering(t1_muts, t2_muts, t1_mutation_objects, t2_mutation_objects), d => d.mutation); 
-  }
-
-  // filtering to match with the option of mutation intersect or union
-  t1_tripartite_edges = filterEdges("parent_child_distance", t1_tripartite_edges, total_mutations);
-  t2_tripartite_edges = filterEdges("parent_child_distance", t2_tripartite_edges, total_mutations);
-  total_mutations = new Set(total_mutations);
-  mutation_objects = d3.filter(mutation_objects, d => {
-    return total_mutations.has(d.mutation) 
-  })
-  mutation_objects_dups_removed = []
-  mutation_objects.forEach(obj => {
-    if (d3.filter(mutation_objects_dups_removed, d => d.mutation === obj.mutation).length === 0){
-      mutation_objects_dups_removed.push(obj);
-    }	
-  })
-
-  let mutations_list = mutation_objects_dups_removed,
-    mutations_order = total_mutations,
-    edges1 = t1_tripartite_edges,
-    edges2 = t2_tripartite_edges,
-    mutations1 = t1_muts,
-    mutations2 = t2_muts;
-
-  let font_size = '0.90em',
-    expanded = '1.2em';
-
-  const square_side = (height - margin.bottom) / mutations_order.size;
-
-  let xScale = d3.scalePoint()
-    .domain(mutations_order)
-    .range([margin.left, width - margin.right])
-  
-  let yScale = d3.scalePoint()
-    .domain(mutations_order)
-    .range([margin.bottom, height - margin.top])
-  
-  let svg = d3.create('svg').attr('width', width).attr('height', '99%');
-
-  console.log("edges1", edges1)
-  console.log("edges2", edges2)
-  console.log("muts1", mutations1)
-  console.log("muts2", mutations2)
-  
-  console.log("EDGES", calculateEdgeColorsHeatMap(edges1, edges2, mutations1, mutations2, mutations_list))
-  svg.selectAll('.heatmap-links')
-    .data(calculateEdgeColorsHeatMap(edges1, edges2, mutations1, mutations2, mutations_list))
-	.join('rect')
-    .attr('class', d => 'heatmap-links '+d.parent.mutation+'-highlight-row '+d.child.mutation+'-highlight-column')
-    //.classed('heatmap-links', true)
-    .attr('x' , d => xScale(d.parent.mutation))
-    .attr('y', d => yScale(d.child.mutation))
-    .attr('stroke', "black")
-    .attr("stroke-width", 0.25)
-    .attr('width', (width - margin.left - margin.right) / mutations_order.size + 'px') 
-    .attr('height', (height - margin.top - margin.bottom) / mutations_order.size + 'px')
-    .attr('fill', d => d.color)
-    .style('opacity', 0.5);
-
-  svg.selectAll('.rowLabel')
-    .data(mutations_order)
-	.join('text')
-       .attr('class', d => 'rowLabel '+d+'-mutation-hover-label')
-
-    //.classed('rowLabel', true)
-    .attr('fill', 'black')
-    .attr("x", margin.left - padding)
-    .attr("y", d => yScale(d) + (square_side/2))
-    .text(d => d)
-    .attr('text-anchor', 'end')
-    .attr('alignment-baseline', 'middle')
-    .style("font-family", "Monospace")
-    .style("font-size", font_size)
-	.on('mouseover', function(event, data) { createLinkedHighlighting(this, data)})
-  .on('mouseout', function(event, data) { removeLinkedHighlighting(this, data)})
-
-  svg.selectAll('.columnLabel')
-   .data(mutations_order)
-   .enter()
-   .append('text')
-   .text(d=>d)
-   .style("font-family", "Monospace")
-   .style("font-size", font_size)
-	.classed('rotation', true)
-       .attr('class', d => 'columnLabel '+d+'-mutation-hover-label')
-
-   //.classed('columnLabel', true)
-   .attr('fill', 'black')
-   .attr('x', d => xScale(d) + (square_side/2))
-   .attr('y', margin.bottom - padding)
-   .attr('transform', (d,i) => {
-     //gives angle of rotation and also specifies the point that is rotated around
-     return 'rotate(-60,'+(xScale(d)+(square_side/2))+','+(margin.bottom - padding)+')'
-   })
-	.on('mouseover', function(event, data) { createLinkedHighlighting(this, data)})
-   .on('mouseout', function(event, data) { removeLinkedHighlighting(this, data)})
-
-
-    /*
-     svg.selectAll('.columnHighlight')
-    .data(mutations_list)
-    .join('rect')
-    .classed('columnHighlight', true)
-    .attr('x' , d => margin.left)
-    .attr('y', d => yScale(d.mutation))
-    .attr('stroke', "black")
-    .attr("stroke-width", 1)
-    .attr('width', square_side)  
-    .attr('height', square_side)
-    .attr('fill', 'transparent')
-    .style('opacity', 0);
-*/
-
-    /*
-  svg.selectAll('.rowHighlight')
-    .data(mutations_list)
-    .join('rect')
-    .classed('rowHighlight', true)
-    .attr('x' , d => xScale(d.mutation))
-    .attr('y', d => margin.bottom)
-    .attr('stroke', "black")
-    .attr("stroke-width", 1)
-    .attr('width', square_side)  
-    .attr('height', square_side)
-    .attr('fill', 'transparent')
-    .style('opacity', 0);
-*/
-  
-  if (div.lastElementChild) {
-    console.log("Remove a child");
-    div.removeChild(div.lastElementChild);
-  }
-  div.append(svg.node());
-}
-
 function filterEdges(distanceMeasure, edges, mutations) {
   var filtered_edges = []
   if (distanceMeasure === "parent_child_distance") {
@@ -2339,7 +1794,20 @@ function createHeatmap(distanceMeasure, t1_muts, t2_muts, t1_edges, t2_edges) {
   var t2_mutation_objects = [] 
   var total_mutations = [] 
 
+  // initializing some dictionaries 
+  t1_muts.forEach(mut => {
+    mutation_objects.push({"mutation": mut})
+    t1_mutation_objects.push({"mutation": mut})
+  })
+  t2_muts.forEach(mut => {
+    mutation_objects.push({"mutation": mut})
+    t2_mutation_objects.push({"mutation": mut})
+  })
+
+
   // taking the union or the intersection of the mutation sets  
+  console.log("t1 muts", t1_muts)
+  console.log("t2 muts", t2_muts)
   var intersection_radio_btn = document.getElementById("intersection");
   if (intersection_radio_btn.checked) {
       total_mutations = d3.map(intersectOrdering(t1_muts, t2_muts, t1_mutation_objects, t2_mutation_objects), d => d.mutation); 
@@ -2348,25 +1816,126 @@ function createHeatmap(distanceMeasure, t1_muts, t2_muts, t1_edges, t2_edges) {
       total_mutations = d3.map(unionOrdering(t1_muts, t2_muts, t1_mutation_objects, t2_mutation_objects), d => d.mutation); 
   }
 
-  // initializing some dictionaries 
-  t1_muts.forEach(mut => {
-    t1_mutation_objects.push({"mutation": mut});
+  // filtering to match with the option of mutation intersect or union
+  t1_tripartite_edges = filterEdges(distanceMeasure, t1_edges, total_mutations);
+  t2_tripartite_edges = filterEdges(distanceMeasure, t2_edges, total_mutations);
+  total_mutations = new Set(total_mutations);
+  mutation_objects = d3.filter(mutation_objects, d => {
+    return total_mutations.has(d.mutation) 
   })
-  t2_muts.forEach(mut => {
-    t2_mutation_objects.push({"mutation": mut});
+  mutation_objects_dups_removed = []
+  mutation_objects.forEach(obj => {
+    if (d3.filter(mutation_objects_dups_removed, d => d.mutation === obj.mutation).length === 0){
+      mutation_objects_dups_removed.push(obj);
+    }	
   })
-  total_mutations.forEach(mut => {
-    mutation_objects.push({"mutation": mut});
-  })
-
-  // setting the mutations 
-  t1_filtered_edges = filterEdges(distanceMeasure, t1_edges, total_mutations)
-  t2_filtered_edges = filterEdges(distanceMeasure, t2_edges, total_mutations)
 
   // some default values for styling
   let font_size = '0.90em',
       expanded = '1.2em';
 
+  let mutations_list = mutation_objects_dups_removed,
+      mutations_order = total_mutations,
+      edges1 = t1_edges,
+      edges2 = t2_edges,
+      mutations1 = t1_muts,
+      mutations2 = t2_muts;
+
   // default dimensions of each square in the heatmap 
   const square_side = (height - margin.bottom) / mutations_order.size;
+
+  // create scales to place the noddes and links
+  let xScale = d3.scalePoint()
+      .domain(mutations_order)
+      .range([margin.left, width - margin.right])
+  
+  let yScale = d3.scalePoint()
+      .domain(mutations_order)
+      .range([margin.bottom, height - margin.top])
+
+  let svg = d3.create('svg').attr('width', width).attr('height', '99%');
+
+  var edgeColorsHeatMap = []
+  if (distanceMeasure === "parent_child_distance") {
+    edgeColorsHeatMap = calculateEdgeColorsHeatMap(edges1, edges2, mutations1, mutations2, mutations_list)
+  }
+  else if (distanceMeasure === "ancestor_descendant_distance") {
+    edgeColorsHeatMap = calculateEdgeColorsHeatMapAncestorDescendant(edges1, edges2, mutations1, mutations2, mutations_list)
+  }
+
+  svg.selectAll('.heatmap-links')
+    .data(edgeColorsHeatMap)
+    .join('rect')
+    .attr('class', d => {
+      if (distanceMeasure === "parent_child_distance") {
+        return 'heatmap-links '+d.parent.mutation+'-highlight-row '+d.child.mutation+'-highlight-column'
+      }
+      else if (distanceMeasure === "ancestor_descendant_distance") {
+        return 'heatmap-links '+d.ancestor.mutation+'-highlight-row '+d.descendant.mutation+'-highlight-column'
+      }
+    })
+    //.classed('heatmap-links', true)
+    .attr('x' , d => {
+      if (distanceMeasure === "parent_child_distance") {
+         return xScale(d.parent.mutation);
+      }
+      else if (distanceMeasure === "ancestor_descendant_distance") {
+         return xScale(d.ancestor.mutation);
+      }
+    })
+    .attr('y', d => {
+      if (distanceMeasure === "parent_child_distance") {
+        return yScale(d.child.mutation);
+      }
+      else if (distanceMeasure === "ancestor_descendant_distance") {
+        return yScale(d.descendant.mutation);
+      }
+    })
+    .attr('stroke', "black")
+    .attr("stroke-width", 0.25)
+    .attr('width', (width - margin.left - margin.right) / mutations_order.size + 'px') 
+    .attr('height', (height - margin.top - margin.bottom) / mutations_order.size + 'px')
+    .attr('fill', d => d.color)
+    .style('opacity', 0.5);
+
+  svg.selectAll('.rowLabel')
+    .data(mutations_order)
+    .join('text')
+    .attr('class', d => 'rowLabel '+d+'-mutation-hover-label')
+    .attr('fill', 'black')
+    .attr("x", margin.left - padding)
+    .attr("y", d => yScale(d) + (square_side/2))
+    .text(d => d)
+    .attr('text-anchor', 'end')
+    .attr('alignment-baseline', 'middle')
+    .style("font-family", "Monospace")
+    .style("font-size", font_size)
+	.on('mouseover', function(event, data) { createLinkedHighlighting(this, data)})
+  .on('mouseout', function(event, data) { removeLinkedHighlighting(this, data)})
+
+  svg.selectAll('.columnLabel')
+   .data(mutations_order)
+   .enter()
+   .append('text')
+   .text(d=>d)
+   .style("font-family", "Monospace")
+   .style("font-size", font_size)
+   .classed('rotation', true)
+   .attr('class', d => 'columnLabel '+d+'-mutation-hover-label')
+   .attr('fill', 'black')
+   .attr('x', d => xScale(d) + (square_side/2))
+   .attr('y', margin.bottom - padding)
+   .attr('transform', (d,i) => {
+     //gives angle of rotation and also specifies the point that is rotated around
+     return 'rotate(-60,'+(xScale(d)+(square_side/2))+','+(margin.bottom - padding)+')'
+   })
+   .on('mouseover', function(event, data) { createLinkedHighlighting(this, data)})
+   .on('mouseout', function(event, data) { removeLinkedHighlighting(this, data)})
+
+  if (div.lastElementChild) {
+    console.log("Remove a child");
+    div.removeChild(div.lastElementChild);
+  }
+  console.log(svg.node());
+  div.append(svg.node());
 }
