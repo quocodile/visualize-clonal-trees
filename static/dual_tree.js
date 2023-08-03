@@ -375,7 +375,7 @@ function visualize_singleview(jsonData, distance_measure, dom_data) {
         break;
       case "parent_child_distance": 
 	distanceMeasureLabel.innerHTML = formatNumber(distance);
-        edge_colored_tree(d3_nodes, d3_links, t_max, t_min, color_scale, dom_data.t1_only_mutations, dom_data.t2_only_mutations);
+        edge_colored_tree(d3_nodes, d3_links, t_max, t_min, color_scale, dom_data.t1_only_mutations, dom_data.t2_only_mutations, svg1, svg2);
         break;
       default:
         console.log("Please select a valid distance measure. If you have questions email ealexander@carleton.edu");
@@ -429,9 +429,9 @@ function node_colored_tree(d3_nodes, d3_links, t_max, t_min, scale, t1_only_muta
 }
 
 // Coloring scheme for parent child -> edge based
-function edge_colored_tree(d3_nodes, d3_links, t_max, t_min, scale, t1_only_mutations, t2_only_mutations) {
+function edge_colored_tree(d3_nodes, d3_links, t_max, t_min, scale, t1_only_mutations, t2_only_mutations, svg1, svg2) {
     
-    d3_nodes.selectAll('circle.node').style("stroke", d => {
+    /*d3_nodes.selectAll('circle.node').style("stroke", d => {
 	if (t1_only_mutations.some(mut => d.data.id.split("_").includes(mut)) || t2_only_mutations.some(mut => d.data.id.split("_").includes(mut))) { //outline tree-distinct mutations in red
 	    return "#ad4399";
 	}
@@ -439,6 +439,28 @@ function edge_colored_tree(d3_nodes, d3_links, t_max, t_min, scale, t1_only_muta
 	    return "black";
 	}
     }).style("fill", "#e6e6e3")
+    */
+
+    d3_nodes.selectAll('circle.node').style("stroke", "black")
+    	.style("fill", function(d) {
+      
+      if (t1_only_mutations.some(mut => d.data.id.split("_").includes(mut)) || t2_only_mutations.some(mut => d.data.id.split("_").includes(mut))) { //fill tree-distinct nodes with texture
+
+	const texture = textures
+	      .lines()
+	      .size(6)
+	      .strokeWidth(1.5)
+	      .background("lightgray");   
+
+	 //for initializing texture for highlighting
+	 svg1.call(texture);
+	 svg2.call(texture);
+	    
+	 return texture.url();
+      }
+	    else {
+		return "lightgray";
+	    }})
 
   d3_links.selectAll('line.link')
       .style("stroke", function(d) {
