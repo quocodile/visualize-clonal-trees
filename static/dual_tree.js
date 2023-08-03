@@ -396,9 +396,22 @@ function node_colored_tree(d3_nodes, d3_links, t_max, t_min, scale, t1_only_muta
         return "gray";
       }
     })
-	.style("fill", function(d) {
-      
-      if (t1_only_mutations.some(mut => d.data.id.split("_").includes(mut)) || t2_only_mutations.some(mut => d.data.id.split("_").includes(mut))) { //fill tree-distinct nodes with texture
+	.style("fill", function(d) { //fill tree-distinct nodes with texture
+
+
+	    var line_direction = "";
+	    var distinct = false;
+
+	    if (t1_only_mutations.some(mut => d.data.id.split("_").includes(mut))) {
+		line_direction = "2/8";
+		distinct = true;
+	    }
+	    if (t2_only_mutations.some(mut => d.data.id.split("_").includes(mut))) {
+		line_direction = "6/8";
+		distinct = true;
+	    }
+
+	    if (distinct) {
 
 	var background_color  = scale(d.data.contribution);
 	if (d.data.contribution === 0) {
@@ -409,6 +422,7 @@ function node_colored_tree(d3_nodes, d3_links, t_max, t_min, scale, t1_only_muta
 	      .lines()
 	      .size(6)
 	      .strokeWidth(1.5)
+	      .orientation(line_direction)
 	      .background(background_color);   
 
 	 //for initializing texture for highlighting
@@ -417,8 +431,9 @@ function node_colored_tree(d3_nodes, d3_links, t_max, t_min, scale, t1_only_muta
 	    
 	 return texture.url();
       }
+	    
       if (d.data.contribution === 0) {
-	return "lightgrey";
+	return "lightgray";
       }				
       else {
 	  return scale(d.data.contribution);
@@ -442,14 +457,28 @@ function edge_colored_tree(d3_nodes, d3_links, t_max, t_min, scale, t1_only_muta
     */
 
     d3_nodes.selectAll('circle.node').style("stroke", "black")
-    	.style("fill", function(d) {
+    	.style("fill", function(d) {  //fill tree-distinct nodes with texture
+
+
+	    var line_direction = "";
+	    var distinct = false;
+
+	    if (t1_only_mutations.some(mut => d.data.id.split("_").includes(mut))) {
+		line_direction = "2/8";
+		distinct = true;
+	    }
+	    if (t2_only_mutations.some(mut => d.data.id.split("_").includes(mut))) {
+		line_direction = "6/8";
+		distinct = true;
+	    }
       
-      if (t1_only_mutations.some(mut => d.data.id.split("_").includes(mut)) || t2_only_mutations.some(mut => d.data.id.split("_").includes(mut))) { //fill tree-distinct nodes with texture
+	    if (distinct) {
 
 	const texture = textures
 	      .lines()
 	      .size(6)
 	      .strokeWidth(1.5)
+	      .orientation(line_direction)
 	      .background("lightgray");   
 
 	 //for initializing texture for highlighting
