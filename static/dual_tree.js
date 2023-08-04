@@ -1892,17 +1892,23 @@ function createHeatmap(distanceMeasure, t1_muts, t2_muts, t1_edges, t2_edges) {
       mutations1 = t1_muts,
       mutations2 = t2_muts;
 
-  // default dimensions of each square in the heatmap 
-  const square_side = (height - margin.bottom) / mutations_order.size;
+    
+    //account for the edge length of the squares when calculating the scales
+    
+    var width_adjustment =  (width - margin.left - margin.right) / mutations_list.length;
+    var height_adjustment = (height - margin.bottom - margin.top) / mutations_list.length;
 
-  // create scales to place the noddes and links
+  // create scales to place the nodes and links
   let xScale = d3.scalePoint()
       .domain(mutations_order)
-      .range([margin.left, width - margin.right])
+      .range([margin.left, width - margin.right - width_adjustment])
   
   let yScale = d3.scalePoint()
       .domain(mutations_order)
-      .range([margin.bottom, height - margin.top])
+      .range([margin.bottom, height - margin.top - height_adjustment])
+
+  //edge length for the squares
+  var square_side = xScale(t1_muts[1]) - xScale(t1_muts[0]);
 
   let svg = d3.create('svg').attr('width', width).attr('height', '99%');
 
@@ -1927,7 +1933,13 @@ function createHeatmap(distanceMeasure, t1_muts, t2_muts, t1_edges, t2_edges) {
     })
     //.classed('heatmap-links', true)
     .attr('x' , d => {
-      if (distanceMeasure === "parent_child_distance") {
+	if (distanceMeasure === "parent_child_distance") {
+
+	    console.log("hi there")
+	    console.log(xScale(d.parent.mutation))
+	    console.log(square_side)
+	    console.log(t1_muts[0])
+	    
          return xScale(d.parent.mutation);
       }
       else if (distanceMeasure === "ancestor_descendant_distance") {
