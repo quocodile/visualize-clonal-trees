@@ -9,6 +9,11 @@ body {
     height: 100vh;
 }
 
+h4 {
+  padding: 10px 0px 10px 10px;
+  margin: 0;
+}
+
 .site-container {
     display: grid;
     grid-template-columns: 15% 10% 50% 25%;
