@@ -1885,6 +1885,9 @@ function createHeatmap(distanceMeasure, t1_muts, t2_muts, t1_edges, t2_edges) {
   let font_size = '0.90em',
       expanded = '1.2em';
 
+  let row_title = "Parent",
+      column_title = "Child"; 
+
   let mutations_list = mutation_objects_dups_removed,
       mutations_order = total_mutations,
       edges1 = t1_edges,
@@ -1918,6 +1921,9 @@ function createHeatmap(distanceMeasure, t1_muts, t2_muts, t1_edges, t2_edges) {
   }
   else if (distanceMeasure === "ancestor_descendant_distance") {
     edgeColorsHeatMap = calculateEdgeColorsHeatMapAncestorDescendant(edges1, edges2, mutations1, mutations2, mutations_list)
+
+    row_title = "Ancestor";
+    column_title = "Descendant";
   }
 
   svg.selectAll('.heatmap-links')
@@ -1995,6 +2001,27 @@ function createHeatmap(distanceMeasure, t1_muts, t2_muts, t1_edges, t2_edges) {
    .on('mouseover', function(event, data) { createLinkedHighlighting(this, data)})
    .on('mouseout', function(event, data) { removeLinkedHighlighting(this, data)})
 
+    //make the row and column titles
+    svg.append('text')
+    .attr('x', 40)
+	.attr('y', height/2)
+	.text(row_title)
+	.attr('text-anchor', 'end')
+     .style("font-family", "Monospace")
+   .style("font-size", font_size)
+    .attr('transform', (d,i) => {
+     //gives angle of rotation and also specifies the point that is rotated around
+     return 'rotate(-90,'+20+','+height/2+')'
+    })
+
+    svg.append('text')
+	.attr('x', width/2)
+    .attr('y', 20)
+	.text(column_title)
+     .style("font-family", "Monospace")
+   .style("font-size", font_size)
+    
+    
   if (div.lastElementChild) {
     console.log("Remove a child");
     div.removeChild(div.lastElementChild);
