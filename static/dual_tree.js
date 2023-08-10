@@ -34,7 +34,6 @@ function initialize() {
   texture_legends.forEach(legend => {
     svg = d3.create('svg').attr('width', '40px').attr('height', '40px');
     var line_direction = "";
-    var distinct = false;
     if (legend.id === "t1-texture-legend") {
       line_direction = "2/8";
       distinct = true;
@@ -46,10 +45,10 @@ function initialize() {
     const texture = textures
         .lines()
         .size(6)
-        .strokeWidth(distinct)
+        .strokeWidth(1.5)
         .orientation(line_direction)
     svg.call(texture);
-    svg.append('circle').attr('r', '20px').attr('cx', '20').attr('cy', '20').attr('fill', texture.url());
+    svg.append('circle').attr('r', '15px').attr('cx', '20').attr('cy', '20').attr('fill', texture.url()).attr('stroke', 'black');
     legend.appendChild(svg.node()); 
   })
   
