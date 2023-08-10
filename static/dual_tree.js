@@ -15,6 +15,7 @@ var highlight_color = "red";
 var mutation_table_color = "black";
 
 
+initialize();
 window.onload = () => {
   submit_tree();
 }
@@ -26,6 +27,34 @@ function closeManualEditModal() {
 }
 
 function initialize() {
+  /* Setting the texture legends */
+  texture_legends = document.querySelectorAll(".texture-legend");
+  
+
+  texture_legends.forEach(legend => {
+    svg = d3.create('svg').attr('width', '40px').attr('height', '40px');
+    var line_direction = "";
+    var distinct = false;
+    if (legend.id === "t1-texture-legend") {
+      line_direction = "2/8";
+      distinct = true;
+    }
+    else {
+      line_direction = "6/8";
+      distinct = true;
+    }
+    const texture = textures
+        .lines()
+        .size(6)
+        .strokeWidth(distinct)
+        .orientation(line_direction)
+    svg.call(texture);
+    svg.append('circle').attr('r', '20px').attr('cx', '20').attr('cy', '20').attr('fill', texture.url());
+    legend.appendChild(svg.node()); 
+  })
+  
+  
+  // Submitting the default trees on load
   document.body.onfocus = submit_tree();
 }
 
