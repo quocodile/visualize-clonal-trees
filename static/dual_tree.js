@@ -384,6 +384,37 @@ function visualize_singleview(jsonData, distance_measure, dom_data) {
   }
 }
 
+
+//adapted from https://awik.io/determine-color-bright-dark-using-javascript/
+function isDark(color) {
+
+    var r, g, b, hsp;
+
+    // RGB --> store the red, green, blue values in separate variables
+        color = color.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*(\d+(?:\.\d+)?))?\)$/);
+        
+    r = color[1];
+    g = color[2];
+    b = color[3];
+    
+    // equation from http://alienryderflex.com/hsp.html
+    hsp = Math.sqrt(
+    0.299 * (r * r) +
+    0.587 * (g * g) +
+    0.114 * (b * b)
+    );
+
+    if (hsp>127.5) {
+
+        return 0; //light
+    } 
+    else {
+
+        return 1; //dark
+    }
+}
+
+
 // Coloring scheme for DIST, CASet, and ancestor descendant -> node based
 function node_colored_tree(d3_nodes, d3_links, t_max, t_min, scale, t1_only_mutations, t2_only_mutations, svg1, svg2) {
     
@@ -397,10 +428,10 @@ function node_colored_tree(d3_nodes, d3_links, t_max, t_min, scale, t1_only_muta
       }
     })
 	.style("fill", function(d) { //fill tree-distinct nodes with texture
-
-
+	    
 	    var line_direction = "";
 	    var distinct = false;
+	    var stroke_color = 'black';
 
 	    if (t1_only_mutations.some(mut => d.data.id.split("_").includes(mut))) {
 		line_direction = "2/8";
@@ -418,10 +449,15 @@ function node_colored_tree(d3_nodes, d3_links, t_max, t_min, scale, t1_only_muta
 	      background_color = "lightgray";
 	}
 
+	if (isDark(background_color)) {
+	    stroke_color = 'white';
+	}
+
 	const texture = textures
 	      .lines()
 	      .size(6)
 	      .strokeWidth(1.5)
+	      .stroke(stroke_color)
 	      .orientation(line_direction)
 	      .background(background_color);   
 
@@ -1940,12 +1976,6 @@ function createHeatmap(distanceMeasure, t1_muts, t2_muts, t1_edges, t2_edges) {
     //.classed('heatmap-links', true)
     .attr('x' , d => {
 	if (distanceMeasure === "parent_child_distance") {
-
-	    console.log("hi there")
-	    console.log(xScale(d.parent.mutation))
-	    console.log(square_side)
-	    console.log(t1_muts[0])
-	    
          return xScale(d.parent.mutation);
       }
       else if (distanceMeasure === "ancestor_descendant_distance") {
