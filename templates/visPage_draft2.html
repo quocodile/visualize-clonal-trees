@@ -14,6 +14,11 @@
     <title>Document</title>
 </head>
 <body>
+    <header>
+      <div id="vectr-title">
+        Visual Encodings for Clonal Trees
+      </div>    
+    </header>
     <div class="site-container">
         <div class="main-site-columns left-column">
             <div>
@@ -76,9 +81,9 @@
         </div>
         <div class="main-site-columns second-left-column">
 	    <div id="tree-label-info-container">
-	        <div id="tree1-mutations-container" class="tree-label-info"><h3>Distinct Tree 1 Mutations</h3><p id="tree1-mutations"><div class="texture-legend" id="t1-texture-legend"></div></p></div>
+	        <div id="tree1-mutations-container" class="tree-label-info"><h3>Distinct Tree 1 Mutations</h3><p id="tree1-mutations"></p></div>
 	        <div id="shared-mutations-container" class="tree-label-info"><h3>Shared Tree Mutations</h3><p id="shared-mutations"></p></div>
-	        <div id="tree2-mutations-container" class="tree-label-info"><h3>Distinct Tree 2 Mutations</h3><p id="tree2-mutations"><div class="texture-legend" id="t2-texture-legend"></div></p></div>
+	        <div id="tree2-mutations-container" class="tree-label-info"><h3>Distinct Tree 2 Mutations</h3><p id="tree2-mutations"></p></div>
 	    </div>
         </div>
         <div class="main-site-columns middle-column">
@@ -98,7 +103,7 @@
                     </div>
                 </div>
                 <div class="tree-label" style="color: #d95f02;">
-                  T1
+                  Tree 1
                 </div>
                     <svg id="svg1" width="100%" height="99%"> 
                     <g id="tree1_visualization_group" transform="translate(550,30)">
@@ -113,10 +118,22 @@
                 </div>-->
             </div>
             <div class="legend-component">
+              <div id="no-contribution-legend">
+                <div id="no-contribution-text">No contribution</div>
+                <div id="no-contribution-shape-container">
+                  <div id="no-contribution-shape"></div>
+                </div>
+              </div>
               <div class="legend-container" class="singleview" id="anyscale">
                 <div id="less-contribution-label">Less contribution</div>
                 <div id="more-contribution-label">More contribution</div>
                 <div class="legend"></div>
+              </div>
+              <div id="texture-legend-container">
+                <div class="texture-legend-text">Tree 1</div>
+                <div class="texture-legend" id="t1-texture-legend"></div>
+                <div class="texture-legend-text">Tree 2</div>
+                <div class="texture-legend" id="t2-texture-legend"></div>
               </div>
             </div>
             <div class="tree2_visualization">
@@ -134,7 +151,7 @@
 		    </div>
                 </div>
                 <div class="tree-label" style="color: #7570b3;">
-                  T2
+                  Tree 2
                 </div>
                 <svg id="svg2" width="100%" height="99%"> 
                 <g id="tree2_visualization_group" transform="translate(550,30)">

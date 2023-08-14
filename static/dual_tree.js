@@ -48,7 +48,7 @@ function initialize() {
         .strokeWidth(1.5)
         .orientation(line_direction)
     svg.call(texture);
-    svg.append('circle').attr('r', '15px').attr('cx', '20').attr('cy', '20').attr('fill', texture.url()).attr('stroke', 'black');
+    svg.append('circle').attr('r', '10px').attr('cx', '20').attr('cy', '20').attr('fill', texture.url()).attr('stroke', 'black');
     legend.appendChild(svg.node()); 
   })
   
