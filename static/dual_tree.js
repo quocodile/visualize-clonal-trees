@@ -567,8 +567,26 @@ function edge_colored_tree(d3_nodes, d3_links, t_max, t_min, scale, t1_only_muta
       .style("transform", "translate(5, 20), scale(0.5)")
 }
 
+function setNoContributionLegend() {
+  var div = document.getElementById("no-contribution-shape")
+  if (distanceMetric.value === "parent_child_distance") {
+    div.style.width = "100%";
+    div.style.height = "2px";
+    div.style.borderRadius = "none";
+    div.style.border = "none";
+  }
+  else {
+    div.style.width = "20px";
+    div.style.height = "20px";
+    div.style.borderRadius = "50%";
+    div.style.border = "1px solid gray";
+  }
+  console.log("borderRadius", div.style.borderRadius);
+}
+
 function submit_tree() {
   closeManualEditModal();
+  setNoContributionLegend();
   /*
     Send trees to api in order to get
     data for input into d3 visualizations
@@ -1035,191 +1053,118 @@ function multiView(dom_data) {
   dom_data.multiview_btn.style.color = btnsDisplayed? "black": "#F5F5F5";
 }
 
-function create_tripartite(t1_muts, t2_muts, t1_tripartite_edges, t2_tripartite_edges) {
-  console.log("Muts", t1_muts, t2_muts)
-  console.log("Edges", t1_tripartite_edges, t2_tripartite_edges)
-  mutation_objects = [] 
-  t1_mutation_objects = [] 
-  t2_mutation_objects = [] 
-  t1_muts.forEach(mut => {
-    mutation_objects.push({"mutation": mut})
-    t1_mutation_objects.push({"mutation": mut})
-  })
-  t2_muts.forEach(mut => {
-    mutation_objects.push({"mutation": mut})
-    t2_mutation_objects.push({"mutation": mut})
-  })
-    
-  const plot = mod.plot({
-	  width: 500,
-	  height: 600,
-	  marginRight: 100,
-	  marginLeft: 100,
-	  x: {axis: null},
-	  y: {axis: "both",
-            domain: d3.map(intersectOrdering(t1_muts, t2_muts, t1_mutation_objects, t2_mutation_objects), d => d.mutation) 
-          },
-	  marks: [
-	    mod.dot(mutation_objects, {/*fill: 'black' d => colorScale(d.cluster),*/ r: 5, y: 'mutation', x: 1, title: 'mutation', opacity: .4}),
-	    mod.dot(mutation_objects, {/*fill: 'black' d => colorScale(d.cluster),*/ r: 10, y: 'mutation', x: 2, title: 'mutation'}),
-	    mod.dot(mutation_objects, {/*fill: 'black' /*d => colorScale(d.cluster),*/ r: 5, y: 'mutation', x: 3, title: 'mutation', opacity: .4}),   
-	    mod.link(calculateEdgeColorsTripartite(t1_tripartite_edges, t2_tripartite_edges), {x1: 1, x2: 2, y1: d => d['parent'], y2: d => d['child'], stroke: d => d["color"]}), 
-	    mod.link(calculateEdgeColorsTripartite(t1_tripartite_edges, t2_tripartite_edges), {x1: 2, x2: 3, y1: d => d['parent'], y2: d => d['child'], stroke: d => d["color"]})
-	  ]
-  })
-  var div = document.querySelector(".tripartite-component");
-  if (div.lastElementChild) {
-    console.log("Remove a child");
-    div.removeChild(div.lastElementChild);
-  }
-  div.append(plot);
+function calculateEdgeColorsTripartite(distanceMeasure, arr1, arr2) {
+  let edges = [];
+      edgesIndex = 0;
 
+  for (let i=0; i<arr1.length; i++) {
+    let shared = 0;
+    for (let j=0; j<arr2.length; j++) {
+      if (distanceMeasure === "parent_child_distance") {
+        let sameParent = arr1[i].parent === arr2[j].parent;
+        let sameChild = arr1[i].child == arr2[j].child;
+        if (sameParent && sameChild) {
+          shared = 1;
+        }
+      }
+      else if (distanceMeasure === "ancestor_descendant_distance") {
+        let sameAncestor = arr1[i].ancestor === arr2[j].ancestor;
+        let sameDescendant = arr1[i].descendant == arr2[j].descendant;
+        if (sameAncestor && sameDescendant) {
+          shared = 1;
+        }
+      }
+    }
+    if (!shared) {
+      let color = "#d95f02",
+          index = edgesIndex;
+      if (distanceMeasure === "parent_child_distance") {
+        let parent = arr1[i].parent,
+            child = arr1[i].child;
+        edges[edgesIndex] = { parent, child, color, index }
+      }
+      else if (distanceMeasure === "ancestor_descendant_distance") {
+        let ancestor = arr1[i].ancestor,
+            descendant = arr1[i].descendant;
+        edges[edgesIndex] = { ancestor, descendant, color, index }
+      }
+      edgesIndex++;
+    }
+  }
+
+  // also check for edges in arr2 not in arr1
+  for (let i=0; i<arr2.length; i++) {
+    let shared = 0;
+    for (let j=0; j<arr1.length; j++) {
+      if (distanceMeasure === "parent_child_distance") {
+        let sameParent = arr2[i].parent === arr1[j].parent;
+        let sameChild = arr2[i].child === arr1[j].child;
+        if (sameParent && sameChild) {
+          shared = 1;
+        }
+      }
+      else if (distanceMeasure === "ancestor_descendant_distance") {
+        let sameAncestor = arr2[i].ancestor === arr1[j].ancestor;
+        let sameDescendant = arr2[i].descendant === arr1[j].descendant;
+        if (sameAncestor  && sameDescendant) {
+          shared = 1;
+        }
+      }
+    }
+    if (!shared) {
+      let color = "#7570b3",
+          index = edgesIndex;
+      if (distanceMeasure === "parent_child_distance") {
+        let parent = arr2[i].parent,
+            child = arr2[i].child;
+        edges[edgesIndex] = { parent, child, color, index }
+      }
+      else if (distanceMeasure === "ancestor_descendant_distance") {
+        let ancestor = arr2[i].ancestor,
+            descendant = arr2[i].descendant;
+        edges[edgesIndex] = { ancestor, descendant, color, index }
+      }
+      edgesIndex++;
+    }
+  }
+  return edges;
 }
 
+/*
 function calculateEdgeColorsTripartite(arr1, arr2) {
     let edges = Array(),
       edges_index = 0;
     for (let i = 0; i < arr1.length; i++) {
-
       let shared = 0;
-
       for (let j = 0; j < arr2.length; j++) {
-    
           if ((arr1[i].parent == arr2[j].parent) && (arr1[i].child == arr2[j].child)) {
-            //then the edge is shared
             shared = 1;
-
-            //comment out if only the non-shared edges should be displayed
-            //edges[edges_index] = {"parent": arr1[i]["parent"], "child": arr1[i]["child"], "color": "lightgrey", "index": edges_index};
-            //edges_index++;
           }
-        
       }
-
       if (!shared) {
         edges[edges_index] = {"parent": arr1[i]["parent"], "child": arr1[i]["child"], "color": "#d95f02", "index": edges_index};
         edges_index++;
       }
     }
 
-
-    //also check if there are any edges in arr2 that are not in arr1
-
+    // also check if there are any edges in arr2 that are not in arr1
     for (let i = 0; i < arr2.length; i++) {
-
       let shared = 0;
-
       for (let j = 0; j < arr1.length; j++) {
-    
           if ((arr2[i].parent == arr1[j].parent) && (arr2[i].child == arr1[j].child)) {
             //then the edge is shared
             shared = 1;
           }
       }
-
       if (!shared) {
         edges[edges_index] = {"parent": arr2[i]["parent"], "child": arr2[i]["child"], "color": "#7570b3", "index": edges_index};
         edges_index++;
       }
     }
-
-  
-
     return edges;
-
-  
 }
+*/
 
-function create_heatmap(t1_muts, t2_muts, t1_tripartite_edges, t2_tripartite_edges) {
-  var div = document.querySelector(".heatmap-component");
-  var height = div.offsetHeight;
-  var width = div.offsetWidth;
-  var total_mutations = []
-  mutation_objects = [] 
-  t1_mutation_objects = [] 
-  t2_mutation_objects = [] 
-  t1_muts.forEach(mut => {
-    mutation_objects.push({"mutation": mut})
-    t1_mutation_objects.push({"mutation": mut})
-    total_mutations.push(mut)
-  })
-  t2_muts.forEach(mut => {
-    mutation_objects.push({"mutation": mut})
-    t2_mutation_objects.push({"mutation": mut})
-    total_mutations.push(mut)
-  })
-  total_mutations = new Set(total_mutations)
-    
-  let margin = {top: 100, left: 100, right: 100, bottom: 100};
-
-  let mutations_list = mutation_objects;
-    mutations_order = total_mutations;
-    edges1 = t1_tripartite_edges;
-    edges2 = t2_tripartite_edges;
-    mutations1 = t1_muts;
-    mutations2 = t2_muts;
-
-  console.log(mutations_order);
-  let square_side = (height - margin.bottom) / mutations_order.size;
-
-  let xScale = d3.scalePoint()
-    .domain(mutations_order)
-    .range([margin.left, width - margin.right])
-  
-  let yScale = d3.scalePoint()
-    .domain(mutations_order)
-    .range([margin.bottom, height - margin.top])
-  
-  let svg = d3.create('svg').attr('width', width).attr('height', height).style('margin', 'auto');
-
-  svg.selectAll('.link')
-    .data(calculateEdgeColorsHeatMap(edges1, edges2, mutations1, mutations2, mutations_list))
-    .join('rect')
-    .attr('x' , d => xScale(d.parent.mutation))
-    .attr('y', d => yScale(d.child.mutation))
-    .attr('stroke', "black")
-    .attr("stroke-width", 0.25)
-    .attr('width',  (width - margin.left - margin.right) / mutations_order.size + 'px')  
-    .attr('height', (height - margin.top - margin.bottom) / mutations_order.size + 'px')
-    .attr('fill', d => d.color)
-
-  
-  svg.selectAll('.heatmap-rowLabel')
-    .data(mutations_order)
-    .join('text')
-    .attr("x", 0)
-    .classed("heatmap-rowLabel", true)
-    .attr("y", d => yScale(d) + 15)
-    .text(d => d)
-    .style('font-size',  '13px')
-    .on('mouseover', function(event, data) {
-      console.log(data);
-      createLinkedHighlighting(this, data); 
-    })
-    .on('mouseout', function(event, data) {
-      console.log(data);
-      removeLinkedHighlighting(this, data); 
-    })
-
-  svg.selectAll('text.rotation')
-   .data(mutations_order)
-   .enter()
-   .append('text')
-   .text((d)=>d)
-   .classed('rotation', true)
-   .attr('fill', 'black')
-   .attr('transform', (d,i)=>{
-       return 'translate( '+(xScale(d) + (square_side/4)) +' , '+0+'),'+ 'rotate(90)';})
-   .attr('x', 0)
-   .attr('y',  0)
-   .style('font-size',  '13px')
-  
-  if (div.lastElementChild) {
-    console.log("Remove a child");
-    div.removeChild(div.lastElementChild);
-  }
-  div.append(svg.node());
-}
 function intersectOrdering(mutationsT1, mutationsT2, mutationObjectsT1, mutationObjectsT2) {
   var lst = []; //makes a copy of mutationsT1
   mutationObjectsT1.forEach(mutationObject => {
@@ -1501,49 +1446,6 @@ function removeLinkedHighlighting(clickedElement, mutation) {
     .style("font-size", font_size);
 }
 
-function calculateEdgeColorsHeatMap(edges1, edges2, mutations1, mutations2, total_mutations) {
-    let edges = Array(),
-      edges_index = 0;
-  
-    for (let i = 0; i < total_mutations.length; i++) {
-      for (let j = 0; j < total_mutations.length; j++) {
-
-        let in_tree1 = 0,
-          in_tree2 = 0;
-
-        //current edge is in tree 1
-        if (lookUpIndexEdgesParentChild(edges1, {parent: total_mutations[i].mutation, child: total_mutations[j].mutation}) != -1) {
-          in_tree1 = 1;
-        }
-
-        //check if current edge is in tree 2
-        if (lookUpIndexEdgesParentChild(edges2, {parent: total_mutations[i].mutation, child: total_mutations[j].mutation}) != -1) {
-          in_tree2 = 1;
-        }
-
-        //decide what color depending on if it's: both, just tree1, just tree2, or neither
-
-        //default to neither (empty/white square)
-        
-        let square_color = "white";
-
-        if (in_tree1) { //only in tree 1
-          square_color = "#d95f02";
-        }
-        if (in_tree2) { //only in tree 2
-          square_color = "#7570b3";
-        }
-         if (in_tree1 && in_tree2) { //in both trees
-          square_color = "lightgrey";
-        }
-
-        edges[edges_index] = {"parent": {"mutation": total_mutations[i].mutation}, "child": {"mutation": total_mutations[j].mutation}, "color": square_color, "index": edges_index};
-        edges_index++;
-        
-      }
-    }
-    return edges;
-}
 
 // D3 implementation of the tripartite graph
 function createTripartite(distanceMeasure, t1_muts, t2_muts, t1_tripartite_edges, t2_tripartite_edges) {
@@ -1636,12 +1538,7 @@ function createTripartite(distanceMeasure, t1_muts, t2_muts, t1_tripartite_edges
 
   var mutList = total_mutations 
   var colored_edges = '' // deciding orange or purple edge
-  if (distanceMeasure === "parent_child_distance") {
-    colored_edges = calculateEdgeColorsTripartite(t1_tripartite_edges, t2_tripartite_edges);
-  }
-  else if (distanceMeasure === "ancestor_descendant_distance") {
-    colored_edges = calculateEdgeColorsAncestorDescendantTripartite(t1_tripartite_edges, t2_tripartite_edges) 
-  }
+  colored_edges = calculateEdgeColorsTripartite(distanceMeasure, t1_tripartite_edges, t2_tripartite_edges)
 
   // defines x and y axis of tripartite graph
   var mutationScale = d3.scalePoint().domain(mutList).range([margin.top, height - margin.top])
@@ -1736,7 +1633,7 @@ function createTripartite(distanceMeasure, t1_muts, t2_muts, t1_tripartite_edges
   })
   .attr('stroke', d => d.color)
 
-   svg.selectAll('middle-to-right-edges')
+  svg.selectAll('middle-to-right-edges')
   .data(colored_edges)
   .join('line')
   .classed('middle-to-right-edges', true)
@@ -1767,87 +1664,25 @@ function createTripartite(distanceMeasure, t1_muts, t2_muts, t1_tripartite_edges
   div.append(svg.node())
 }
 
-//ANCESTOR DESCENDANT TRIPARTITE
-
-function calculateEdgeColorsAncestorDescendantTripartite(arr1, arr2) {
+function calculateEdgeColorsHeatMap(edges1, edges2, mutations1, mutations2, total_mutations) {
     let edges = Array(),
-      edges_index = 0;
-    for (let i = 0; i < arr1.length; i++) {
-
-      let shared = 0;
-
-      for (let j = 0; j < arr2.length; j++) {
-    
-          if ((arr1[i].ancestor == arr2[j].ancestor) && (arr1[i].descendant == arr2[j].descendant)) {
-            //then the edge is shared
-            shared = 1;
-
-            //comment out if only the non-shared edges should be displayed
-            //edges[edges_index] = {"ancestor": arr1[i]["ancestor"], "descendant": arr1[i]["descendant"], "color": "lightgrey", "index": edges_index};
-            //edges_index++;
-          }
-        
-      }
-
-      if (!shared) {
-        edges[edges_index] = {"ancestor": arr1[i]["ancestor"], "descendant": arr1[i]["descendant"], "color": "#d95f02", "index": edges_index};
-        edges_index++;
-      }
-    }
-
-
-    //also check if there are any edges in arr2 that are not in arr1
-
-    for (let i = 0; i < arr2.length; i++) {
-
-      let shared = 0;
-
-      for (let j = 0; j < arr1.length; j++) {
-    
-          if ((arr2[i].ancestor == arr1[j].ancestor) && (arr2[i].descendant == arr1[j].descendant)) {
-            //then the edge is shared
-            shared = 1;
-          }
-      }
-
-      if (!shared) {
-        edges[edges_index] = {"ancestor": arr2[i]["ancestor"], "descendant": arr2[i]["descendant"], "color": "#7570b3", "index": edges_index};
-        edges_index++;
-      }
-    }
-
-  
-
-    return edges;
-
-  
-}
-
-function calculateEdgeColorsHeatMapAncestorDescendant(edges1, edges2, mutations1, mutations2, total_mutations) {
-    let edges = Array(),
-      edges_index = 0;
+        edges_index = 0;
   
     for (let i = 0; i < total_mutations.length; i++) {
       for (let j = 0; j < total_mutations.length; j++) {
-
         let in_tree1 = 0,
           in_tree2 = 0;
-
         //current edge is in tree 1
-        if (lookUpIndexEdgesAncestorDescendant(edges1, {ancestor: total_mutations[i].mutation, descendant: total_mutations[j].mutation}) != -1) {
+        if (lookUpIndexEdgesParentChild(edges1, {parent: total_mutations[i].mutation, child: total_mutations[j].mutation}) != -1) {
           in_tree1 = 1;
         }
-
-        //check if current edge is in tree 2
-        if (lookUpIndexEdgesAncestorDescendant(edges2, {ancestor: total_mutations[i].mutation, descendant: total_mutations[j].mutation}) != -1) {
+        // check if current edge is in tree 2
+        if (lookUpIndexEdgesParentChild(edges2, {parent: total_mutations[i].mutation, child: total_mutations[j].mutation}) != -1) {
           in_tree2 = 1;
         }
-
-        //decide what color depending on if it's: both, just tree1, just tree2, or neither
-
-        //default to neither (empty/white square)
+        // decide what color depending on if it's: both, just tree1, just tree2, or neither
+        // default to neither (empty/white square)
         let square_color = "white";
-
         if (in_tree1) { //only in tree 1
           square_color = "#d95f02";
         }
@@ -1857,10 +1692,79 @@ function calculateEdgeColorsHeatMapAncestorDescendant(edges1, edges2, mutations1
          if (in_tree1 && in_tree2) { //in both trees
           square_color = "lightgrey";
         }
+        edges[edges_index] = {"parent": {"mutation": total_mutations[i].mutation}, "child": {"mutation": total_mutations[j].mutation}, "color": square_color, "index": edges_index};
+        edges_index++;
+      }
+    }
+    return edges;
+}
 
+//ANCESTOR DESCENDANT TRIPARTITE
+function calculateEdgeColorsAncestorDescendantTripartite(arr1, arr2) {
+    let edges = Array(),
+      edges_index = 0;
+    for (let i = 0; i < arr1.length; i++) {
+      let shared = 0;
+      for (let j = 0; j < arr2.length; j++) {
+          if ((arr1[i].ancestor == arr2[j].ancestor) && (arr1[i].descendant == arr2[j].descendant)) {
+            shared = 1;
+          }
+      }
+      if (!shared) {
+        edges[edges_index] = {"ancestor": arr1[i]["ancestor"], "descendant": arr1[i]["descendant"], "color": "#d95f02", "index": edges_index};
+        edges_index++;
+      }
+    }
+
+    //also check if there are any edges in arr2 that are not in arr1
+    for (let i = 0; i < arr2.length; i++) {
+      let shared = 0;
+      for (let j = 0; j < arr1.length; j++) {
+          if ((arr2[i].ancestor == arr1[j].ancestor) && (arr2[i].descendant == arr1[j].descendant)) {
+            //then the edge is shared
+            shared = 1;
+          }
+      }
+      if (!shared) {
+        edges[edges_index] = {"ancestor": arr2[i]["ancestor"], "descendant": arr2[i]["descendant"], "color": "#7570b3", "index": edges_index};
+        edges_index++;
+      }
+    }
+    return edges;
+}
+
+function calculateEdgeColorsHeatMapAncestorDescendant(edges1, edges2, mutations1, mutations2, total_mutations) {
+    let edges = [],
+      edges_index = 0;
+
+    for (let i = 0; i < total_mutations.length; i++) {
+      for (let j = 0; j < total_mutations.length; j++) {
+        let in_tree1 = 0,
+            in_tree2 = 0;
+        // current edge is in tree 1
+        if (lookUpIndexEdgesAncestorDescendant(edges1, {ancestor: total_mutations[i].mutation, descendant: total_mutations[j].mutation}) != -1) {
+          in_tree1 = 1;
+        }
+        // check if current edge is in tree 2
+        if (lookUpIndexEdgesAncestorDescendant(edges2, {ancestor: total_mutations[i].mutation, descendant: total_mutations[j].mutation}) != -1) {
+          in_tree2 = 1;
+        }
+
+        //decide what color depending on if it's: both, just tree1, just tree2, or neither
+
+        //default to neither (empty/white square)
+        let square_color = "white";
+        if (in_tree1) { //only in tree 1
+          square_color = "#d95f02";
+        }
+        if (in_tree2) { //only in tree 2
+          square_color = "#7570b3";
+        }
+         if (in_tree1 && in_tree2) { //in both trees
+          square_color = "lightgrey";
+        }
         edges[edges_index] = {"ancestor": {"mutation": total_mutations[i].mutation}, "descendant": {"mutation": total_mutations[j].mutation}, "color": square_color, "index": edges_index};
         edges_index++;
-        
       }
     }
     return edges;
