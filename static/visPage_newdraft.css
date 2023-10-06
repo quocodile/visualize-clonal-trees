@@ -21,17 +21,18 @@ header {
 }
 
 #vectr-title {
-  width: 300px;
+  width: 100%;
   height: 50px;
   line-height: 40px;
-  text-align: center;
+  text-align: left;
   font-family: Helvetica;
   color: black;
 }
 
+
 .site-container {
     display: grid;
-    grid-template-columns: 15% 10% 50% 25%;
+    grid-template-columns: 70% 30%;
     height: calc(100% - 40px);
     margin: 0;
 }
@@ -109,12 +110,12 @@ header {
 }
 
 .site-container > .right-column > .tripartite-component {
-  height: 56%;
+  height: 54%;
   border-bottom: 1px solid black;
 }
 
 .site-container > .right-column > .heatmap-component {
-  height: 40%;
+  height: 46%;
 }
 
 /* Pertaining to the singleview color legend */
@@ -186,7 +187,8 @@ header {
 .legend-container {
     display: block;
     position: relative;
-    width: 60%;
+    width: 40%;
+    
 }
 
 .legend {
@@ -203,6 +205,7 @@ header {
     justify-content: space-between;
     margin-top: 5px;
     margin-left: 20px;
+    
 }
 
 #distance-measure-label {
@@ -242,8 +245,10 @@ header {
 #summary-statistics-table {
   border: 1px solid black;
   border-collapse: collapse;
-  margin: 5%;
   background-color: #F5F5F5;
+  position: absolute;
+  left: 10px;
+  top: 50px;
 }
 #summary-statistics-table th{
   border: 1px solid black;
@@ -261,11 +266,6 @@ header {
   font-size: 12px;
 }
 
-#distinct-mutations-scroll {
-    
-		      
-}
-
 #table-name > th{
   text-align: center;
 }
@@ -274,13 +274,13 @@ header {
 .upload-file-icon {
   position: absolute;
   top: 10px;
-  left: 10px;
+  left: 100px;
 }
 
 .edit-file-icon {
   position: absolute;
-  top: 60px;
-  left: 10px;
+  top: 10px;
+  left: 150px;
 }
 
 .edit-textarea {
@@ -427,7 +427,7 @@ p > div > span {
 /* This is the styling for tree labels T1 and T2*/
 .tree-label {
   position: absolute;
-  right: 10px;
+  left: 10px;
   top: 10px;
   font-size: 1.5em;
   font-family: Monospace;
