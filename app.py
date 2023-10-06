@@ -11,10 +11,6 @@ import api
 app = flask.Flask(__name__, static_folder='static', template_folder='templates')
 app.register_blueprint(api.api, url_prefix='/api')
 
-from flask_util_js import FlaskUtilJs
-# For flask_util.url_for() in JavaScript: https://github.com/dantezhu/flask_util_js
-fujs = FlaskUtilJs(app)
-
 # This route delivers the user your site's home page.
 @app.route('/')
 def home():
