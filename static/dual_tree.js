@@ -601,8 +601,6 @@ function submit_tree() {
   var url_components = [url, "tree1=", tree1Input, "&tree2=", tree2Input, "&treeType1=", tree1Type, "&treeType2=", tree2Type]
   url = url_components.join("");
 
-  url = flask_util.url_for(distanceMetric.value, {'tree1': tree1Input, 'tree2': tree2Input, 'treeType1': tree1Type, 'treeType2': tree2Type })
-
   fetch(url)
   .then(response => response.json())
   .then(json_data => {
