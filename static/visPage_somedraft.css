@@ -1,0 +1,539 @@
+html {
+  margin: 0;
+  padding: 0;
+} 
+
+body { 
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+}
+
+h4 {
+  padding: 10px 0px 10px 10px;
+  margin: 0;
+}
+
+header {
+  height: 40px;
+  background-color: lightgray;
+  width: 100%;
+}
+
+#vectr-title {
+  width: 300px;
+  height: 50px;
+  line-height: 40px;
+  text-align: center;
+  font-family: Helvetica;
+  color: black;
+}
+
+.site-container {
+    display: grid;
+    grid-template-columns: 15% 60% 25%;
+    height: calc(100% - 40px);
+    margin: 0;
+}
+
+
+.main-site-columns {
+    margin: 0;
+    height: 99%;
+}
+
+.site-container > .left-column {
+    flex-direction: column;
+    display: grid;
+    grid-template-rows: 45% 45%;
+    margin: 0;
+}
+
+.site-container > .left-test-column {
+    flex-direction: column;
+    display: grid;
+    grid-template-rows: 5% 19% 13% 13%
+			5% 19% 13% 13%;
+    margin: 0;
+}
+
+.site-container > .middle-column {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+}
+
+.site-container > .middle-column > div {
+    margin: 0;
+    /*border: 1px solid black;*/
+}
+
+.site-container > .middle-column > .tree1_visualization {
+    position: relative;
+    height: 50%;
+    width: 100%;
+    box-shadow: inset 0 0 10px #d95f02; 
+}
+
+.site-container > .middle-column > .tree2_visualization {
+    position: relative;
+    height: 50%;
+    width: 100%;
+    box-shadow: inset 0 0 10px #7570b3; 
+}
+
+
+
+
+.site-container > .right-column > div {
+  /*border-bottom: 1px solid black;*/
+}
+
+
+
+/* Pertaining to the rightmost column containing tripartite and heatmap */
+.intersection-union-option {
+  width: 100%;
+  height: 4%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-bottom: 1px solid black;
+}
+
+.intersection-union-option > div {
+  height: 20px;
+  display: flex;
+}
+
+.intersection-union-option > div > div {
+  height: 100%;
+  width: 100%;
+  padding-left: 10px;
+}
+
+.site-container > .right-column > .tripartite-component {
+  height: 56%;
+  border-bottom: 1px solid black;
+}
+
+.site-container > .right-column > .heatmap-component {
+  height: 40%;
+}
+
+
+
+
+
+
+
+
+
+.tree1-summary-options-container {
+    display: grid;
+    grid-template-rows: 40% 20% 20% 20%;
+}
+
+.tree2-summary-options-container {
+   
+  display: grid;
+  grid-template-rows: 40% 20% 20% 20%;
+}
+
+
+
+
+
+
+
+/* Pertaining to the singleview color legend */
+.site-container > .middle-column > .tree1_visualization > .legend-component {
+    position: absolute;
+    bottom: 10px;
+    right: 0;
+    /*width: 280px;*/
+}
+
+.site-container > .middle-column > .tree2_visualization > .legend-component {
+    position: absolute;
+    bottom: 10px;
+    right: 0;
+    /*width: 280px;*/
+}
+
+.legend-component {
+  height: 45px;
+  display: flex;
+  align-items: center;
+}
+
+#no-contribution-legend {
+  width: 20%;
+  display: flex;
+  align-items: center;
+}
+
+#no-contribution-text {
+  width: 100px;
+  font-size: 11px;
+  text-align: center;
+}
+
+#no-contribution-shape-container {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  width: 50%;
+  padding: 0px 5px;
+}
+
+#no-contribution-shape {
+  display: block;
+  width: 100%;
+  height: 2px;
+  background-color: lightgray;
+}
+
+
+#distance-evaluation-container {
+  display: flex;
+  margin-left: 20px;
+  width: 250px;
+  height: 30px;
+  align-items: center;
+  padding: 0;
+}
+
+#distance_metric {
+  display: block;
+  margin-top: -16px;
+  height: 30px;
+  min-width: 100px;
+  width: 80%;
+}
+
+.legend-container {
+    display: block;
+    position: relative;
+    width: 60%;
+}
+
+.legend {
+    height: 20px;
+    min-width: 100px;
+    width: 100%; 
+    box-shadow: inset 0 0 1px black; 
+}
+
+.legend-labels-container {
+    width: 200px;
+    height: 20px;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 5px;
+    margin-left: 20px;
+}
+
+#distance-measure-label {
+  display: block;
+  margin-left: 10px;
+  height: 20px;
+  width: 400px;
+}
+
+.label {
+    width: 10px;
+    height: 20px;
+    font-size: 12px;
+}
+
+.legend-container > #less-contribution-label {
+  position: absolute;
+  width: 200px;
+  left: 5px;
+  top: 1px;
+  font-size: 11px;
+  line-height: 20px;
+}
+
+.legend-container > #more-contribution-label {
+  position: absolute;
+  width: 200px;
+  right: 5px;
+  top: 1px;
+  color: white;
+  text-align: right;
+  font-size: 11px;
+  line-height: 20px;
+}
+
+/* Pertaining to the texture legend */
+.texture-legend {
+  width: 40px;
+  height: 40px;
+}
+
+#texture-legend-container {
+  display: flex;
+  width: 40%;
+  font-size: 11px;
+}
+
+.texture-legend-text {
+  line-height: 40px;
+  padding-left: 5px;
+}
+
+#tree-label-info-container {
+    /*border-bottom: 1px solid black;*/
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.tree-label-info {
+    flex: 1;
+    height: auto;
+    /*border-bottom: 1px solid black;*/
+    height: calc(100% / 3);
+}
+
+.tree-label-info > h3{
+    text-align: left;
+    font-size: 16px;
+    text-decoration: underline;
+    padding-left: 10px;
+}
+
+p > div {
+  min-width: 30px;
+  height: 20px;
+  padding-left: 10px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Pertaining to the singleview summary statistics */
+#summary-statistics-table {
+  border: 1px solid black;
+  border-collapse: collapse;
+  margin: 5%;
+  background-color: #F5F5F5;
+}
+#summary-statistics-table th{
+  border: 1px solid black;
+  border-collapse: collapse;
+  padding: 2px;
+  text-align: left;
+  font-size: 15px;
+}
+#summary-statistics-table td{
+  border: 1px solid black;
+  border-collapse: collapse;
+  padding: 2px;
+  font-weight: normal;
+  font-family: Monospace;
+  font-size: 12px;
+}
+
+/* second copy of summary statistics table for tree 2 */
+#summary-statistics-table2 {
+  border: 1px solid black;
+  border-collapse: collapse;
+  margin: 5%;
+  background-color: #F5F5F5;
+}
+#summary-statistics-table2 th{
+  border: 1px solid black;
+  border-collapse: collapse;
+  padding: 2px;
+  text-align: left;
+  font-size: 15px;
+}
+#summary-statistics-table2 td{
+  border: 1px solid black;
+  border-collapse: collapse;
+  padding: 2px;
+  font-weight: normal;
+  font-family: Monospace;
+  font-size: 12px;
+}
+
+
+#table-name > th{
+  text-align: center;
+}
+
+/* Pertainining to the input management */
+.upload-file-icon {
+  position: relative;
+  /*top: 10px;
+  right: 10px;*/
+}
+
+.edit-file-icon {
+    position: relative;
+    /*
+  top: 60px;
+  right: 10px;
+*/
+}
+
+.edit-textarea {
+  position: absolute;
+  top: 110px;
+  left: 10px;
+}
+
+/* Pertaining to the mutation venn diagram */
+#tree1-mutations, #tree2-mutations {
+    word-wrap: break-word;
+    margin: 0;
+    font-size: 16px;
+}
+
+#tree1-mutations-container {
+  box-shadow: inset 0 0 5px #d95f02; 
+  overflow: scroll;
+  position: relative;
+}
+
+#tree2-mutations-container {
+  box-shadow: inset 0 0 5px #7570b3; 
+  overflow: scroll;
+  position: relative;
+}
+
+
+
+
+
+
+
+/* The mutations in the venn diagram */
+p > div > span {
+  font-family: Monospace;
+  font-size: 13px;
+}
+
+#modal-container {
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  position: absolute;
+  top: 0;
+  backdrop-filter: blur(3px);
+  display: none;
+  justify-content: center;
+  align-items: center;
+}
+
+#manual-edit-modal {
+  width: 40%;
+  height: 40%;
+  min-height: 450px;
+  background-color: white;
+  border-radius: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+#manual-edit-modal > .manual-edit-textarea {
+  width: 95%; 
+  height: 70%;
+  border-radius: 5px;
+}
+
+#manual-edit-modal > #t1-manual-edit-textarea {
+  display: none;
+}
+
+#manual-edit-modal > #t2-manual-edit-textarea {
+  display: none;
+}
+
+.btn-close {
+  font-size: 1em;
+  font-weight: 700;
+  border-radius: 50%;
+  padding: 0.5rem 0.7rem;
+  position: absolute;
+  right: 15px;
+  top: 15px;
+}
+
+.btn-submit {
+  font-weight: 700;
+  border-radius: 5px;
+  padding: 0.5rem 1rem;
+  position: absolute;
+  right: 15px;
+  bottom: 15px;
+  background-color: black;
+  color: white;
+  font-size: 1em;
+}
+
+/* This is the styling for tree labels T1 and T2*/
+.tree-label {
+  position: relative;
+  left: 10px;
+  top: 10px;
+  font-size: 1.5em;
+  font-family: Monospace;
+
+}
+
+.file-upload-container {
+    position: absolute;
+    left: 150px;
+    top: 10px;
+
+}
+
+.file-edit-container {
+    position: absolute;
+    left: 100px;
+    top: 10px;
+ 
+}
+
+#tree1-basics-container {
+    position: relative;
+   
+}
+
+#tree2-basics-container {
+    position: relative;
+   
+}
+
+#tree1-contributors-container {
+     box-shadow: inset 0 0 5px #d95f02; 
+  overflow: scroll;
+  position: relative;
+    height: 100px;
+
+}
+
+#tree2-contributors-container {
+     box-shadow: inset 0 0 5px #7570b3; 
+  overflow: scroll;
+  position: relative;
+
+}
+

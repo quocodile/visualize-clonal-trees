@@ -1,3 +1,9 @@
+/* <script>
+    var t1_mutations = {};
+</script>
+*/
+
+
 var tree1TextArea = document.querySelector("#t1-manual-edit-textarea");
 var tree2TextArea = document.querySelector("#t2-manual-edit-textarea");
 var tree1file = document.getElementById("file1");
@@ -36,11 +42,11 @@ function initialize() {
     var line_direction = "";
     if (legend.id === "t1-texture-legend") {
       line_direction = "2/8";
-      distinct = true;
+      var distinct = true;
     }
     else {
       line_direction = "6/8";
-      distinct = true;
+      var distinct = true;
     }
     const texture = textures
         .lines()
@@ -54,7 +60,7 @@ function initialize() {
   
   
   // Submitting the default trees on load
-  document.body.onfocus = submit_tree();
+  //document.body.onfocus = submit_tree();
 }
 
 document.getElementById('edit-tree1-icon').onclick = () => {
@@ -88,6 +94,10 @@ tree2file.addEventListener("change", function () {
 
 function visualize_singleview(jsonData, distance_measure, dom_data) {
 
+    //come back to this
+
+    /*
+    
   // distance measure explanation
   var explanationContainer = document.getElementById("distance-explanation");
   var explanation = explanationContainer.querySelector("p");
@@ -109,12 +119,14 @@ function visualize_singleview(jsonData, distance_measure, dom_data) {
     // linkToPaper.innerHTML = "The original paper is linked <a href='https://dl.acm.org/doi/abs/10.1145/3233547.3233584' target='_blank'>here</a>." 
     // explanationContainer.append(linkToPaper);
   }
+
+*/
   
 
-  dom_data.shared_mutations.sort().forEach(mutation => {
-    dom_data.shared_label.innerHTML +=  
-      `<div><span class="${mutation}-mutation-hover-label">${mutation}</span></div>`;
-  })
+  //dom_data.shared_mutations.sort().forEach(mutation => {
+    //dom_data.shared_label.innerHTML +=  
+      //`<div><span class="${mutation}-mutation-hover-label">${mutation}</span></div>`;
+  //})
   dom_data.t1_only_mutations.sort().forEach(mutation => {
     dom_data.t1_label.innerHTML +=  
       `<div><span class="${mutation}-mutation-hover-label">${mutation}</span></div>`;
@@ -377,13 +389,13 @@ function visualize_singleview(jsonData, distance_measure, dom_data) {
 
  
     if (svg_names[i] == "svg1") {
-      t1_max_branching_factor = get_branching_factor(dom_data.t1_nodes);
-      t1_top5_mutations = get_top_n_mutations(jsonData.mutation_contribution_dict_1, 5);
+      var t1_max_branching_factor = get_branching_factor(dom_data.t1_nodes);
+      var t1_top5_mutations = get_top_n_mutations(jsonData.mutation_contribution_dict_1, 5);
       fill_in_table("t1", t1_max_branching_factor, root.height, dom_data.t1_nodes.length, dom_data.t1_mutations.length, t1_top5_mutations);
     }
     else {
-      t2_max_branching_factor = get_branching_factor(dom_data.t2_nodes);
-      t2_top5_mutations = get_top_n_mutations(jsonData.mutation_contribution_dict_2, 5);
+      var t2_max_branching_factor = get_branching_factor(dom_data.t2_nodes);
+      var t2_top5_mutations = get_top_n_mutations(jsonData.mutation_contribution_dict_2, 5);
       fill_in_table("t2", t2_max_branching_factor, root.height, dom_data.t2_nodes.length, dom_data.t2_mutations.length, t2_top5_mutations);
     }
       
@@ -933,19 +945,19 @@ function visualize(viewtype, svg1, svg2, json_data, distance_measure, scale) {
   var t2_mutations = getAllMutations(t2_nodes);
   var t2_label = document.getElementById("tree2-mutations");
   
-  var shared_label = document.getElementById("shared-mutations");
+  //var shared_label = document.getElementById("shared-mutations");
 
   var shared_mutations = intersect(t1_mutations, t2_mutations);
   var t1_only_mutations = difference(t1_mutations, shared_mutations);
   var t2_only_mutations = difference(t2_mutations, shared_mutations);
 
   if (viewtype == "single") {
-    shared_label.innerHTML='';
+    //shared_label.innerHTML='';
     t1_label.innerHTML='';
     t2_label.innerHTML='';
   }
   else {
-    shared_label.innerHTML=shared_mutations;
+    //shared_label.innerHTML=shared_mutations;
     t1_label.innerHTML=t1_only_mutations;
     t2_label.innerHTML=t2_only_mutations;
   }
@@ -959,7 +971,7 @@ function visualize(viewtype, svg1, svg2, json_data, distance_measure, scale) {
     t2_mutations, 
     t2_label,
 
-    shared_label,
+    //shared_label,
     shared_mutations,
     t1_only_mutations,
     t2_only_mutations
@@ -1191,8 +1203,8 @@ function unionOrdering(mutationsT1, mutationsT2) {
 }
 
 function calculateEdgeColorsHeatMap(edges1, edges2, mutations1, mutations2, total_mutations) {
-    let edges = Array(),
-      edges_index = 0;
+    let edges = Array();
+    var edges_index = 0;
   
     for (let i = 0; i < total_mutations.length; i++) {
       for (let j = 0; j < total_mutations.length; j++) {
@@ -1478,20 +1490,20 @@ function createTripartite(distanceMeasure, t1_muts, t2_muts, t1_tripartite_edges
     if (distanceMeasure === "parent_child_distance") {
       console.log("Yuh");
       total_mutations = d3.map(intersectOrdering(t1_muts, t2_muts, t1_mutation_objects, t2_mutation_objects), d => d.mutation); 
-      t1_tripartite_edges = d3.filter(t1_tripartite_edges, d => {
+      var t1_tripartite_edges = d3.filter(t1_tripartite_edges, d => {
         return total_mutations.includes(d.parent) && total_mutations.includes(d.child);
       })
-      t2_tripartite_edges = d3.filter(t2_tripartite_edges, d => {
+      var t2_tripartite_edges = d3.filter(t2_tripartite_edges, d => {
         return total_mutations.includes(d.parent) && total_mutations.includes(d.child);
       })
     }
     else if (distanceMeasure === "ancestor_descendant_distance"){
       total_mutations = d3.map(intersectOrdering(t1_muts, t2_muts, t1_mutation_objects, t2_mutation_objects), d => d.mutation); 
       console.log("Here", total_mutations)
-      t1_tripartite_edges = d3.filter(t1_tripartite_edges, d => {
+      var t1_tripartite_edges = d3.filter(t1_tripartite_edges, d => {
         return total_mutations.includes(d.ancestor) && total_mutations.includes(d.descendant);
       })
-      t2_tripartite_edges = d3.filter(t2_tripartite_edges, d => {
+      var t2_tripartite_edges = d3.filter(t2_tripartite_edges, d => {
         return total_mutations.includes(d.ancestor) && total_mutations.includes(d.descendant);
       })
     }
@@ -1499,19 +1511,19 @@ function createTripartite(distanceMeasure, t1_muts, t2_muts, t1_tripartite_edges
   else {
     if (distanceMeasure === "parent_child_distance") {
       total_mutations = d3.map(unionOrdering(t1_muts, t2_muts, t1_mutation_objects, t2_mutation_objects), d => d.mutation); 
-      t1_tripartite_edges = d3.filter(t1_tripartite_edges, d => {
+      var t1_tripartite_edges = d3.filter(t1_tripartite_edges, d => {
         return total_mutations.includes(d.parent) && total_mutations.includes(d.child);
       })
-      t2_tripartite_edges = d3.filter(t2_tripartite_edges, d => {
+      var t2_tripartite_edges = d3.filter(t2_tripartite_edges, d => {
         return total_mutations.includes(d.parent) && total_mutations.includes(d.child);
       })
     }
     else if (distanceMeasure === "ancestor_descendant_distance") {
       total_mutations = d3.map(unionOrdering(t1_muts, t2_muts, t1_mutation_objects, t2_mutation_objects), d => d.mutation); 
-      t1_tripartite_edges = d3.filter(t1_tripartite_edges, d => {
+      var t1_tripartite_edges = d3.filter(t1_tripartite_edges, d => {
         return total_mutations.includes(d.ancestor) && total_mutations.includes(d.descendant);
       })
-      t2_tripartite_edges = d3.filter(t2_tripartite_edges, d => {
+      var t2_tripartite_edges = d3.filter(t2_tripartite_edges, d => {
         return total_mutations.includes(d.ancestor) && total_mutations.includes(d.descendant);
       })
     }
@@ -1665,8 +1677,8 @@ function createTripartite(distanceMeasure, t1_muts, t2_muts, t1_tripartite_edges
 }
 
 function calculateEdgeColorsHeatMap(edges1, edges2, mutations1, mutations2, total_mutations) {
-    let edges = Array(),
-        edges_index = 0;
+    let edges = Array();
+    var edges_index = 0;
   
     for (let i = 0; i < total_mutations.length; i++) {
       for (let j = 0; j < total_mutations.length; j++) {
@@ -1701,8 +1713,8 @@ function calculateEdgeColorsHeatMap(edges1, edges2, mutations1, mutations2, tota
 
 //ANCESTOR DESCENDANT TRIPARTITE
 function calculateEdgeColorsAncestorDescendantTripartite(arr1, arr2) {
-    let edges = Array(),
-      edges_index = 0;
+    let edges = Array();
+    var edges_index = 0;
     for (let i = 0; i < arr1.length; i++) {
       let shared = 0;
       for (let j = 0; j < arr2.length; j++) {
@@ -1734,8 +1746,8 @@ function calculateEdgeColorsAncestorDescendantTripartite(arr1, arr2) {
 }
 
 function calculateEdgeColorsHeatMapAncestorDescendant(edges1, edges2, mutations1, mutations2, total_mutations) {
-    let edges = [],
-      edges_index = 0;
+    let edges = [];
+    var edges_index = 0;
 
     for (let i = 0; i < total_mutations.length; i++) {
       for (let j = 0; j < total_mutations.length; j++) {
@@ -1842,7 +1854,7 @@ function createHeatmap(distanceMeasure, t1_muts, t2_muts, t1_edges, t2_edges) {
   mutation_objects = d3.filter(mutation_objects, d => {
     return total_mutations.has(d.mutation) 
   })
-  mutation_objects_dups_removed = []
+  var mutation_objects_dups_removed = []
   mutation_objects.forEach(obj => {
     if (d3.filter(mutation_objects_dups_removed, d => d.mutation === obj.mutation).length === 0){
       mutation_objects_dups_removed.push(obj);
@@ -1991,3 +2003,5 @@ function createHeatmap(distanceMeasure, t1_muts, t2_muts, t1_edges, t2_edges) {
   console.log(svg.node());
   div.append(svg.node());
 }
+
+/* something about a script here....to be able to have the global variables from utils.js */

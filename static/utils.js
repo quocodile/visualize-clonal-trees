@@ -257,7 +257,23 @@ function fill_in_table(tree_name = "t1", max_branching_factor, height, num_nodes
   max_branching_factor_entry.innerHTML = max_branching_factor;
   document.getElementById(`${tree_name}-number-nodes`).innerHTML = num_nodes;
   document.getElementById(`${tree_name}-number-mutations`).innerHTML = num_mutations;
-  document.getElementById(`${tree_name}_top5_summary_element`).innerHTML = top_5_mutations;
+
+
+    
+    var top5array = top_5_mutations.split(",");
+
+    var top5HTML = [];
+    top5array.sort().forEach(function(mut){
+	//top5HTML.push('<div>'+mut+'</div>');
+	top5HTML.push('<li>' + mut + '</li>');
+    });
+
+    //var test = top5HTML.join('');
+
+    document.getElementById(`${tree_name}_top5_summary_element`).innerHTML = top5HTML.join(''); 
+
+    
+  //document.getElementById(`${tree_name}_top5_summary_element`).innerHTML = top_5_mutations;
 }
 
 
