@@ -62,23 +62,63 @@ function min_contribution(nodes){
  */
 function get_top_n_mutations(tree_dict, n) {
   var mutation_contribution_dict = {};
-  for (const [mutation, value] of Object.entries(tree_dict)) {
-    mutation_contribution_dict[mutation] = value["contribution"];
-  }
+    for (const [mutation, value] of Object.entries(tree_dict)) {
+	if (value["contribution"] != 0) {
+	    mutation_contribution_dict[mutation] = value["contribution"];
+	}
+    }
+
+    //if the trees are identical, return no top contributors
+    if (Object.keys(mutation_contribution_dict).length == 0) {
+	return "";
+    }
+    
   var items = Object.keys(mutation_contribution_dict).map(
   (key) => { return [key, mutation_contribution_dict[key]] });
+    
+    
   items.sort(
     (first, second) => { return second[1] - first[1] } // from greatest to least
   );
   var keys = items.map((e) => { return e[0] });
-  
+
   var output_str = ""
+
+    var tie_value =  mutation_contribution_dict[keys[n-1]];
+
+    var v;
   for (v = 0; v < Math.min(n, keys.length); v++){
     output_str = output_str.concat(keys[v])
     if (v < Math.min(n, keys.length) - 1){
       output_str = output_str.concat(", ")
     }
   }
+
+    while (v < keys.length) {
+
+	if (mutation_contribution_dict[keys[v]] == tie_value) {
+	    output_str = output_str.concat(", ");
+	    output_str = output_str.concat(keys[v]);
+	    v++;
+	}
+	else {
+	    break;
+	}
+	
+    }
+
+  
+    
+/*
+  for (v = 0; v < Math.min(n, keys.length); v++){
+    output_str = output_str.concat(keys[v])
+    if (v < Math.min(n, keys.length) - 1){
+      output_str = output_str.concat(", ")
+    }
+  }
+*/
+
+    
   console.log(output_str);
   return(output_str)
 }
@@ -258,6 +298,7 @@ function fill_in_table(tree_name = "t1", max_branching_factor, height, num_nodes
   document.getElementById(`${tree_name}-number-nodes`).innerHTML = num_nodes;
   document.getElementById(`${tree_name}-number-mutations`).innerHTML = num_mutations;
 
+    /*
 
     
     var top5array = top_5_mutations.split(",");
@@ -271,9 +312,60 @@ function fill_in_table(tree_name = "t1", max_branching_factor, height, num_nodes
     //var test = top5HTML.join('');
 
     document.getElementById(`${tree_name}_top5_summary_element`).innerHTML = top5HTML.join(''); 
+    */
+
+
+
+   
+
+    var top5array = top_5_mutations.split(",");
+    var top5HTML = "";
+    
+    top5array.forEach(mutation => {
+	top5HTML +=
+	    //`<span style="font-family: monospace; font-weight: normal; cursor: pointer; color: black; fill: black; transition: font-size 0.5s ease 0s; font-size: 13px;" class="${mutation}-mutation-hover-label">${mutation}</span>, `;
+      `<span style="font-family:Monospace; font-weight: normal" class="${mutation}-mutation-hover-label">${mutation}</span>, `;
+  })
+    top5HTML = top5HTML.slice(0, -2);
+
+
+    //trees are identical (i.e. no contributors)
+    if (top_5_mutations == "") {
+	top5HTML += `<span style="font-family:Monospace; font-weight: normal">None</span>`;
+    }
+    
+
+    document.getElementById(`${tree_name}_top5_summary_element`).innerHTML = top5HTML;
+
+
+    /*updating the contributor title with the appropriate measure*/
+
+    var distance_metric_selector = document.getElementById("distance_metric");
+    var distance_metric = distance_metric_selector.value;
+
+    if (distance_metric == "parent_child_distance") {
+	document.getElementById('t1-measure-label').innerHTML = "Parent-Child ";
+	document.getElementById('t2-measure-label').innerHTML = "Parent-Child ";
+    }
+    else if (distance_metric == "ancestor_descendant_distance") {
+	document.getElementById('t1-measure-label').innerHTML = "Ancestor-Descendant ";
+	document.getElementById('t2-measure-label').innerHTML = "Ancestor-Descendant ";
+    }
+    else if (distance_metric == "caset_distance") {
+	document.getElementById('t1-measure-label').innerHTML = "CASet ";
+	document.getElementById('t2-measure-label').innerHTML = "CASet ";
+    }
+    else if (distance_metric == "disc_distance") {
+	document.getElementById('t1-measure-label').innerHTML = "DISC ";
+	document.getElementById('t2-measure-label').innerHTML = "DISC ";
+    }
+    else {
+	document.getElementById('t1-measure-label').innerHTML = "Something new!";
+	document.getElementById('t2-measure-label').innerHTML = "Something new!";
+    }
 
     
-  //document.getElementById(`${tree_name}_top5_summary_element`).innerHTML = top_5_mutations;
+    //document.getElementById(`${tree_name}_top5_summary_element`).innerHTML = top_5_mutations;
 }
 
 

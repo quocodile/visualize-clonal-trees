@@ -14,40 +14,109 @@
     <title>Document</title>
 </head>
 <body>
-    <header>
+  <header>
+    <div id="title-bar">
       <div id="vectr-title">
-        Visual Encodings for Clonal Trees
-      </div>    
-    </header>
+         VECTR: <span style="color: lightgray">V</span>isual  <span style="color: lightgray">E</span>ncodings for  <span style="color: lightgray">C</span>lonal  <span style="color: lightgray">Tr</span>ees  <span style="font-size: 15px; "><em>An interactive tool to facilitate visual comparison of clonal trees</em></span>
+      </div>
+      <div id="title-bar-buttons">
+	<button id="about-us-button">About us</button>
+	<a href="https://github.com/quocodile/visualize-clonal-trees.git" target="_blank"><button id="codebase-button">Code</button></a>
+      </div>
+    </div>
+  </header>
     <div class="site-container">
+
+      
+		  <!--<button id="myBtn">Open Modal</button>-->
+
+		  <!-- The Modal -->
+<div id="distance-measure-modal" class="modal">
+
+  <!-- Modal content -->
+  <div class="modal-content">
+    <span class="close-distance">&times;</span>
+    <p id="explanations-title" class="explanation-p"><b>What is a distance measure?</b></p>
+    <p id="distance-general-description" class="explanation-p">
+     A distance measure is a way to quantify how different two trees are from each other. It produces a single number that represents that difference. We break down this value into individual contributions by each mutation (or edge) by computing the number of changed relationships a mutation (or edge) has in one tree compared to the other. The specifics of this process are unique to each distance measure.
+    </p>
+    <p id="distance-explanation-title" class="explanation-p"></p>
+    <p id="distance-explanation" class="explanation-p"></p>
+  </div>
+
+</div>
+
+<div id="graphs-modal" class="modal">
+
+  <!-- Modal content -->
+  <div class="modal-content">
+    <span class="close-graphs">&times;</span>
+    <p id="graphs-explanation-title" class="explanation-p"><b>Heatmap & Tripartite Graphs</b></p>
+    <p id="graphs-general-explanation" class="explanation-p">While our <em>node-link diagram</em> provides an intuitive understanding of how nodes relate to each other and where the differences between the two trees may be concentrated, the contributions of individual mutations are not as clearly illustrated. Therefore, we have created two supplementary visualizations to better express mutation-level differences. These visualizations appear upon the input of two trees.</p>
+    <p id="heatmap-explanation" class="explanation-p"></p>
+    <p id="tripartite-explanation" class="explanation-p"></p>
+  </div>
+
+</div>
      
 
 
 
- <div class="main-site-columns left-test-column">
-	      <div id="tree1-basics-container">
+      <div class="main-site-columns left-new-column">
 
+
+
+	<div class="tree1-container">
+
+	  <div class="tree1-info">
+
+	    <div id="tree1-basics-container">
+
+	      <div id="tree1-basics-structure">
 		<div class="tree-label" style="color: #d95f02;">
                   Tree 1
+		  
                 </div>
 
 	
 
 		<div class="file-upload-container">
                   <label for="file1">
-                    <img class="upload-file-icon"style="cursor: pointer; width: 30px; height: auto;"src="{{ url_for('static', filename='upload.png') }}" alt="upload icon"> 
+		    <div class="tooltip">
+                      <img class="upload-file-icon"style="cursor: pointer; width: 30px; height: auto;"src="{{ url_for('static', filename='upload.png') }}" alt="upload icon">
+		      <span class="tooltiptext">Upload tree</span>
+		    </div>
                   </label>
                   <input style="display: none;" class="custom-file-input" type="file" id="file1" name="file1">
                 </div>
                 <div class="file-edit-container">
-                    <img class="edit-file-icon" id='edit-tree1-icon' style="cursor: pointer; width: 30px; height: auto;"src="{{ url_for('static', filename='pen.png') }}" alt="edit icon"> 
+		  <div class="tooltip">
+                    <img class="edit-file-icon" id='edit-tree1-icon' style="cursor: pointer; width: 30px; height: auto;"src="{{ url_for('static', filename='pen.png') }}" alt="edit icon">
+		    <span class="tooltiptext">Edit tree</span>
+		  </div>
 		    <div class='edit-textarea'>
                       <textarea class="text-box" style="display: none;" id="tree1-text" name="" cols="10" rows="10">
 		      </textarea>
                     </div>
                 </div>
+		<div class="file-download-container">
+		  <div class="tooltip">
+		    
+		    <button class="download" id="downloadSVG1" onclick="downloadSVG('#svg1')">
+                      <img class="download-file-icon"style="cursor: pointer; width: 30px; height: auto;"src="{{ url_for('static', filename='download.png') }}" alt="download icon">
+		    </button>
+		    
+		    <span class="tooltiptext">Download tree</span>
+		  </div>
+                  <input style="display: none;" class="custom-file-input" type="file" id="file1" name="file1">
+                </div>
 
-	     </div>
+	      </div>
+
+	       <div id="tree1-filename-label-container"><p id="tree1-filename-label"></p></div>
+	      
+	    </div>
+
 
 
 	      <div id="tree1-summary-container">
@@ -55,7 +124,7 @@
                    
                    
                     <tr>
-                        <th>Branching Factor</th>
+                        <th>Branching factor</th>
                         <td id="t1-branching-factor"></td>
                     </tr>
                     <tr>
@@ -70,85 +139,41 @@
                         <th>Number mutations</th>
                         <td id="t1-number-mutations"></td>
                     </tr>
+		    </table>
+		    <table class="summary-test-statistics-table">
+		    <tr>
+		      <th>Distinct mutations</th>
+		    </tr>
+		    <tr>
+			<th><div id="tree1-mutations-container"><p id="tree1-mutations"></p></div></th>
+		    </tr>
+		    
+		     <tr>
+		     <th id="t1-top5-title">Top <p id="t1-measure-label"></p>contributors</th>
+		    </tr>
+		    <tr>
+			<th> <div id="tree1-contributors-container"><p id="t1_top5_summary_element"></p></div></th>
+		    </tr>
+		    
                    
               </table>
 	      </div>
 
-
+	      
+<!--
 	      <div id="tree1-mutations-container">
 		<h3>Distinct Tree 1 Mutations</h3><p id="tree1-mutations"></p></div>
 
+
 	    
 	      <div id="tree1-contributors-container" >
-		<h3>Top 5 Contributors</h3><p id="t1_top5_summary_element"></p></div>
+		<h3>Top 5 Contributors</h3><p id="t1_top5_summary_element"></p></div> -->
 
-	     
-
-	      <div id="tree2-basics-container">
-		
-		<div class="tree-label" style="color: #7570b3;">
-                  Tree 2
-                </div>
-	      
-		
-                <div class="file-upload-container">
-                  <label for="file2">
-                    <img class="upload-file-icon"style="cursor: pointer; width: 30px; height: auto;"src="{{ url_for('static', filename='upload.png') }}" alt="upload icon"> 
-                  </label>
-                  <input style="display: none;" class="custom-file-input" type="file" id="file2" name="file2">
-                </div>
-                <div class="file-edit-container">
-                    <img class="edit-file-icon" id='edit-tree2-icon' style="cursor: pointer; width: 30px; height: auto;"src="{{ url_for('static', filename='pen.png') }}" alt="edit icon"> 
-		    <div class='edit-textarea'>
-			<textarea style="display: none;" class="text-box" id="tree2-text" name="" cols="10" rows="10">
-			</textarea>
-		    </div>
-                </div>
-
-	      </div>
+	  </div> 
+	  
 
 
-
-	      <div id="tree2-summary-container">
-		 <table id="summary-statistics-table2">
-                   
-                    <tr>
-                        <th>Branching Factor</th>
-                        <td id="t2-branching-factor"></td>
-                    </tr>
-                    <tr>
-                        <th>Height</th>
-                        <td id="t2-height"></td>
-                    </tr>
-                    <tr>
-                        <th>Number nodes</th>
-                        <td id="t2-number-nodes"></td>
-                    </tr>
-                    <tr>
-                        <th>Number mutations</th>
-                        <td id="t2-number-mutations"></td>
-                    </tr>
-                   
-                 </table>
-	      </div>
-                
-
-	      <div id="tree2-mutations-container">
-		<h3>Distinct Tree 2 Mutations</h3><p id="tree2-mutations"></p></div>
-
-
-<div id="tree2-contributors-container">
-  <h3>Top 5 Contributors</h3><p id="t2_top5_summary_element"></p></div>
-
-
-
-	</div>
-	
-
-
-	
-        <div class="main-site-columns middle-column">
-          <div class="tree1_visualization" id="tree1_visualization">
+	  <div class="tree1_visualization" id="tree1_visualization">
 
 	  
 		
@@ -164,11 +189,29 @@
                     </div>
                 </div>-->
             </div>
-            <div class="legend-component">
+           
+	 
+
+
+
+	</div>
+
+
+
+
+	<div class="legend-component">
+
+	  <div id="legend-name-sizing">
+	    <div id="legend-name">Controls</div>
+	  </div>
 
 	      
 	      <div class="legend-container" class="singleview" id="anyscale">
-                    <div id="distance-evaluation-container">
+                <div id="distance-evaluation-container">
+		  <div id="distance-measure-title">Distance measure</div>
+		  <div id="legend-question">
+		    <button id="legendExplanation"><img class="legend-question-mark-icon"style="cursor: pointer; width: 20px; height: auto;"src="{{ url_for('static', filename='question-mark.png') }}" alt="legend question icon"></button>
+		  </div>
 			    <div class="dropdown distance-measure" id="distance-dropdown">
 				<p> </p>
 				<label id="metric_drp" for="distance_metric"></label>
@@ -179,7 +222,8 @@
 				    <option value="disc_distance">DISC</option>
 				</select>
 			    </div>
-			    <div id="distance-measure-label"></div>
+			    <!--<div id="distance-measure-label"></div>-->
+			   
                     </div>
                 </div>
 	     
@@ -196,33 +240,189 @@
                 <div class="legend"></div>
               </div>
               <div id="texture-legend-container">
-                <div class="texture-legend-text">Tree 1</div>
+                <div class="texture-legend-text">Distinct Tree 1</div>
                 <div class="texture-legend" id="t1-texture-legend"></div>
-                <div class="texture-legend-text">Tree 2</div>
+                <div class="texture-legend-text">Distinct Tree 2</div>
                 <div class="texture-legend" id="t2-texture-legend"></div>
               </div>
-            </div>
-            <div class="tree2_visualization">
+ </div>
+
+	
+
+
+	<div class="tree2-container">
+
+	  <div class="tree2-info">
+
+	    <div id="tree2-basics-container">
+	      <div id="tree2-basics-structure">
+		
+		<div class="tree-label" style="color: #7570b3;">
+                  Tree 2
+                </div>
+	      
+		
+                <div class="file-upload-container">
+                  <label for="file2">
+		    <div class="tooltip">
+                      <img class="upload-file-icon"style="cursor: pointer; width: 30px; height: auto;"src="{{ url_for('static', filename='upload.png') }}" alt="upload icon">
+		      <span class="tooltiptext">Upload tree</span>
+		    </div>
+                  </label>
+                  <input style="display: none;" class="custom-file-input" type="file" id="file2" name="file2">
+                </div>
+                <div class="file-edit-container">
+		  <div class="tooltip">
+                    <img class="edit-file-icon" id='edit-tree2-icon' style="cursor: pointer; width: 30px; height: auto;"src="{{ url_for('static', filename='pen.png') }}" alt="edit icon">
+		    <span class="tooltiptext">Edit tree</span>
+		  </div>
+		    <div class='edit-textarea'>
+			<textarea style="display: none;" class="text-box" id="tree2-text" name="" cols="10" rows="10">
+			</textarea>
+		    </div>
+                </div>
+		<div class="file-download-container">
+		  <div class="tooltip">
+		    
+		    <button class="download" id="downloadSVG2" onclick="downloadSVG('#svg2')">
+                      <img class="download-file-icon"style="cursor: pointer; width: 30px; height: auto;"src="{{ url_for('static', filename='download.png') }}" alt="download icon">
+		    </button>
+		    
+		    <span class="tooltiptext">Download tree</span>
+		  </div>
+                  <input style="display: none;" class="custom-file-input" type="file" id="file1" name="file1">
+                </div>
+
+	      </div>
+	       <div id="tree2-filename-label-container"><p id="tree2-filename-label"></p></div>
+
+	    </div>
+
+
+
+	      <div id="tree2-summary-container">
+		 <table id="summary-statistics-table2">
+                   
+                    <tr>
+                        <th>Branching factor</th>
+                        <td id="t2-branching-factor"></td>
+                    </tr>
+                    <tr>
+                        <th>Height</th>
+                        <td id="t2-height"></td>
+                    </tr>
+                    <tr>
+                        <th>Number nodes</th>
+                        <td id="t2-number-nodes"></td>
+                    </tr>
+                    <tr>
+                        <th>Number mutations</th>
+                        <td id="t2-number-mutations"></td>
+                    </tr>
+                   
+                 </table>
+
+		    <table class="summary-test-statistics-table">
+		    <tr>
+		      <th>Distinct mutations</th>
+		    </tr>
+		    <tr>
+			<th><div id="tree2-mutations-container"><p id="tree2-mutations"></p></div></th>
+		    </tr>
+		    
+		     <tr>
+		      <th id="t2-top5-title">Top <p id="t2-measure-label"></p>contributors</th>
+		    </tr>
+		    <tr>
+			<th> <div id="tree2-contributors-container"><p id="t2_top5_summary_element"></p></div></th>
+		    </tr>
+		    
+                   
+              </table>
+
+		 
+	      </div>
+                
+<!--
+	      <div id="tree2-mutations-container">
+		<h3>Distinct Tree 2 Mutations</h3><p id="tree2-mutations"></p></div>
+
+
+<div id="tree2-contributors-container">
+  <h3>Top 5 Contributors</h3><p id="t2_top5_summary_element"></p></div>
+-->
+
+	  </div>
+
 
 	  
+	  <div class="tree2_visualization" id="tree2_visualization">
 
-
+	  
 		
-                <svg id="svg2" width="100%" height="99%"> 
-                <g id="tree2_visualization_group" transform="translate(550,30)">
-                    <g class="links"></g>
-                    <g class="nodes"></g>
-                </g>
-                </svg>
+                    <svg id="svg2" width="100%" height="99%"> 
+                    <g id="tree2_visualization_group" transform="translate(550,30)">
+                        <g class="links"></g>
+                        <g class="nodes"></g>
+                    </g>
+                    </svg>
                 <!--<div class="legend-component">
                     <div class="legend-container" class="singleview" id="anyscale">
                         <div class="legend"></div>
                     </div>
                 </div>-->
             </div>
-        </div>
+
+
+	</div>
+
+      </div>
+      
+
+
+
+
+
+
+
+
+
+
+	
+	
+	      
+
+	     
+
+	      
+
+	
+
+
+	
+        <!--<div class="main-site-columns middle-column">-->
+
+	
+            
+            <!--</div>-->
+
+
+
+
+
+
+
+
+
+ 
         <div class="main-site-columns right-column">
-         
+
+	  <div id="heatmap-tripartite-info"><div id="heatmap-tripartite-label">Mutation level insight</div>
+
+	    <div id="question-background">
+	      <button id="heatmapTripartiteExplanation"><img class="graph-question-mark-icon"style="cursor: pointer; width: 30px; height: auto;"src="{{ url_for('static', filename='question-mark.png') }}" alt="graphs question icon"></button>
+	    </div>
+	  </div>
           <div class="intersection-union-option">
             <div>
               <div>
@@ -235,8 +435,9 @@
               </div>
             </div>
           </div>
+	 
+	  <div class="heatmap-component"></div>
           <div class="tripartite-component"></div>
-          <div class="heatmap-component"></div>
         </div>
     </div>
     <div id="modal-container" class="modal hidden">

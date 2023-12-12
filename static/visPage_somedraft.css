@@ -15,24 +15,45 @@ h4 {
 }
 
 header {
-  height: 40px;
-  background-color: lightgray;
+  height: 50px;
+  background-color: gray;
   width: 100%;
 }
 
+#title-bar {
+    display: grid;
+    grid-template-columns: 85% 15%;
+}
+
 #vectr-title {
-  width: 300px;
+  /*width: 85%;*/
   height: 50px;
-  line-height: 40px;
-  text-align: center;
-  font-family: Helvetica;
+  padding-left: 10px;
+  line-height: 50px;
+  text-align: left;
+  font-family: Monospace;
+  font-size: 20px;
   color: black;
+}
+
+#title-bar-buttons {
+    text-align: right;
+    padding-right: 5px;
+    padding-top: 10px;
+}
+
+#about-us-button {
+    height: 30px;
+}
+
+#codebase-button {
+    height: 30px;
 }
 
 .site-container {
     display: grid;
-    grid-template-columns: 15% 60% 25%;
-    height: calc(100% - 40px);
+    grid-template-columns: 75% 25%;
+    height: calc(100% - 50px);
     margin: 0;
 }
 
@@ -68,6 +89,7 @@ header {
     /*border: 1px solid black;*/
 }
 
+/*
 .site-container > .middle-column > .tree1_visualization {
     position: relative;
     height: 50%;
@@ -80,6 +102,43 @@ header {
     height: 50%;
     width: 100%;
     box-shadow: inset 0 0 10px #7570b3; 
+}
+*/
+
+.left-new-column {
+    display: grid;
+    grid-template-rows: 47% 6% 47%;
+}
+
+.site-container > .left-new-column > .tree1-container {
+    position: relative;
+ 
+    box-shadow: inset 0 0 10px #d95f02;
+    display: grid;
+    grid-template-columns: 20% 80%;
+
+      /*border-top: 1px solid black;*/
+}
+
+.site-container > .left-new-column > .tree2-container {
+    position: relative;
+    
+    box-shadow: inset 0 0 10px #7570b3;
+    display: grid;
+    grid-template-columns: 20% 80%;
+}
+
+.tree1-info {
+    position: relative;
+    display: grid;
+    grid-template-rows: 18% 36% 22% 24%;
+}
+
+.tree2-info {
+    position: relative;
+    display: grid;
+    grid-template-rows: 18% 36% 22% 24%; /*12% 38% 25% 25%;*/
+    
 }
 
 
@@ -98,12 +157,14 @@ header {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  border-bottom: 1px solid black;
+  /*border-bottom: 1px solid black;*/
 }
 
 .intersection-union-option > div {
   height: 20px;
   display: flex;
+  background: lightgray;
+  padding-bottom: 5px;
 }
 
 .intersection-union-option > div > div {
@@ -113,14 +174,41 @@ header {
 }
 
 .site-container > .right-column > .tripartite-component {
-  height: 56%;
-  border-bottom: 1px solid black;
+  height: 50%;
+  
 }
 
 .site-container > .right-column > .heatmap-component {
-  height: 40%;
+    height: 42%;
+    /*border-bottom: 1px solid black;*/
 }
 
+
+#heatmap-tripartite-info {
+    height: 30px;
+    /*border-top: 1px solid black;
+    border-bottom: 1px solid black;*/
+    display: grid;
+    grid-template-columns: 90% 10%;
+  
+    
+}
+
+#heatmap-tripartite-label {
+    
+    font-size: 20px;
+    padding-left: 10px;
+    font-family: Monospace;
+    padding-top: 6px;
+    background: lightgray;
+    
+    
+}
+
+#heatmap-tripartite-button {
+  
+ 
+}
 
 
 
@@ -165,6 +253,7 @@ header {
   height: 45px;
   display: flex;
   align-items: center;
+  background: white;
 }
 
 #no-contribution-legend {
@@ -180,11 +269,12 @@ header {
 }
 
 #no-contribution-shape-container {
-  height: 40px;
+  height: 30px;
   display: flex;
   align-items: center;
-  width: 50%;
+  width: 40%;
   padding: 0px 5px;
+  background-color: white;
 }
 
 #no-contribution-shape {
@@ -215,7 +305,8 @@ header {
 .legend-container {
     display: block;
     position: relative;
-    width: 60%;
+    width: 30%;
+
 }
 
 .legend {
@@ -271,17 +362,19 @@ header {
 .texture-legend {
   width: 40px;
   height: 40px;
+  background-color: white;
 }
 
 #texture-legend-container {
   display: flex;
-  width: 40%;
+  width: 275px;
   font-size: 11px;
 }
 
 .texture-legend-text {
   line-height: 40px;
   padding-left: 5px;
+  padding-right: 1px;
 }
 
 #tree-label-info-container {
@@ -306,16 +399,43 @@ header {
     padding-left: 10px;
 }
 
+/*
 p > div {
   min-width: 30px;
   height: 20px;
   padding-left: 10px;
 }
+*/
 
 
+.summary-test-statistics-table {
+  /*border: 1px solid black;*/
+  border-collapse: collapse;
+  margin: 5%;
+  background-color: #F5F5F5;
+}
+.summary-test-statistics-table th{
+  /*border: 1px solid black;*/
+  border-collapse: collapse;
+  padding: 2px;
+  text-align: left;
+  font-size: 15px;
+  padding-right: 15px;
+}
 
+#added-space-below {
+    padding-bottom: 10px;
+}
 
-
+.summary-test-statistics-table td{
+  /*border: 1px solid black;*/
+  border-collapse: collapse;
+  padding: 2px;
+  font-weight: normal;
+  font-family: Monospace;
+  font-size: 12px;
+  
+}
 
 
 
@@ -327,48 +447,50 @@ p > div {
 
 /* Pertaining to the singleview summary statistics */
 #summary-statistics-table {
-  border: 1px solid black;
+  /*border: 1px solid black;*/
   border-collapse: collapse;
   margin: 5%;
   background-color: #F5F5F5;
 }
 #summary-statistics-table th{
-  border: 1px solid black;
+  /*border: 1px solid black;*/
   border-collapse: collapse;
   padding: 2px;
   text-align: left;
   font-size: 15px;
 }
 #summary-statistics-table td{
-  border: 1px solid black;
+  /*border: 1px solid black;*/
   border-collapse: collapse;
   padding: 2px;
   font-weight: normal;
   font-family: Monospace;
   font-size: 12px;
+  width: 15px;
 }
 
 /* second copy of summary statistics table for tree 2 */
 #summary-statistics-table2 {
-  border: 1px solid black;
+  /*border: 1px solid black;*/
   border-collapse: collapse;
   margin: 5%;
   background-color: #F5F5F5;
 }
 #summary-statistics-table2 th{
-  border: 1px solid black;
+  /*border: 1px solid black;*/
   border-collapse: collapse;
   padding: 2px;
   text-align: left;
   font-size: 15px;
 }
 #summary-statistics-table2 td{
-  border: 1px solid black;
+  /*border: 1px solid black;*/
   border-collapse: collapse;
   padding: 2px;
   font-weight: normal;
   font-family: Monospace;
   font-size: 12px;
+  width: 15px;
 }
 
 
@@ -401,19 +523,33 @@ p > div {
 #tree1-mutations, #tree2-mutations {
     word-wrap: break-word;
     margin: 0;
-    font-size: 16px;
+    font-size: 13px;
 }
 
 #tree1-mutations-container {
-  box-shadow: inset 0 0 5px #d95f02; 
-  overflow: scroll;
+  /*box-shadow: inset 0 0 5px #d95f02; */
+  /*overflow: scroll;*/
   position: relative;
+  padding: 2px;
 }
 
 #tree2-mutations-container {
-  box-shadow: inset 0 0 5px #7570b3; 
-  overflow: scroll;
+  /*box-shadow: inset 0 0 5px #7570b3; */
+  /*overflow: scroll;*/
   position: relative;
+  padding: 2px;
+}
+
+h3 {
+    font-family: Helvetica;
+    font-size: 12px;
+}
+
+
+#t1_top5_summary_element, #t2_top5_summary_element {
+    word-wrap: break-word;
+    margin: 0;
+    font-size: 13px;
 }
 
 
@@ -492,15 +628,15 @@ p > div > span {
 .tree-label {
   position: relative;
   left: 10px;
-  top: 10px;
-  font-size: 1.5em;
+  top: 18px;
+  font-size: 1.7em;
   font-family: Monospace;
 
 }
 
 .file-upload-container {
     position: absolute;
-    left: 150px;
+    left: 140px;
     top: 10px;
 
 }
@@ -514,26 +650,314 @@ p > div > span {
 
 #tree1-basics-container {
     position: relative;
+    display: grid;
+    grid-template-rows: 75% 25%;
    
 }
 
 #tree2-basics-container {
     position: relative;
+      display: grid;
+    grid-template-rows: 75% 25%;
    
 }
 
 #tree1-contributors-container {
-     box-shadow: inset 0 0 5px #d95f02; 
-  overflow: scroll;
-  position: relative;
-    height: 100px;
+     /*box-shadow: inset 0 0 5px #d95f02; */
+  /*overflow: scroll;*/
+     position: relative;
+     padding: 2px;
 
 }
 
 #tree2-contributors-container {
-     box-shadow: inset 0 0 5px #7570b3; 
-  overflow: scroll;
-  position: relative;
+     /*box-shadow: inset 0 0 5px #7570b3; */
+  /*overflow: scroll;*/
+     position: relative;
+     padding: 2px;
 
 }
+
+li {
+    list-style-type: none;
+    padding-left: 10px;
+    font-family: Monospace;
+}
+
+#distance-measure-title {
+    width: 160px;
+    position: relative;
+
+    text-align: center;
+   
+
+}
+
+
+#legend-question {
+    padding-right: 5px;
+    padding-left: 5px;
+    padding-top: 5px;
+}
+
+#legend-name {
+    padding-left: 10px;
+    font-family: Monospace;
+    font-size: 20px;
+    padding-top: 10px;
+    position: relative;
+}
+
+#legend-name-sizing {
+    background-color: white;
+    height: 95%;
+    margin-bottom: 4px;
+    padding-right: 10px;
+}
+
+.download-file-icon {
+    position: relative;
+    /*
+  top: 60px;
+  right: 10px;
+*/
+}
+
+.file-download-container {
+    position: absolute;
+    left: 180px;
+    top: 10px;
+
+}
+
+
+/*tooltip stuff*/
+
+/* Tooltip container */
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+/* Tooltip text */
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+ 
+  /* Position the tooltip text - see examples below! */
+  position: absolute;
+  z-index: 1;
+
+  top: 100%;
+  left: 50%;
+  margin-left: -60px; /* Use half of the width (120/2 = 60), to center the tooltip */
+
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+
+
+
+/*modal for explaining explanations*/
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  backdrop-filter: blur(3px);
+}
+
+/* Modal Content/Box */
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto; /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 40%;
+  height: 40%;
+}
+
+/* The Close Button Distance*/
+.close-distance {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close-distance:hover,
+.close-distance:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+
+/* The Close Button Graphs */
+.close-graphs {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close-graphs:hover,
+.close-graphs:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+#legendExplanation {
+  background-color: white;
+  border: none;
+  padding: 0px 0px;
+  width: 20px;
+  height: 20px;
+}
+
+#question-background {
+    background-color: lightgray;
+    padding-top: 1px;
+}
+
+#heatmapTripartiteExplanation {
+    background-color: lightgray;
+  border: none;
+  padding: 0px 0px;
+  width: 30px;
+  height: 30px;
+}
+
+.download:active{
+    background-color: white;
+    color: black;
+}
+
+.download {
+    background-color: white;
+    border: none;
+}
+
+#t1-top5-title {
+    word-wrap: break-word;
+    display:inline-block;
+    margin: 0;
+}
+
+#t1-measure-label {
+    display:inline-block;
+    margin: 0;
+    padding-right: 5px;
+}
+
+#t2-top5-title {
+    word-wrap: break-word;
+    display:inline-block;
+    margin: 0;
+}
+
+#t2-measure-label {
+    display:inline-block;
+    margin: 0;
+    padding-right: 5px;
+}
+
+#tree1-basics-structure {
+    position: relative;
+ 
+}
+
+#tree1-filename-label-container {
+    position: relative;
+}
+
+
+
+#tree1-filename-label {
+    margin:0;
+    padding:0;
+    padding-left: 12px;
+}
+
+
+#tree2-basics-structure {
+    position: relative;
+ 
+}
+
+#tree2-filename-label-container {
+    position: relative;
+}
+
+
+
+#tree2-filename-label {
+    margin:0;
+    padding:0;
+    padding-left: 12px;
+}
+
+
+/*distance measure modal stuff*/
+
+#explanations-title {
+    font-size: 18px;
+    padding-bottom: 10px;
+}
+
+#distance-general-description {
+    font-size: 16px;
+    padding-bottom: 20px;
+}
+
+#distance-explanation-title {
+    font-size: 18px;
+    padding-bottom: 10px;
+}
+
+#distance-explanation {
+    font-size: 16px;
+}
+
+#graphs-explanation-title {
+    font-size: 18px;
+    padding-bottom: 10px;
+}
+
+#graphs-general-explanation {
+    font-size: 16px;
+    padding-bottom: 10px;
+}
+
+#heatmap-explanation {
+    font-size: 16px;
+    padding-bottom: 10px;
+}
+
+#tripartite-explanation {
+    font-size: 16px;
+    padding-bottom: 10px;
+}
+
+.explanation-p {
+    margin:0;
+    padding:0;
+}
+
 
