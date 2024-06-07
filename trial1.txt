@@ -1,0 +1,10 @@
+t1,(e a,((((c)j)d)g,f,h)b)i;,0.1
+t2,(((((d,h,(c)j)g)b,f)a)e)i;,0.1
+t3,((((((c)j)d,h)g)f)e a b)i;,0.1
+t4,((f,(((c)j)d)g h)e a b)i;,0.1
+t5,(f,b,d,(c)j)i e a g h;,0.1
+t6,((((j,c)d,h)b g,f)e a)i;,0.1
+t7,(((f)b,((c)j)g h d)e a)i;,0.1
+t8,(((((c)j)d)g h)b,f)i e a;,0.1
+t9,((a)e f,((h)g,((c)j)d)b)i;,0.1
+t10,(((((h,(c)j)g,d)b,f)e)a)i;,0.1

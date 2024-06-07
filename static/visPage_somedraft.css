@@ -14,6 +14,11 @@ h4 {
   margin: 0;
 }
 
+th {
+    font-family: Roboto Mono;
+    font-size: 5px;
+}
+
 header {
   height: 50px;
   background-color: gray;
@@ -31,7 +36,7 @@ header {
   padding-left: 10px;
   line-height: 50px;
   text-align: left;
-  font-family: Monospace;
+  font-family: Roboto Mono;
   font-size: 20px;
   color: black;
 }
@@ -43,6 +48,10 @@ header {
 }
 
 #about-us-button {
+    height: 30px;
+}
+
+#home-button {
     height: 30px;
 }
 
@@ -155,6 +164,7 @@ header {
   width: 100%;
   height: 4%;
   display: flex;
+  font-family: Roboto Mono;
   flex-direction: column;
   justify-content: center;
   /*border-bottom: 1px solid black;*/
@@ -174,7 +184,7 @@ header {
 }
 
 .site-container > .right-column > .tripartite-component {
-  height: 50%;
+    height: 50%;
   
 }
 
@@ -198,7 +208,7 @@ header {
     
     font-size: 20px;
     padding-left: 10px;
-    font-family: Monospace;
+    font-family: Roboto Mono;
     padding-top: 6px;
     background: lightgray;
     
@@ -257,7 +267,7 @@ header {
 }
 
 #no-contribution-legend {
-  width: 20%;
+  width: 15%;
   display: flex;
   align-items: center;
 }
@@ -266,6 +276,7 @@ header {
   width: 100px;
   font-size: 11px;
   text-align: center;
+  font-family: Roboto Mono;
 }
 
 #no-contribution-shape-container {
@@ -288,9 +299,11 @@ header {
 #distance-evaluation-container {
   display: flex;
   margin-left: 20px;
-  width: 250px;
+  /*width: 250px;*/
+  width: 20%;
   height: 30px;
   align-items: center;
+  font-family: Roboto Mono;
   padding: 0;
 }
 
@@ -305,13 +318,22 @@ header {
 .legend-container {
     display: block;
     position: relative;
-    width: 30%;
+    width: 35%;
+   /* width: 25%;*/
+
+}
+
+.legend-container-distance-measure {
+    display: block;
+    position: relative;
+    width: 20%;
+   /* width: 25%;*/
 
 }
 
 .legend {
     height: 20px;
-    min-width: 100px;
+    min-width: 120px;
     width: 100%; 
     box-shadow: inset 0 0 1px black; 
 }
@@ -340,41 +362,50 @@ header {
 
 .legend-container > #less-contribution-label {
   position: absolute;
-  width: 200px;
+  /*width: 200px;*/
+  width: 300px;
   left: 5px;
   top: 1px;
   font-size: 11px;
   line-height: 20px;
+  font-family: Roboto Mono;
 }
 
 .legend-container > #more-contribution-label {
   position: absolute;
-  width: 200px;
+  /*width: 200px;*/
+  width: 300px;
   right: 5px;
   top: 1px;
   color: white;
   text-align: right;
   font-size: 11px;
   line-height: 20px;
+  font-family: Roboto Mono;
 }
 
 /* Pertaining to the texture legend */
 .texture-legend {
-  width: 40px;
-  height: 40px;
+  /*width: 30px;*/
+  height: 30px;
   background-color: white;
 }
 
 #texture-legend-container {
   display: flex;
-  width: 275px;
+  /*width: 275px;*/
+  width: 15%;
   font-size: 11px;
 }
 
 .texture-legend-text {
-  line-height: 40px;
-  padding-left: 5px;
-  padding-right: 1px;
+  /*line-height: 40px;*/
+  padding-left: 10px;
+  padding-right: 5px;
+  font-family: Roboto Mono;
+
+  align-items: center;
+ 
 }
 
 #tree-label-info-container {
@@ -432,7 +463,7 @@ p > div {
   border-collapse: collapse;
   padding: 2px;
   font-weight: normal;
-  font-family: Monospace;
+  font-family: Roboto Mono;
   font-size: 12px;
   
 }
@@ -464,7 +495,7 @@ p > div {
   border-collapse: collapse;
   padding: 2px;
   font-weight: normal;
-  font-family: Monospace;
+  font-family: Roboto Mono;
   font-size: 12px;
   width: 15px;
 }
@@ -488,7 +519,7 @@ p > div {
   border-collapse: collapse;
   padding: 2px;
   font-weight: normal;
-  font-family: Monospace;
+  font-family: Roboto Mono;
   font-size: 12px;
   width: 15px;
 }
@@ -500,13 +531,15 @@ p > div {
 
 /* Pertainining to the input management */
 .upload-file-icon {
-  position: relative;
+    position: relative;
+    left: 5px;
   /*top: 10px;
   right: 10px;*/
 }
 
 .edit-file-icon {
     position: relative;
+    left: 10px;
     /*
   top: 60px;
   right: 10px;
@@ -550,6 +583,8 @@ h3 {
     word-wrap: break-word;
     margin: 0;
     font-size: 13px;
+    height: 45px;
+    overflow: auto;
 }
 
 
@@ -560,7 +595,7 @@ h3 {
 
 /* The mutations in the venn diagram */
 p > div > span {
-  font-family: Monospace;
+  font-family: Roboto Mono;
   font-size: 13px;
 }
 
@@ -628,9 +663,9 @@ p > div > span {
 .tree-label {
   position: relative;
   left: 10px;
-  top: 18px;
-  font-size: 1.7em;
-  font-family: Monospace;
+  top: 10px;
+  font-size: 1.6em;
+  font-family: Roboto Mono;
 
 }
 
@@ -681,7 +716,7 @@ p > div > span {
 li {
     list-style-type: none;
     padding-left: 10px;
-    font-family: Monospace;
+    font-family: Roboto Mono;
 }
 
 #distance-measure-title {
@@ -689,6 +724,28 @@ li {
     position: relative;
 
     text-align: center;
+    font-size: 14px;
+   
+
+}
+
+#gt-title-container {
+  display: flex;
+  margin-left: 20px;
+  /*width: 80px;*/
+  width: 5%;
+  height: 30px;
+  align-items: center;
+  font-family: Roboto Mono;
+  padding: 0;
+}
+
+#gt-title {
+    width: 60px;
+    position: relative;
+
+    text-align: center;
+    font-size: 11px;
    
 
 }
@@ -702,10 +759,11 @@ li {
 
 #legend-name {
     padding-left: 10px;
-    font-family: Monospace;
+    font-family: Roboto Mono;
     font-size: 20px;
     padding-top: 10px;
     position: relative;
+    font-size: 18px;
 }
 
 #legend-name-sizing {
@@ -713,6 +771,7 @@ li {
     height: 95%;
     margin-bottom: 4px;
     padding-right: 10px;
+    width: 10%;
 }
 
 .download-file-icon {
@@ -728,6 +787,22 @@ li {
     left: 180px;
     top: 10px;
 
+}
+
+#right-column-spacer {
+    display: grid;
+    grid-template-columns: 50% 50%;
+}
+
+
+#heatmap-download-container {
+    position: relative;
+    padding: 0px;
+}
+
+#tripartite-download-container {
+    position: relative;
+    padding: 0px;
 }
 
 
@@ -788,8 +863,8 @@ li {
   margin: 15% auto; /* 15% from the top and centered */
   padding: 20px;
   border: 1px solid #888;
-  width: 40%;
-  height: 40%;
+  width: 45%; 
+  height: 45%;
 }
 
 /* The Close Button Distance*/
@@ -935,6 +1010,11 @@ li {
     font-size: 16px;
 }
 
+#distance-citation {
+    padding-top: 10px;
+    font-size: 14px;
+}
+
 #graphs-explanation-title {
     font-size: 18px;
     padding-bottom: 10px;
@@ -960,4 +1040,21 @@ li {
     padding:0;
 }
 
+
+
+
+
+/*specifications for about us page*/
+/*should move to about_us.css depending on how much there is*/
+#about-us-h1 {
+    padding-left: 20px;
+    font-size: 30px;
+    font-family: Roboto Mono;
+}
+
+#about-us-p {
+    padding-left: 20px;
+    font-size: 20px;
+    font-family: Roboto Mono;
+}
 

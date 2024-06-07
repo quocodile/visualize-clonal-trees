@@ -12,9 +12,40 @@ function downloadSVG(svg) {
   var base64doc = btoa(unescape(encodeURIComponent(svg.outerHTML)));
   var a = document.createElement('a');
   var e = new MouseEvent('click');
-  a.download = 'tree_download.svg';
-  a.href = 'data:image/svg+xml;base64,' + base64doc;
-  a.dispatchEvent(e);
+    //a.download = 'tree_download.svg';
+
+    var distance_metric = document.getElementById("distance_metric").value;
+
+    if ((tree1_filename == undefined) || (tree2_filename == undefined)) {
+	alert("Please input two trees.")
+    }
+    
+    else {
+
+	var t1_name = tree1_filename;
+	var t2_name = tree2_filename;
+
+	t1_name = t1_name.replace(".txt", "");
+	t2_name = t2_name.replace(".txt", "");
+	
+	if (tree1_filename.includes("*")) {
+	    t1_name = t1_name.replace("*", "");
+	     t1_name += "_modified";
+	}
+	if (tree2_filename.includes("*")) {
+	    t2_name = t2_name.replace("*", "");
+	    t2_name += "_modified";
+	}
+
+
+	 a.download = t1_name + "_VS_" + t2_name + "_"+ distance_metric + ".svg";
+
+    
+	a.href = 'data:image/svg+xml;base64,' + base64doc;
+	a.dispatchEvent(e);
+    }
+
+   
 }
 
 // General toggle function
@@ -82,18 +113,41 @@ function get_top_n_mutations(tree_dict, n) {
   );
   var keys = items.map((e) => { return e[0] });
 
-  var output_str = ""
+ 
 
-    var tie_value =  mutation_contribution_dict[keys[n-1]];
+    //var tie_value =  mutation_contribution_dict[keys[n-1]];
 
     var v;
+    /*
   for (v = 0; v < Math.min(n, keys.length); v++){
     output_str = output_str.concat(keys[v])
     if (v < Math.min(n, keys.length) - 1){
       output_str = output_str.concat(", ")
     }
+  }*/
+
+    var output_str = "";
+    
+    var current_key = "";
+    for (v = 0; v < keys.length; v++){
+
+	if (v == keys.length - 1){ //so v+1 out of bounds
+	    output_str = output_str.concat(keys[v]);
+	}
+
+	else if (mutation_contribution_dict[keys[v]] == mutation_contribution_dict[keys[v+1]]) {
+	    output_str = output_str.concat(keys[v])
+	    output_str = output_str.concat(", ");
+	}
+	else {
+	    output_str = output_str.concat(keys[v])
+	    output_str = output_str.concat(",<br>"); //this should be a new line eventually....but maybe in dual_tree.js instead
+	}
+	
   }
 
+
+	/*
     while (v < keys.length) {
 
 	if (mutation_contribution_dict[keys[v]] == tie_value) {
@@ -106,6 +160,7 @@ function get_top_n_mutations(tree_dict, n) {
 	}
 	
     }
+*/
 
   
     
@@ -316,7 +371,9 @@ function fill_in_table(tree_name = "t1", max_branching_factor, height, num_nodes
 
 
 
-   
+    /*try moving this to dual_tree.js!!!!!*/
+
+    /*
 
     var top5array = top_5_mutations.split(",");
     var top5HTML = "";
@@ -336,6 +393,12 @@ function fill_in_table(tree_name = "t1", max_branching_factor, height, num_nodes
     
 
     document.getElementById(`${tree_name}_top5_summary_element`).innerHTML = top5HTML;
+
+    */
+
+
+
+    
 
 
     /*updating the contributor title with the appropriate measure*/
@@ -358,6 +421,10 @@ function fill_in_table(tree_name = "t1", max_branching_factor, height, num_nodes
     else if (distance_metric == "disc_distance") {
 	document.getElementById('t1-measure-label').innerHTML = "DISC ";
 	document.getElementById('t2-measure-label').innerHTML = "DISC ";
+    }
+    else if (distance_metric == "incomparable_pair_recall") {
+	document.getElementById('t1-measure-label').innerHTML = "Incomparable-Pair ";
+	document.getElementById('t2-measure-label').innerHTML = "Incomparable-Pair ";
     }
     else {
 	document.getElementById('t1-measure-label').innerHTML = "Something new!";

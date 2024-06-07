@@ -54,6 +54,9 @@ def get_mutations_from_node(g, node):
     label_list = label.split(",")
     label_list[0] = label_list[0][1:]
     label_list[len(label_list)-1] = label_list[len(label_list)-1][:len(label_list[len(label_list)-1])-1]
+
+    label_list = sorted(label_list)
+    
     return [label.translate({ord(i):None for i in ' \"'}) for label in label_list]
 
 def make_mutation_anc_dict(g):
@@ -126,6 +129,8 @@ def fill_mutation_dict(g, node, dict):
     ''' Creates dictionary matching each mutation in g to
         its ancestor set 
     '''
+
+    
     node_dict = fill_node_dict(g, node, dict)
     mutation_dict = {}
     
@@ -146,3 +151,4 @@ def fill_mutation_dict(g, node, dict):
             mutation_dict[desc_mutation] = desc_mutation_ancestors
        
     return mutation_dict
+

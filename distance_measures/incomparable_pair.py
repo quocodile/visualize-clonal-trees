@@ -111,48 +111,11 @@ def get_edges_between_nodes(g):
     print(pathway_dict)
 
     return pathway_dict
-            
-            
-                                                          
-        
-
-        #pathway_dict[pair] = [all edges along that pathway]
-
-    
-
-
-    #we want all descendants of the ancestor in the pair
-    #and all the ancestors of the descendant in the pair
-    #and then the mutations on the path between are what's the same
-
-    #then we have the number of mutations between
-    #for each mutation, check how many ancestors are common with the path
-    #order from least to most
-    #ANC -> least -> ... -> most -> descendant
-    #that will be the order of edges
-    #if there are ties, then that means the mutations share a node
-    #put all of those edges in individually and parallel to each other (same desc and anc on either side)
        
-       
-        
-        
-
-    
-        
-
 
 def get_contributions(g_1, g_2):
 
-    #need to figure out how to not double count edges
-    #maybe use PC edges and group?
-
-    #can run regular get_contributions() (as is) to get the mutation level contributions
-    #in preprocessing get_edges_between_nodes(), need to find out some way to set up equivalencies
-    #between all of the edges that are on the same edge
-    #then, can just choose one representative and sum up all of the contributions from the equivalent
-    #edges and that should do it
-
-    
+    print("wut now")
 
     tree1_pathway_dict = get_edges_between_nodes(g_1)
     tree2_pathway_dict = get_edges_between_nodes(g_2)
@@ -303,62 +266,6 @@ def get_contributions(g_1, g_2):
 
     
 
-
-def get_contributions2(g_1,g_2): #current real one
-    """
-    Required:
-        - Two trees
-    Returns:
-        - Three dictionaries for each tree: 
-            node_contribution_dict, mutation_contribution_dict, node_mutations_dict
-            and AD distance between the trees
-    Note:
-        Primary core code for ancestor-descendant api route
-    """
-    pair_differences = get_pair_differences(g_1,g_2)
-    ad_distinct_set_1 = pair_differences[0]
-    ad_distinct_set_2 = pair_differences[1]
-
-    ad_distance = len(ad_distinct_set_1) + len(ad_distinct_set_2)
-
-    node_contribution_dict_1, mutation_contribution_dict_1, node_mutations_dict_1 = utils.initialize_core_dictionaries(g_1)
-    node_contribution_dict_2, mutation_contribution_dict_2, node_mutations_dict_2 = utils.initialize_core_dictionaries(g_2)
-
-    for pair in ad_distinct_set_1:
-        anc_mut = pair[0]
-        desc_mut = pair[1]
-
-        anc_node = utils.get_node_from_mutation(g_1,anc_mut)
-        desc_node = utils.get_node_from_mutation(g_1,desc_mut)
-
-        #NODE ANC---------------------------------------------------------
-        node_contribution_dict_1[anc_node]["contribution"] = node_contribution_dict_1[anc_node]["contribution"] + 1
-        #MUT ANC---------------------------------------------------------
-        mutation_contribution_dict_1[anc_mut]["contribution"] = mutation_contribution_dict_1[anc_mut]["contribution"] + 1  
-        #NODE DESC---------------------------------------------------------
-        #node_contribution_dict_1[desc_node]["contribution"] = node_contribution_dict_1[desc_node]["contribution"] + 1
-        #MUT DESC---------------------------------------------------------
-        #mutation_contribution_dict_1[desc_mut]["contribution"] = mutation_contribution_dict_1[desc_mut]["contribution"] + 1 
-
-    for pair in ad_distinct_set_2:
-        anc_mut = pair[0]
-        desc_mut = pair[1]
-        
-        anc_node = utils.get_node_from_mutation(g_2,anc_mut)
-        desc_node = utils.get_node_from_mutation(g_2,desc_mut)
-        #ANCS---------------------------------------------------------
-        node_contribution_dict_2[anc_node]["contribution"] = node_contribution_dict_2[anc_node]["contribution"] + 1
-        #MUT ANC---------------------------------------------------------
-        mutation_contribution_dict_2[anc_mut]["contribution"] = mutation_contribution_dict_2[anc_mut]["contribution"] + 1 
-        #DESC---------------------------------------------------------
-        #node_contribution_dict_2[desc_node]["contribution"] = node_contribution_dict_2[desc_node]["contribution"] + 1
-        #MUT DESC---------------------------------------------------------
-        #mutation_contribution_dict_2[desc_mut]["contribution"] = mutation_contribution_dict_2[desc_mut]["contribution"] + 1 
-    print("\n","ad_distance", ad_distance)
-    print(node_contribution_dict_1)
-    print(node_contribution_dict_2)
-    return node_contribution_dict_1, node_contribution_dict_2, mutation_contribution_dict_1, mutation_contribution_dict_2, node_mutations_dict_1, node_mutations_dict_2, ad_distance
-
 def get_pair_differences(g_1,g_2):
 
     
@@ -371,11 +278,64 @@ def get_pair_differences(g_1,g_2):
     Note:
         Used in get_contributions()
     """
+
+    print("DOES THIS HAPPEN HERE AND NOW")
+    
     ad_pair_set_1 = get_anc_desc_pairs(g_1)
     ad_pair_set_2 = get_anc_desc_pairs(g_2)
-    ad_distinct_set_1 = ad_pair_set_1 - ad_pair_set_2
-    ad_distinct_set_2 = ad_pair_set_2 - ad_pair_set_1
-    return ad_distinct_set_1, ad_distinct_set_2
+
+    print("testing testing")
+
+    ad_pair_set_1_ip = set()
+    ad_pair_set_2_ip = set()
+
+    print("scopin")
+
+    for pair in ad_pair_set_1:
+        ad_pair_set_1_ip.add((pair[1], pair[0]))
+    for pair in ad_pair_set_2:
+        ad_pair_set_2_ip.add((pair[1], pair[0]))
+
+    diff1 = ad_pair_set_1 - ad_pair_set_2
+    new_diff1 = diff1 - ad_pair_set_2_ip
+
+    diff2 = ad_pair_set_2 - ad_pair_set_1
+    new_diff2 = diff2 - ad_pair_set_1_ip
+
+    ad_distinct_set_1 = set()
+    ad_distinct_set_2 = set()
+
+    print("guava")
+
+    print(diff1)
+    print(diff2)
+
+    print(new_diff1)
+    print(new_diff2)
+    
+    '''
+    for pair in diff1:
+        if (pair[1], pair[0]) in diff1_ip:
+            ad_distinct_set_1.add(pair)
+
+    print(ad_distinct_set_1)
+
+    for pair in diff2:
+        if (pair[1], pair[0]) in diff2_ip:
+            ad_distinct_set_2.add(pair)
+
+    print(ad_distinct_set_2)
+    '''
+            
+        
+
+    
+    #ad_distinct_set_1 = ad_pair_set_1 - ad_pair_set_2
+    #ad_distinct_set_2 = ad_pair_set_2 - ad_pair_set_1
+
+    return new_diff1, new_diff2
+    
+    #return ad_distinct_set_1, ad_distinct_set_2
 
 def get_anc_desc_pairs(g):
     """
@@ -386,6 +346,7 @@ def get_anc_desc_pairs(g):
     Note:
         Used in get_contributions() .
     """
+    
     node_anc_dict = {}
     root = utils.get_root(g)
     node_anc_dict[root] = {root}
@@ -398,6 +359,8 @@ def get_anc_desc_pairs(g):
         for anc in anc_list:
             anc_desc_pairs.add((anc, desc))
                     
-
+            
+            
     return anc_desc_pairs
+
 

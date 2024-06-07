@@ -34,15 +34,25 @@ def get_contributions(g_1,g_2):
         mutation_contribution_dict_1[desc_mut]["contribution"] += 1 
         mutation_contribution_dict_1[anc_mut]["contribution"] += 1 
 
+    print("T1 PARENT CHILD CONTRIBUTIONS")
+    print(mutation_contribution_dict_1)
+        
     for pair in pc_distinct_set_2:
         desc_mut = pair[1]
         anc_mut = pair[0]
         desc_node = utils.get_node_from_mutation(g_2,desc_mut)
         node_contribution_dict_2[desc_node]["contribution"] += 1
         mutation_contribution_dict_2[desc_mut]["contribution"] += 1 
-        mutation_contribution_dict_2[anc_mut]["contribution"] += 1 
+        mutation_contribution_dict_2[anc_mut]["contribution"] += 1
+
+    print("T2 PARENT CHILD CONTRIBUTIONS")
+    print(mutation_contribution_dict_2)
+
+    xtra1 = False
+    xtra2 = False
+        
     print("\n","pc_distance", pc_distance)
-    return node_contribution_dict_1, node_contribution_dict_2, mutation_contribution_dict_1, mutation_contribution_dict_2, node_mutations_dict_1, node_mutations_dict_2, pc_distance
+    return node_contribution_dict_1, node_contribution_dict_2, mutation_contribution_dict_1, mutation_contribution_dict_2, node_mutations_dict_1, node_mutations_dict_2, pc_distance, xtra1, xtra2
 
 def get_parent_child_pairs(g):
     """

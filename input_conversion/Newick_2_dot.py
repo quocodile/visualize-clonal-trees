@@ -17,17 +17,20 @@ def base_case(newick_string, current_node, output):
     
     #The node has a singular label and is surrounded by parenthesis
     if '{' not in newick_string and newick_string[0] == "(" and newick_string[-1] == ")":
-        newick_string = newick_string[1:-1]
+        
+        newick_string = str(newick_string[1:-1])
         output.write("\t" + str(newick_string) + " [label=\"" + newick_string + "\"];\n")
         output.write("\t" + str(current_node) + " -> " + str(newick_string) + ";\n")
     
     #The node has a singular label and is not surrounded by parenthesis
     elif '{' not in newick_string:
+        
         output.write("\t" + str(newick_string) + " [label=\"" + newick_string + "\"];\n")
         output.write("\t" + str(current_node) + " -> " + str(newick_string) + ";\n")
         
     #The node has multiple labels
     else:
+        
         node_trimmed = newick_string[1:-1]
         labels = node_trimmed.split(',')
         delim = ","
@@ -67,7 +70,8 @@ def find_substrings(newick_string, current_node, output):
         elif j != ',':
             curr_substring = curr_substring + j
     substrings.append(curr_substring)
-    
+
+
     #Parse all the substrings indivudually
     for i in substrings:                
         parse_next(i, current_node, output)
@@ -79,6 +83,7 @@ def find_next_node(newick_string, current_node, output):
     #If we are at the root of the tree, find the root and parse the next string
     if ')' in newick_string:
         substrings = newick_string.split(')')
+        
         next_node = substrings[-1]
         
         #Parse the root if it is multi-labelled
@@ -108,11 +113,12 @@ def find_next_node(newick_string, current_node, output):
     #If there are no substrings, find the next node and go into the base case
     elif '}' in newick_string:
         substrings = newick_string.split('}')
+        
         next_node = substrings[-1]
         #newick_string = newick_string.replace(next_node, "")
         print(f"I am remove {next_node}")
         print(f"Current: {current_node}")
-        print(f"Newic string: {newick_string}")
+        print(f"Newick string: {newick_string}")
         newick_string = newick_string[::-1].replace(next_node[::-1], "", 1)[::-1]
         print(f"Newic string: {newick_string}")
         output.write("\t" + str(current_node) + " -> " + str(next_node) + ";\n")
@@ -175,4 +181,134 @@ def convert_newick_2_dot(newick_string):
     print(f"This is the final string {final_string}\n")
     print(f"This is the final string with newlines removed {removed_newlines}\n")
     #return final_string
-    return removed_newlines 
+    return removed_newlines
+
+
+
+
+#functions for alphabetizing across siblings
+
+def flatten(this_string):
+    flattened = ""
+    for word in this_string:
+        flattened += word + ","
+
+    flattened = flattened[:-1].strip(" ")
+
+    return flattened
+
+def get_root(subtree):
+    
+    root_index = subtree.rfind(")")
+    root = subtree[root_index + 1:]
+
+    return root
+
+def condense_nodes(tree):
+
+    tree = tree.replace(" ", "")
+    
+    node_candidates = tree.split("{")
+
+    node_dict = {}
+
+    if len(node_candidates) == 1:
+        return tree, False
+
+    node_candidates = node_candidates[1:] #because first char shouldn't ever be {
+
+    for node_candidate in node_candidates:
+        
+        end_index = node_candidate.rfind("}")
+        node_id = node_candidate[:end_index]
+        
+        sorted_node = sorted(node_id.split(","))
+        first_mutation = sorted_node[0]
+        node_contents = flatten(sorted_node)
+
+        node_dict[first_mutation] = ("{" + node_id + "}", "{" + node_contents + "}")
+
+        
+    for node_key in node_dict:
+        tree = tree.replace(node_dict[node_key][0], node_key)
+
+    return tree, node_dict
+
+
+def expand_nodes(tree, node_dict):
+
+    for node_key in node_dict:
+        tree = tree.replace(node_key, node_dict[node_key][1])
+
+    return tree
+
+def alphabetize(tree):
+
+    #just need to figure out how to handle nodes with multiple mutations
+
+    root_index = tree.rfind(")")
+
+    if root_index == -1:
+
+        #base case:  either one leaf node or several sibling leaves
+
+        leaves = sorted(tree.split(","))
+
+        return flatten(leaves)
+
+    
+    root = tree[root_index + 1:]
+
+    subtree = tree[1:root_index]
+
+    parens = 0
+
+    siblings = []
+    sibling_index = 0
+
+
+    #want to identify siblings
+    for i in range(len(subtree)):
+        
+        if subtree[i] == "(":
+            parens += 1
+        if subtree[i] == ")":
+            parens -= 1
+
+        #only a sibling if parens are matched and there's a comma
+        if subtree[i] == "," and parens == 0:
+            
+            sibling = subtree[sibling_index:i]
+            
+            siblings.append(sibling)
+            sibling_index = i+1 
+            
+    siblings.append(subtree[sibling_index:])
+    
+    sorted_siblings = sorted(siblings, key=get_root)
+
+    merged_string = ""
+
+    for sibling in sorted_siblings:
+        merged_string += alphabetize(sibling) + ","
+
+    merged_string = merged_string[:-1]
+    
+    return "(" + merged_string + ")" + root
+
+
+#wrapper function for all of the alphabetizing steps
+def alphabetize_data(data):
+
+    new_tree, node_dict = condense_nodes(data)
+
+    ordered_data = alphabetize(new_tree)
+
+    if node_dict == False:
+        return ordered_data
+
+    alphabetized_data = expand_nodes(ordered_data, node_dict)
+
+    #print(alphabetized_data)
+
+    return alphabetized_data
