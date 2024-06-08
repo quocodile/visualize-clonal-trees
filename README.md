@@ -1,4 +1,9 @@
 # visualize-clonal-trees
+
+To run in command line:  python3 combined_app_api.py localhost 5000
+
+----------------
+
 Code repository for group COMPs at Computer Science Department of Carleton College, MN, 2022 - 2023
 
 Contributors:
