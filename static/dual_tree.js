@@ -1,8 +1,3 @@
-/* <script>
-    var t1_mutations = {};
-</script>
-*/
-
 
 var tree1TextArea = document.querySelector("#t1-manual-edit-textarea");
 var tree2TextArea = document.querySelector("#t2-manual-edit-textarea");
@@ -13,8 +8,6 @@ var inputTypeTree2 = document.getElementById("input-type-tree2");
 var submitTreesBtn = document.getElementById("submit-trees-btn");
 var distanceMetric = document.getElementById("distance_metric");
 var demoTreesBtn = document.getElementById("demo-trees-btn");
-//var distanceMeasureLabel = document.getElementById("distance-measure-label");
-//var coloring = ['#f0f172', '#80bda5', '#4180a9', '#00429d'];
 var coloring = ['#deebf7', '#6baed6', '#2171b5', '#08306b'];
 var coloring_gt = ['#fee5d9','#fcae91', '#fb6a4a', '#cb181d'];
 
@@ -24,6 +17,10 @@ var highlight_color = "red";
 var mutation_table_color = "black";
 
 var heatMapFontSize = 0;
+
+
+
+window.addEventListener('resize', submit_tree(), true)
 
 var gtOption = document.getElementById("ground_truth");
 
@@ -38,9 +35,11 @@ var tree2_filename;
 
 
 initialize();
+/*
 window.onload = () => {
   submit_tree();
 }
+*/
 
 function closeManualEditModal() {
   document.getElementById("modal-container").style.display = "none";
@@ -74,9 +73,6 @@ function initialize() {
     legend.appendChild(svg.node()); 
   })
   
-  
-  // Submitting the default trees on load
-  //document.body.onfocus = submit_tree();
 }
 
 
@@ -115,18 +111,13 @@ legendExplanationButton.onclick = function() {
     }
     if (distance_metric == "ancestor_descendant_distance") {
 	distance_explanation_title.innerHTML = "<b>Ancestor-Descendant (AD) distance</b>";
-	distance_explanation.innerHTML = "The AD distance measure sums the number of ancestor-descendant mutation pairs that are present in one tree but not the other. In our implementation, each unique ancestor-descendant pair contributes 1 to the node. The contribution of each node is determined by the number of contributing ancestor-descendant pairs it appears in. Please find the original paper <a href='https://dl.acm.org/doi/pdf/10.1145/3233547.3233584' target='_blank'>here</a>.";
+	distance_explanation.innerHTML = "The AD distance measure sums the number of ancestor-descendant mutation pairs that are present in one tree but not the other. In our implementation, each unique ancestor-descendant pair contributes 1 to the edge. The contribution of each mutation is determined by the number of contributing ancestor-descendant pairs it appears in. Please find the original paper <a href='https://dl.acm.org/doi/pdf/10.1145/3233547.3233584' target='_blank'>here</a>.";
 	distance_citation.innerHTML = "Kiya Govek, Camden Sikes, and Layla Oesper. 2018. A Consensus Approach to Infer Tumor Evolutionary Histories. In Proceedings of the 2018 ACM International Conference on Bioinformatics, Computational Biology, and Health Informatics (BCB '18), 63–72.";
-     }
-    if (distance_metric == "caset_distance") {
-	distance_explanation_title.innerHTML = "<b>Common Ancestor Set (CASet) distance</b>";
-	distance_explanation.innerHTML = "The CASet distance measure captures information about how mutations are inherited across the two trees.  An ancestor set is a set of all mutations that are ancestral to a mutation; a common ancestor set is the set of shared mutations across two mutations’ ancestor sets. CASet sums the Jaccard distance of common ancestor sets for pairs of mutations present in the trees. This distance is then normalized to a distance between 0 and 1. Please find the original paper <a href='https://academic.oup.com/bioinformatics/article/36/7/2090/5637226' target='_blank'>here</a>.";
-	distance_citation.innerHTML = "Zach DiNardo, Kiran Tomlinson, Anna Ritz, and Layla Oesper. 2020. Distance measures for tumor evolutionary trees. <em>Bioinformatics</em> 36, 7 (2020), 2090–2097.";
     }
-    if (distance_metric == "disc_distance") {
-	distance_explanation_title.innerHTML = "<b>Distinctly Inherited Set Comparison (DISC) distance</b>";
-	distance_explanation.innerHTML = "The DISC distance measure captures information about how mutations are inherited across the two trees.  An ancestor set is a set of all mutations that are ancestral to a mutation; a distinctly inherited ancestor set is the set of all unique mutations for a given mutation’s ancestor set in comparison to another mutation’s ancestor set. DISC sums the Jaccard distance of distinctly inherited ancestor sets across pairs of ordered mutations present in the trees. This distance is normalized to a distance between 0 and 1. Please find the original paper <a href='https://academic.oup.com/bioinformatics/article/36/7/2090/5637226' target='_blank'>here</a>.";
-	distance_citation.innerHTML = "Zach DiNardo, Kiran Tomlinson, Anna Ritz, and Layla Oesper. 2020. Distance measures for tumor evolutionary trees. <em>Bioinformatics</em> 36, 7 (2020), 2090–2097.";
+    if (distance_metric == "incomparable_pair_recall") {
+	distance_explanation_title.innerHTML = "<b>Incomparable Pair (IP) distance</b>";
+	distance_explanation.innerHTML = "The IP distance measure sums the number of distinct lineage mutation pairs that are present in one tree but not the other. In our implementation, each unique pair contributes 1 to the edge. The contribution of each mutation is determined by the number of contributing pairs it appears in.  Please find the original paper here.";
+	distance_citation.innerHTML = "Citation goes here.";
     }
     
 }
@@ -229,12 +220,7 @@ addAsteriskTree2.addEventListener("click", function() {
 
 
 
-
-
-
-
-
-
+/* manually edit trees */
 
 document.getElementById('edit-tree1-icon').onclick = () => {
   document.getElementById("modal-container").style.display = "flex";
@@ -277,37 +263,7 @@ tree2file.addEventListener("change", function () {
 
 function visualize_singleview(jsonData, distance_measure, dom_data) {
 
-    console.log("begining of visaluze")
-
-    //come back to this
-
-    /*
     
-  // distance measure explanation
-  var explanationContainer = document.getElementById("distance-explanation");
-  var explanation = explanationContainer.querySelector("p");
-  var linkToPaper = document.createElement('p');
-
-  // the explanations
-  var explanations = {
-    "parent_child_distance": "The parent-child distance measure sums the number of parent-child pairs that are present in one tree but not the other. In our implementation, every unique parent-child pair contributes 1 to an edge between two nodes.",
-    "ancestor_descendant_distance": "The ancestor-descendant distance measure sums the number of ancestor-descendant pairs that are present in one tree but not the other. In our implementation, each unique ancestor-descendant pair contributes 1 to the node. The contribution of each node is determined by the number of contributing ancestor-descendant pairs it appears in." 
-  } 
-
-  if (distance_measure === "parent_child_distance") {
-    explanation.innerHTML = explanations.parent_child_distance;
-    // linkToPaper.innerHTML = "The original paper is linked <a href='https://dl.acm.org/doi/abs/10.1145/3233547.3233584' target='_blank'>here</a>." 
-    // explanationContainer.append(linkToPaper);
-  }
-  else if (distance_measure === "ancestor_descendant_distance") {
-    explanation.innerHTML = explanations.ancestor_descendant_distance;
-    // linkToPaper.innerHTML = "The original paper is linked <a href='https://dl.acm.org/doi/abs/10.1145/3233547.3233584' target='_blank'>here</a>." 
-    // explanationContainer.append(linkToPaper);
-  }
-
-    */
-
-
     var t1_filename_element = document.getElementById("tree1-filename-label");
 
     t1_filename_element.innerHTML = tree1_filename;
@@ -317,10 +273,6 @@ function visualize_singleview(jsonData, distance_measure, dom_data) {
     t2_filename_element.innerHTML = tree2_filename;
   
 
-  //dom_data.shared_mutations.sort().forEach(mutation => {
-    //dom_data.shared_label.innerHTML +=  
-      //`<div><span class="${mutation}-mutation-hover-label">${mutation}</span></div>`;
-  //})
   dom_data.t1_only_mutations.sort().forEach(mutation => {
       dom_data.t1_label.innerHTML +=
 	  `<span style="font-family:Roboto Mono; font-weight: normal" class="${mutation}-mutation-hover-label">${mutation}</span>, `;
@@ -341,21 +293,14 @@ function visualize_singleview(jsonData, distance_measure, dom_data) {
 	dom_data.t2_label.innerHTML += '<span style="font-family:Roboto Mono; font-weight: normal">None</span>';
      }
 
-
-    /*trying the top contributors code here instead of in utils*/
-
-    /*----------------------------------------------------*/
     
-    //var t1_top5array = dom_data.t1_top5.split(",");
-    //var t2_top5array = dom_data.t2_top5.split(",");
+    /* get the top contributors for each tree */
 
     var t1_top5array = dom_data.t1_top5.split("<br>");
     var t2_top5array = dom_data.t2_top5.split("<br>");
 
     var t1_top5HTML = "";
     var t2_top5HTML = "";
-
-    console.log("look right here")
 
     for (let i = 0; i < t1_top5array.length; i++) {
 	console.log(t1_top5array[i])
@@ -390,7 +335,6 @@ function visualize_singleview(jsonData, distance_measure, dom_data) {
     for (let i = 0; i < t2_top5array.length; i++) {
 	
 	t2_top5array[i].split(",").forEach(mutation => {
-	    //mutation = mutation.trim();
 	    if (mutation != "") {
 		t2_top5HTML +=
 		    `<span style="font-family:Roboto Mono; font-weight: normal" class="${mutation}-mutation-hover-label">${mutation}</span>, `;
@@ -411,28 +355,6 @@ function visualize_singleview(jsonData, distance_measure, dom_data) {
     }
 
     dom_data.t2_top5_label.innerHTML = t2_top5HTML;
-
-
-
-
-    /*old version*/
-    /*
-
-     t2_top5array.forEach(mutation => {
-	 t2_top5HTML +=
-	      `<span style="font-family:Monospace; font-weight: normal" class="${mutation}-mutation-hover-label">${mutation}</span>, `;
-  })
-    t2_top5HTML = t2_top5HTML.slice(0, -2);
-
-    //trees are identical (i.e. no contributors)
-    if (t2_top5array == "") {
-	t2_top5HTML += `<span style="font-family:Monospace; font-weight: normal">None</span>`;
-    }
-
-    dom_data.t2_top5_label.innerHTML = t2_top5HTML;
-    */
-
-    /*-------------------------------------------------------*/
 
 
   // sizing all the divs for each mutation in the mutation venn diagram
@@ -493,17 +415,8 @@ function visualize_singleview(jsonData, distance_measure, dom_data) {
       
   }
 
-
-    console.log("distance measure")
-    console.log(distance_measure)
     
     if (distance_measure == "ancestor_descendant_distance" || distance_measure == "incomparable_pair_recall") {
-
-	console.log("pumpkin")
-
-    //let t1_max = 0;
-    //let t2_max = 0;
-
 
 	for (var key in dom_data.t1_edges_dict) {
 	    if (dom_data.t1_edges_dict[key] > t1_max) {
@@ -517,11 +430,6 @@ function visualize_singleview(jsonData, distance_measure, dom_data) {
 	}
 
 	t_max = Math.max(t1_max, t2_max)
-
-
-	
-	 //let t1_min = Number.MAX_VALUE;
-	//let t2_min = Number.MAX_VALUE;
 
 
 	for (var key in dom_data.t1_edges_dict) {
@@ -540,9 +448,9 @@ function visualize_singleview(jsonData, distance_measure, dom_data) {
     }
     
 
+    /* defining the color scale for contributions */
 
     var gt_option = gtOption.value;
-    console.log(gt_option);
 
     if (gt_option == "no") {
 
@@ -553,14 +461,13 @@ function visualize_singleview(jsonData, distance_measure, dom_data) {
 	t2_box.style.boxShadow = "inset 0 0 10px #7570b3";
 	
 
-  console.log("Yuh", dom_data.t1_nodes, dom_data.t2_nodes);
   var color_scale = d3.scaleLinear()
   .domain([t_min, t_max/3, 2*t_max/3, t_max])
       .range([coloring[0],coloring[1], coloring[2], coloring[3]])
   .interpolate(d3.interpolateHcl);
-  console.log("color scale", color_scale);
 	fill_tree_scale_color_legend(multi_tree_prefix = "", t_max, t_min, color_scale);
     }
+    
     else if (gt_option == "t1") {
 
 
@@ -568,15 +475,11 @@ function visualize_singleview(jsonData, distance_measure, dom_data) {
 	t2_box.style.boxShadow = "inset 0 0 10px red";
 	var t1_box = document.getElementById("t1-box-wrapper");
 	t1_box.style.boxShadow = "inset 0 0 10px lightgray";
-
-
-	console.log("in here?")
 	
 	var color_scale = d3.scaleLinear()
   .domain([t2_min, t2_max/3, 2*t2_max/3, t2_max])
       .range([coloring_gt[0],coloring_gt[1], coloring_gt[2], coloring_gt[3]])
   .interpolate(d3.interpolateHcl);
-  console.log("color scale", color_scale);
 	fill_tree_scale_color_legend(multi_tree_prefix = "", t2_max, t2_min, color_scale);
     }
     else { //t2
@@ -591,7 +494,6 @@ function visualize_singleview(jsonData, distance_measure, dom_data) {
   .domain([t1_min, t1_max/3, 2*t1_max/3, t1_max])
       .range([coloring_gt[0],coloring_gt[1], coloring_gt[2], coloring_gt[3]])
   .interpolate(d3.interpolateHcl);
-  console.log("color scale", color_scale);
 	fill_tree_scale_color_legend(multi_tree_prefix = "", t1_max, t1_min, color_scale);
     }
 
@@ -627,12 +529,11 @@ function visualize_singleview(jsonData, distance_measure, dom_data) {
       .attr("transform", transform);
   };
 
+  /* drawing the trees */
+
   var svg_names = ['svg1', 'svg2'];
     for (var i = 0; i < 2; i++) {
 
-	console.log("bumblebee")
-
-	
     var cur_svg = svg_names[i];
     var root = d3.hierarchy(data[i]);
     var tree = d3.tree();
@@ -658,20 +559,15 @@ function visualize_singleview(jsonData, distance_measure, dom_data) {
     d3_links.selectAll('line.link')
       .data(root.links())
       .join('line')
-	//.classed('link', true)
 	    .attr("class", "link "+"tree-"+(i+1)+"-link")
       .style("transform", "translate(5, 20), scale(0.5)")
       .style("stroke-width", (d) => {
-        /*if (distance_measure != "parent_child_distance") {
-          console.log("Data", d);
-          return "2px";
-        }
-        else {*/
+       
           if (d.target.data.contribution === 0) {
             return "2px";
           }
           return "5px";
-        //}
+        
       })
       .attr('x1', d =>  { return d.source.x - centering_adjustment;})
       .attr('y1', d => { return d.source.y;})
@@ -681,24 +577,14 @@ function visualize_singleview(jsonData, distance_measure, dom_data) {
     // Set shared attributes for the nodes 
     d3_nodes.selectAll("circle.node")
       .data(root.descendants())
-      .join('circle')
-	  //.classed('node', true)
-	  //.attr("class", d => "node " + d.data.id)
-      
-      
-	  //.attr("class", "node_span")
-	  //.attr("class", d => {
-	  //    return d.data.id;
-	  //})
-
+	    .join('circle')
+	
 	  .attr("class", d => {
 	      let these_labels = d.data.id.split("_");
 	      let classes = "node_span ";
 	      for (let i = 0; i < these_labels.length; i++) {
 		  classes += these_labels[i] + "-node ";
 	      }
-	      
-
 
 		if (dom_data.t2_only_mutations.some(mut => d.data.id.split("_").includes(mut))) {
 		    classes += "t2-distinct ";
@@ -719,31 +605,20 @@ function visualize_singleview(jsonData, distance_measure, dom_data) {
       .attr('cx', (d) => {return d.x - centering_adjustment;})
       .attr('cy', function(d) {return d.y;})
       .attr('r', function(d) {
-        //if (distance_measure == "parent_child_distance") {
-          return 6;
-        //}
-        //return 10;
+          return 6;      
       })
 
       
        .on("mouseover", function(event, data) {
-	   //d3.select(this).style('cursor', 'pointer')
-	   //.style("fill", "green")
+	   
 	   d3.select(this).style('cursor', 'pointer').attr('r', function(d) {
-	       //if (distance_measure == "parent_child_distance") {
 		   return 10;
-               //}
-               //return 14;
 	   })
-
-	   //ticket here
 
 	   let these_labels = data.data.id.split("_");
 	   for (let i = 0; i < these_labels.length; i++) {
 	       createLinkedHighlighting(this, these_labels[i]);
-	       //var items = d3.selectAll("." + these_labels[i] + "-mutation-hover-label")
-	       //.style("fill", "pink")
-	       //d3.selectAll("."+these_labels[i]+'-node').style("fill", "lightgray")
+	  
 	       d3.selectAll("."+these_labels[i]+'-node').attr('r', 10).style("fill", "red");
 	    }
 	   
@@ -772,29 +647,14 @@ function visualize_singleview(jsonData, distance_measure, dom_data) {
 	svg1.call(texture);
 	svg2.call(texture);	    
 
-
-	   //d3.select("."+data.data.id).style("fill", "pink")
 	   d3.selectAll("."+data.data.id).attr('r', function(d) {
-	       //if (distance_measure == "parent_child_distance") {
-	       
 		   return 6;
-               //}
-               //return 10;
-	   })//.attr('fill', texture.url())
-
-	   //console.log(data.data.id)
-	   
-			  
+	   })
+		  
 	   let these_labels = data.data.id.split("_");
 	   
 	   for (let i = 0; i < these_labels.length; i++) {
 	       removeLinkedHighlighting(this, these_labels[i]);
-	       //d3.selectAll("."+these_labels[i]+'-node').style("fill", "pink")
-
-	       //NEEDS TO BE FIXED SO THAT THE TEXTURE COMES BACK ON MOUSEOUT
-
-	       console.log("test test test")
-	       console.log(line_direction)
 	       
 	       d3.selectAll("."+these_labels[i]+'-node').attr('r', 6).style('fill', function(d) {
 		   if (line_direction != "") {
@@ -803,71 +663,18 @@ function visualize_singleview(jsonData, distance_measure, dom_data) {
 		   return "lightgray";
 		   
 	       });
-
-	       //var items = d3.selectAll("." + these_labels[i] + "-mutation-hover-label")
-		   //.style("fill", "pink")
-	    }
-	      
+	    }    
 	  })
 
 
-
-
-
-
-
-      //let font_weight_scale = d3.scaleLinear().domain([t_min, t_max]).range([50, 950]);
       let font_weight_scale = d3.scaleLinear().domain([0, t_max]).range([100, 700]);
 
-
-      //element.style.fontFamily = "Arial, Sans Serif";
-
-      /*
-      var font_link = document.createElement('link');
-      font_link.setAttribute('rel', 'stylesheet');
-      font_link.setAttribute('type', 'text/css');
-      font_link.setAttribute('href', 'https://fonts.googleapis.com/css2?family=Red+Hat+Mono:ital,wght@0,609;1,609&family=Roboto+Flex:opsz,wght@8..144,100..1000&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap');
-      document.head.appendChild(font_link);
-*/
-      
-    
+	
     // Displaying the labels for the nodes
     var labels = d3_text.data(root.descendants())
     .join("text")
 	.classed("mutation-label", true)
-    /*.attr("x", d => { 
-      var currentNode = d;
-      var parentNode = d.parent;
-	if (parentNode) {
-        var currentNodeX = d.x;
-        var parentNodeX = parentNode.x;
-            if (d.data.children == null) {
-              if (currentNodeX < parentNodeX) {
-		  return d.x - (d.data.label.length) * 4;
-          }
-              else if (currentNodeX > parentNodeX) {
-		  return d.x - 50;
-          }
-              else {
-		  return d.x - 5;
-          }
-        }
-            else {
-              if (currentNodeX < parentNodeX) {
-		  return d.x -  Math.min(200, (d.data.label.length) * 5);
-          }
-              else if (currentNodeX > parentNodeX) {
-		  return d.x -  Math.min(50, d.data.label.length * 2);
-          }
-              else {
-		  return d.x + 15;
-          }
-        }
-      }
-	else {
-          return d.x + 15;
-      }
-    })*/
+   
     .attr("y", d => { 
       if (d.data.children == null) {
           return d.y + 20; 
@@ -902,27 +709,20 @@ function visualize_singleview(jsonData, distance_measure, dom_data) {
 
     .style("font-size", "0.70em")
 	.style("font-family", "Roboto Mono")
-	//.style("font-weight", "normal")
-	    //need to find some new font that supports variable weights
 	    
 	.style('font-weight', (d) => {
 
 	    if (svg_names[i] == 'svg1') {
-		console.log(d[0])
-		console.log(font_weight_scale(d[3][d[0]]["contribution"]))
 		return font_weight_scale(d[3][d[0]]["contribution"])
 	    }
 	    if (svg_names[i] == 'svg2') {
-		console.log(d[0])
-		console.log(font_weight_scale(d[4][d[0]]["contribution"]))
 		return font_weight_scale(d[4][d[0]]["contribution"])
 	    }
 
 	}) 
 
     .style("fill", (d) => {
-      console.log(jsonData.mutation_contribution_dict_1);
-	console.log(jsonData.mutation_contribution_dict_2);
+   
 	
       var mutation_contribution_dict_1 = jsonData.mutation_contribution_dict_1; 
       var mutation_contribution_dict_2 = jsonData.mutation_contribution_dict_2; 
@@ -970,31 +770,17 @@ function visualize_singleview(jsonData, distance_measure, dom_data) {
       var t2_max_branching_factor = get_branching_factor(dom_data.t2_nodes);
       var t2_top5_mutations = get_top_n_mutations(jsonData.mutation_contribution_dict_2, 5);
 
-      /*need to figure out how to highlight top 5 contributors upon hover*/
 
-
-      console.log("check here pleaseeeeeeeee")
-      //need to figure out how to edit the json data, because need to return the edges dictionaries
-
- 
     if (svg_names[i] == "svg1") {
-      //var t1_max_branching_factor = get_branching_factor(dom_data.t1_nodes);
-      //var t1_top5_mutations = get_top_n_mutations(jsonData.mutation_contribution_dict_1, 5);
+      
       fill_in_table("t1", t1_max_branching_factor, root.height, dom_data.t1_nodes.length, dom_data.t1_mutations.length, t1_top5_mutations);
     }
     else {
-      //var t2_max_branching_factor = get_branching_factor(dom_data.t2_nodes);
-      //var t2_top5_mutations = get_top_n_mutations(jsonData.mutation_contribution_dict_2, 5);
+     
       fill_in_table("t2", t2_max_branching_factor, root.height, dom_data.t2_nodes.length, dom_data.t2_mutations.length, t2_top5_mutations);
     }
 
-      console.log("here now?")
-      console.log("huhhhhhhh")
-      console.log(distanceMetric.value)
-
-      console.log("dom_data")
-	console.log(dom_data)
-
+	/* set tree title colors for ground truth or not */
 
 	let tree_titles = document.querySelectorAll(".tree-label");
 	if (gt_option == "no") {
@@ -1012,21 +798,15 @@ function visualize_singleview(jsonData, distance_measure, dom_data) {
 
 
 
-
-
-	
       
     // Set the coloring scheme based off of the distance measure
     switch (distanceMetric.value) {
       case "ancestor_descendant_distance":
-        //distanceMeasureLabel.innerHTML = formatNumber(distance);
-
-	console.log("do I ever get here?")
 
 	if (gt_option == "no") {
 	
 	edge_colored_tree_ad(d3_nodes, d3_links, t_max, t_min, color_scale, dom_data.t1_only_mutations, dom_data.t2_only_mutations, svg1, svg2, dom_data.t1_edges_dict, dom_data.t2_edges_dict, i);
-	    //node_colored_tree(d3_nodes, d3_links, t_max, t_min, color_scale, dom_data.t1_only_mutations, dom_data.t2_only_mutations, svg1, svg2);
+	   
 	}
 	else {
 	    
@@ -1035,36 +815,22 @@ function visualize_singleview(jsonData, distance_measure, dom_data) {
         break;
 
 	case "incomparable_pair_recall":
-        //distanceMeasureLabel.innerHTML = formatNumber(distance);
-
-	console.log("do I ever get here?")
 
 	if (gt_option == "no") {
 	
 	edge_colored_tree_ad(d3_nodes, d3_links, t_max, t_min, color_scale, dom_data.t1_only_mutations, dom_data.t2_only_mutations, svg1, svg2, dom_data.t1_edges_dict, dom_data.t2_edges_dict, i);
-	    //node_colored_tree(d3_nodes, d3_links, t_max, t_min, color_scale, dom_data.t1_only_mutations, dom_data.t2_only_mutations, svg1, svg2);
+	    
 	}
 	else {
 	    
 	    edge_colored_tree_ad_gt(d3_nodes, d3_links, t_max, t_min, color_scale, dom_data.t1_only_mutations, dom_data.t2_only_mutations, svg1, svg2, dom_data.t1_edges_dict, dom_data.t2_edges_dict, i, gt_option);
 	}
         break;
-
-
-      case "caset_distance": 
-        //distanceMeasureLabel.innerHTML = formatNumber(distance);
-        node_colored_tree(d3_nodes, d3_links, t_max, t_min, color_scale, dom_data.t1_only_mutations, dom_data.t2_only_mutations, svg1, svg2);
-        break;
-      case "disc_distance": 
-        //distanceMeasureLabel.innerHTML = formatNumber(distance);
-        node_colored_tree(d3_nodes, d3_links, t_max, t_min, color_scale, dom_data.t1_only_mutations, dom_data.t2_only_mutations, svg1, svg2);
-        break;
+	
     case "parent_child_distance":
-	console.log("still hjere?")
 
 	if (gt_option == "no") {
 	
-	//distanceMeasureLabel.innerHTML = formatNumber(distance);
             edge_colored_tree(d3_nodes, d3_links, t_max, t_min, color_scale, dom_data.t1_only_mutations, dom_data.t2_only_mutations, svg1, svg2);
 	}
 	else {
@@ -1109,157 +875,11 @@ function isDark(color) {
 }
 
 
-// Coloring scheme for DIST, CASet, and ancestor descendant -> node based
-function node_colored_tree(d3_nodes, d3_links, t_max, t_min, scale, t1_only_mutations, t2_only_mutations, svg1, svg2) {
 
-
-    //let's see if we can make this work!!!
-
-    let edge_width_scale = d3.scaleLinear().domain([t_min, t_max]).range([5, 10]);
-    
- 
-    d3_nodes.selectAll('circle.node').style("stroke", "black")
-    	.style("fill", function(d) {  //fill tree-distinct nodes with texture
-	    
-
-	    var line_direction = "";
-	    var distinct = false;
-
-	    if (t1_only_mutations.some(mut => d.data.id.split("_").includes(mut))) {
-		line_direction = "2/8";
-		distinct = true;
-	    }
-	    if (t2_only_mutations.some(mut => d.data.id.split("_").includes(mut))) {
-		line_direction = "6/8";
-		distinct = true;
-	    }
-      
-	    if (distinct) {
-
-	const texture = textures
-	      .lines()
-	      .size(6)
-	      .strokeWidth(1.5)
-	      .orientation(line_direction)
-	      .background("lightgray");   
-
-	 //for initializing texture for highlighting
-	 svg1.call(texture);
-	 svg2.call(texture);	    
-	 return texture.url();
-      }
-	    else {
-		return "lightgray";
-	    }})
-
-
-
-  d3_links.selectAll('line.link')
-	.style("stroke", function(d) {
-
-	    console.log("hi there");
-	    console.log(d)
-
-	    
-        if (d.source.data.contribution == 0) {
-          return "lightgray";
-        }
-        else {
-          return scale(d.source.data.contribution);
-        }
-      })
-	.style("stroke-width", function(d) {
-	    if (d.source.data.contribution == 0) {
-		return 2;
-        }
-        else {
-          return edge_width_scale(d.source.data.contribution);
-        }
-
-	})
-	.style("transform", "translate(5, 20), scale(0.5)")
-
-
-
-    
-/* node coloring stuff below */
-    /*
-  d3_nodes.selectAll('circle.node')
-	.style("stroke",d => {
-      if (d.data.contribution > 0) {
-        return "black";
-      }
-      else {
-        return "gray";
-      }
-    })
-	.style("fill", function(d) { //fill tree-distinct nodes with texture
-	    
-	    var line_direction = "";
-	    var distinct = false;
-	    var stroke_color = 'black';
-
-	    if (t1_only_mutations.some(mut => d.data.id.split("_").includes(mut))) {
-		line_direction = "2/8";
-		distinct = true;
-	    }
-	    if (t2_only_mutations.some(mut => d.data.id.split("_").includes(mut))) {
-		line_direction = "6/8";
-		distinct = true;
-	    }
-
-	    if (distinct) {
-
-	var background_color  = scale(d.data.contribution);
-	if (d.data.contribution === 0) {
-	    // background_color = "lightgray";
-	    background_color = "rgb(211, 211, 211)";
-	}
-
-	if (isDark(background_color)) {
-	    stroke_color = 'white';
-	}
-
-	const texture = textures
-	      .lines()
-	      .size(6)
-	      .strokeWidth(1.5)
-	      .stroke(stroke_color)
-	      .orientation(line_direction)
-	      .background(background_color);   
-
-	 //for initializing texture for highlighting
-	 svg1.call(texture);
-	 svg2.call(texture);
-	    
-	 return texture.url();
-      }
-	    
-      if (d.data.contribution === 0) {
-	return "lightgray";
-      }				
-	    else {
-		
-	  return scale(d.data.contribution);
-      }
-	})
-
-    d3_links.selectAll('line.link').style("stroke", "black");
-
-*/
-}
-
-
-
-/* trying out ground truth comparison */
+/* with ground truth comparison */
 function edge_colored_tree_gt(d3_nodes, d3_links, t_max, t_min, scale, t1_only_mutations, t2_only_mutations, svg1, svg2, gt_option) {
     
     if (gt_option == "t1") {
-
-
-	//var t1_outline = document.getElementByClassName("t1-container");
-	//t1_outline[0].attr("box-shadow", "red");
-
 	
 	let edge_width_scale = d3.scaleLinear().domain([t_min, t_max]).range([5, 10]);
  
@@ -1391,7 +1011,7 @@ function edge_colored_tree_gt(d3_nodes, d3_links, t_max, t_min, scale, t1_only_m
 
 
 
-// Coloring scheme for ancestor descendant -> edge based
+// Coloring scheme for ancestor descendant with ground truth
 function edge_colored_tree_ad_gt(d3_nodes, d3_links, t_max, t_min, scale, t1_only_mutations, t2_only_mutations, svg1, svg2, t1_edges_dict, t2_edges_dict, svg_id, gt_option) {
 
     
@@ -1544,71 +1164,15 @@ function edge_colored_tree_ad_gt(d3_nodes, d3_links, t_max, t_min, scale, t1_onl
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // Coloring scheme for parent child -> edge based
 function edge_colored_tree(d3_nodes, d3_links, t_max, t_min, scale, t1_only_mutations, t2_only_mutations, svg1, svg2) {
     
-    /*d3_nodes.selectAll('circle.node').style("stroke", d => {
-	if (t1_only_mutations.some(mut => d.data.id.split("_").includes(mut)) || t2_only_mutations.some(mut => d.data.id.split("_").includes(mut))) { //outline tree-distinct mutations in red
-	    return "#ad4399";
-	}
-	else {
-	    return "black";
-	}
-    }).style("fill", "#e6e6e3")
-    */
-
-
     
     let edge_width_scale = d3.scaleLinear().domain([t_min, t_max]).range([5, 10]);
 
 
-
-    /*will this work? maybe!*/
-
-
-    //get the id and split into each mutation
-    //then grab the labels and font weight them according to contribution
-    
- 
     d3_nodes.selectAll('circle.node').style("stroke", "black")
     	.style("fill", function(d) {  //fill tree-distinct nodes with texture
-
-	    /*
-	    let these_labels = d.data.id.split("_");
-	    for (let i = 0; i < these_labels.length; i++) {
-
-		console.log("Hello")
-		console.log(these_labels[i])
-		
-		d3.selectAll("."+these_labels[i] + "-mutation-hover-label").style("color", "pink")
-
-		d3.selectAll(".left-labels").style("color", "pink")
-		d3.selectAll(".columnLabel").style("color", "pink")
-
-		d3.selectAll(".rowLabel").style("color", "pink")
-	    }
-	    */
-
-
-
-	    
 
 	    var line_direction = "";
 	    var distinct = false;
@@ -1666,18 +1230,6 @@ function edge_colored_tree(d3_nodes, d3_links, t_max, t_min, scale, t1_only_muta
 
 // Coloring scheme for ancestor descendant -> edge based
 function edge_colored_tree_ad(d3_nodes, d3_links, t_max, t_min, scale, t1_only_mutations, t2_only_mutations, svg1, svg2, t1_edges_dict, t2_edges_dict, svg_id) {
-    
-    /*d3_nodes.selectAll('circle.node').style("stroke", d => {
-	if (t1_only_mutations.some(mut => d.data.id.split("_").includes(mut)) || t2_only_mutations.some(mut => d.data.id.split("_").includes(mut))) { //outline tree-distinct mutations in red
-	    return "#ad4399";
-	}
-	else {
-	    return "black";
-	}
-    }).style("fill", "#e6e6e3")
-    */
-
-    console.log("peppermint")
 
     let edge_width_scale = d3.scaleLinear().domain([t_min, t_max]).range([5, 10]);
 
@@ -1686,14 +1238,6 @@ function edge_colored_tree_ad(d3_nodes, d3_links, t_max, t_min, scale, t1_only_m
 	edges_dict = t2_edges_dict;
     }
 
-
-
-    /*will this work? maybe!*/
-
-
-    //get the id and split into each mutation
-    //then grab the labels and font weight them according to contribution
-    
  
     d3_nodes.selectAll('circle.node').style("stroke", "black")
     	.style("fill", function(d) {  //fill tree-distinct nodes with texture
@@ -1729,116 +1273,10 @@ function edge_colored_tree_ad(d3_nodes, d3_links, t_max, t_min, scale, t1_only_m
 	    }})
 
 
-    console.log("LINKS LINKS LINKS")
-
-    //ok so I have the edges all in a dictionary
-    //I'll need to just identify the edges by checking first character vs source and second character vs target
-    //and then do contribution by scale
-    //if not present in dictionary, color grey
-
-    //clean up the remnant node based things...not doing any coloring with nodes anymore
-
-
-
-
-    /* Final pieces of AD */
-    //need to figure out what to do if {B,C} in cluster and how to color AB and AC because technically same edge
-    //do I want to totally treat those as the same edge?? maybe?
-    //how are the links made? maybe I can make it so that they can be refered to by any of the relevant labels
-    //that seems like a good thing to check out
-    //make sure that the grey only happens at the right time
-
-
-
-
-
-    
-
   d3_links.selectAll('line.link')
 	.style("stroke", function(d) {
 
-	    console.log("data ")
-	    console.log(svg_id)
-
-	    console.log("what is tmax")
-	    console.log(t_max)
-
-	    /*
-
-	    console.log(d.target.data.id.split("_"));
-	    let siblings = d.target.data.id.split("_");
-	    let parents = d.source.data.id.split("_");
-
-
-	    let tester = [1, 2, 3]
-	    tester.map((item) => item+1)
-	    console.log(tester)
-
-	    if (siblings.length > 1) {
-
-
-		if (parents.length == 1) {
-
-		
-		    console.log("siblings");
-		    console.log(siblings)
-		    let possible_keys = siblings.map(function(x) {
-			return d.source.data.id + x;
-		    })
-		    console.log(possible_keys)
-		}
-
-		else {
-
-		    let possible_keys = []
-
-		    console.log("currently working here");
-		    console.log(siblings)
-		    console.log(parents)
-		    
-
-		    for (let i = 0; i < parents.length; i++) {
-
-			console.log("i")
-			console.log(i)
-			
-			possible_keys[i] = siblings.map(function(x) {
-			    console.log(parents[i] + x)
-			    return parents[i] + x;
-			})
-		    }
-		    console.log(possible_keys.flat())
-		    
-		    
-		}
-		
-	    }
-	    else {
-
-		//check if parents > 1
-
-		if (parents.length > 1) {
-		    let possible_keys = parents.map(function(x) {
-			return x + d.target.id;
-		    })
-		    
-		}
-		
-	    }
-
-	    */
-
 	    var key = d.source.data.id + d.target.data.id;
-
-	    console.log("this is the key")
-	    console.log(key)
-	    //console.log(t1_edges_dict)
-	    //console.log(t1_edges_dict["EB"])
-	    
-            //if (d.target.data.contribution == 0) {
-          //return "lightgray";
-        //}
-            //else {
 
 	    if (key in edges_dict) {
 		return scale(edges_dict[key]);
@@ -1846,7 +1284,6 @@ function edge_colored_tree_ad(d3_nodes, d3_links, t_max, t_min, scale, t1_only_m
 	    else {
 		return "lightgray";
 	    }
-        //}
       })
 	.style("stroke-width", function(d) {
 
@@ -1854,22 +1291,11 @@ function edge_colored_tree_ad(d3_nodes, d3_links, t_max, t_min, scale, t1_only_m
 	    var key = d.source.data.id + d.target.data.id;
 
 	    if (key in edges_dict) {
-		console.log("Contributing edge: ")
-		console.log(edge_width_scale(edges_dict[key]))
 		return edge_width_scale(edges_dict[key]);
 	    }
 	    else {
 		return 2;
 	    }
-	    /*
-	    
-	    if (edges_dict[key] == 0) {
-		return 2;
-        }
-        else {
-          return edge_width_scale(edges_dict[key]);
-        }
-*/
 
 	})
       .style("transform", "translate(5, 20), scale(0.5)")
@@ -1926,15 +1352,13 @@ function submit_tree() {
   .then(json_data => {
      console.log("distance measure", distanceMetric.value);
      visualize("single", null, null, json_data, distanceMetric.value, null);
-     console.log("Here!");
+     //console.log("Here!");
      var t1_muts = json_data.t1_mutations;
      var t2_muts = json_data.t2_mutations;
      var t1_tripartite_edges = json_data.t1_tripartite_edges;
       var t2_tripartite_edges = json_data.t2_tripartite_edges;
       var t1_edges_dict = json_data.t1_edges_dict;
       var t2_edges_dict = json_data.t2_edges_dict;
-
-      console.log("abelone");
 
       var up_relationships = json_data.up_relationships;
       var down_relationships = json_data.down_relationships;
@@ -1957,275 +1381,6 @@ function submit_tree() {
   });
 }
 
-function submit_mult_tree(distance_measure, svg1,svg2, scale) {
-  /*
-    Send trees to api in order to get
-    data for input into d3 visualizations
-  */
-  var tree1Input = tree1TextArea.value;
-  var tree2Input = tree2TextArea.value;
-  var tree1Type = inputTypeTree1.value;
-  var tree2Type = inputTypeTree2.value;
-
-  var baseURL = get_API_base_URL();
-  var url = baseURL + distance_measure + "?";
-  var url_components = [url, "tree1=", tree1Input, "&tree2=", tree2Input, "&treeType1=", tree1Type, "&treeType2=", tree2Type]
-  url = url_components.join("");
-
-  fetch(url)
-  .then(response => response.json())
-  .then(json_data => {
-     //visualize_multiview(jsonData, distance_measure, svg1, svg2, scale);
-     visualize("multi", svg1, svg2, json_data, distance_measure, scale);
-  });
-}
-
-function visualize_multiview(jsonData, distance_measure, svg1, svg2, scale, dom_data) {
-  
-  set_visualization_event_listeners(distance_measure);
-  var tree1_data = jsonData.node_contribution_dict_1;
-  var tree2_data = jsonData.node_contribution_dict_2;
-  var data = [tree1_data, tree2_data]
-  var distance = jsonData.distance;
-
-  var t_max = Math.max(max_contribution(dom_data.t1_nodes), max_contribution(dom_data.t2_nodes));
-  var t_min = Math.min(min_contribution(dom_data.t1_nodes), min_contribution(dom_data.t2_nodes));
-  fill_tree_scale_color_legend(multi_tree_prefix = scale, t_max, t_min);
-  
-  var viz_svg1 = d3.select(svg1);
-  viz_svg1.call(d3.zoom()
-    .extent([[0, 0], [700, 700]])
-    .scaleExtent([1, 8])
-    .on("zoom", viz_zoomed)
-  ); 
-  
-  var viz_svg2 = d3.select(svg2);
-  viz_svg2.call(d3.zoom()
-    .extent([[0, 0], [700, 700]])
-    .scaleExtent([1, 8])
-    .on("zoom", viz_zoomed2)
-  ); 
-  
-  function viz_zoomed({transform}) {
-    var viz_svg1_nodes =  d3.select(svg1 + ' g.nodes');
-    var viz_svg1_links =  d3.select(svg1 + ' g.links');
-    viz_svg1_nodes
-      .attr("transform", transform);  
-    viz_svg1_links
-      .attr("transform", transform);
-  };
-
-  function viz_zoomed2({transform}) {
-    var viz_svg2_nodes =  d3.select(svg2 + ' g.nodes');
-    var viz_svg2_links =  d3.select(svg2 + ' g.links');
-    viz_svg2_nodes
-      .attr("transform", transform);  
-    viz_svg2_links
-      .attr("transform", transform);
-  };
-
-  var svg_names = [svg1, svg2];
-    for (var i = 0; i < 2; i++) {
-	
-    var root = d3.hierarchy(data[i]);
-    var tree = d3.tree()
-    if (root.height > 10) {
-      tree.nodeSize([70, 25]);
-    }
-    else {
-      tree.nodeSize([90, 80]);
-    }
-    tree.separation((a, b) => 1.5);
-    tree(root);
-    var d3_nodes = d3.select(svg_names[i] +  ' g.nodes')
-    var d3_links = d3.select(svg_names[i] +  ' g.links')
-    var d3_text = d3_nodes.selectAll("text.mutation-label")
- 
-
-    // Setting shared attributes for the links 
-    d3_links.selectAll('line.link')
-      .data(root.links())
-      .join('line')
-      .classed('link', true)
-      .style("transform", "translate(5, 20), scale(0.5)")
-      .style("stroke-width", () => {
-        return change_edge_stroke_width(distance_measure);
-      })
-      .attr('x1', d =>  { return d.source.x;})
-      .attr('y1', d => { return d.source.y;})
-      .attr('x2', d => { return d.target.x;})
-      .attr('y2', d => { return d.target.y;});
-
-    // Set shared attributes for the nodes 
-    d3_nodes.selectAll("circle.node")
-      .data(root.descendants())
-      .join('circle')
-	//.classed('node', true)
-	    .attr("class", function(d) {
-		var classes = "node ";
-		if (dom_data.t2_only_mutations.some(mut => d.data.id.split("_").includes(mut))) {
-		    classes = classes + "t2-distinct ";
-		}
-		 if (dom_data.t1_only_mutations.some(mut => d.data.id.split("_").includes(mut))) {
-		     classes = classes + "t1-distinct";
-		 }
-		return classes;
-	    })
-      .style("transform", "translate(5, 20), scale(0.5)")
-      .style("stroke-width", "1px")
-      .attr('cx', (d) => {return d.x;})
-      .attr('cy', function(d) {return d.y;})
-      .attr('r', function(d) {
-        //if (distance_measure == "parent_child_distance") {
-          return 6;
-        //}
-        //return 10;
-      })
-    
-    // Displaying the labels for the nodes
-    var labels = d3_text.data(root.descendants())
-    .join("text")
-    .classed("mutation-label", true)
-    .attr("x", label => { 
-	// Varies x depending on node position relative to others
-
-      return setX_label(label);
-    })
-    .attr("y", label => { 
-	// Varies y depending on leave/inner node
-      return label.data.children == null ? label.y + 20: label.y - 15;
-     
-    })
-
-    // Making each mutation a tspan
-    var tspans = labels
-    .selectAll("tspan")
-    .data(d => {
-      var str = d.data.label;
-      str = remove_quotation(str);
-      var lst = str.split(",");
-      var newLst = [];
-      lst.forEach(mutation => {
-        newLst.push([mutation.trim(), d.x, d.y]);
-      });
-      return newLst;
-    })
-    .join('tspan')
-    .classed(d => d[0] + "-mutation-hover-label", true)
-    .text((d, i, j) => {
-      if (i == j.length - 1) {
-        return d[0];
-      }
-      return d[0] + ",";
-    })
-
-    .style("font-size", "0.70em")
-    .style("font-family", "Roboto Mono")
-    .style("fill", (d) => {
-      var mutation_contribution_dict_1 = jsonData.mutation_contribution_dict_1; 
-      var mutation_contribution_dict_2 = jsonData.mutation_contribution_dict_2; 
-      if (svg_names[i] == svg1) {
-        if (mutation_contribution_dict_1[d[0]]["contribution"] > 0) {
-          return contribution_color;
-        }
-        return no_contribution_color;
-      }
-      else if (svg_names[i] == svg2) {
-        if (mutation_contribution_dict_2[d[0]]["contribution"] > 0) {
-          return contribution_color;
-        } 
-        return no_contribution_color;
-      }
-    })
-    .on("click", (d, i) => { 
-        console.log("Clicked!", i);
-        var gene_url = "https://www.genecards.org/cgi-bin/carddisp.pl?gene=" + i;
-        window.open(gene_url, "_blank"); 
-    })
-    .attr("x", (d, i, j) => {
-      var index = i;
-      if (index % 2 == 0) {
-        return d[1] + 10;
-      }
-      return d[1] + (j[i-1].__data__[0].length + 10) * 3;
-    })
-    .attr("dy", (d, i, j) => {
-      if (i % 2 == 0) {
-        return "1.1em";
-      }
-    })
-    .style('font-weight', (d) => {
-      return "normal";
-      var mutation_contribution_dict_1 = jsonData.mutation_contribution_dict_1; 
-      var mutation_contribution_dict_2 = jsonData.mutation_contribution_dict_2; 
-      if (svg_names[i] == svg1) {
-        if (mutation_contribution_dict_1[d[0]]["contribution"] > 0) {
-          return mutation_contribution_dict_1["contribution"] * 100;
-        } 
-      }
-      else if (svg_names[i] == svg2) {
-        if (mutation_contribution_dict_2[d[0]]["contribution"] > 0) {
-          return mutation_contribution_dict_2["contribution"] * 100;
-        } 
-      }
-      
-    })
-    ;
- 
-    if (svg_names[i] == "svg1") {
-      t1_max_branching_factor = get_branching_factor(dom_data.t1_nodes);
-      t1_top5_mutations = get_top_n_mutations(jsonData.mutation_contribution_dict_1, 5);
-      fill_in_table("t1", 
-        t1_max_branching_factor, 
-        root.height, 
-        dom_data.t1_nodes.length, 
-        dom_data.t1_mutations.length, 
-        t1_top5_mutations);
-    }
-    else {
-      t2_max_branching_factor = get_branching_factor(dom_data.t2_nodes);
-      t2_top5_mutations = get_top_n_mutations(jsonData.mutation_contribution_dict_2, 5);
-      fill_in_table("t2", 
-        t2_max_branching_factor, 
-        root.height, 
-        dom_data.t2_nodes.length, 
-        dom_data.t2_mutations.length, 
-        t2_top5_mutations);
-    }
-  
-    // Set the coloring scheme based off of the distance measure
-    switch (distance_measure) {
-      case "ancestor_descendant_distance":
-        //distanceMeasureLabel.innerHTML = "Ancestor Descendant Distance: " + distance;
-	edge_colored_tree_ad(d3_nodes, d3_links, t_max, color_scale);
-        //node_colored_tree(d3_nodes, d3_links, t_max, t_min, color_scale);
-        break;
-
-    case "incomparable_pair_recall":
-        //distanceMeasureLabel.innerHTML = "Ancestor Descendant Distance: " + distance;
-	edge_colored_tree_ad(d3_nodes, d3_links, t_max, color_scale);
-        //node_colored_tree(d3_nodes, d3_links, t_max, t_min, color_scale);
-        break;
-
-	
-      case "caset_distance": 
-        //distanceMeasureLabel.innerHTML = "CASet Distance: " + distance;
-        node_colored_tree(d3_nodes, d3_links, t_max, t_min, color_scale);
-        break;
-      case "disc_distance": 
-        //distanceMeasureLabel.innerHTML = "DISC Distance: " + distance;
-        node_colored_tree(d3_nodes, d3_links, t_max, color_scale);
-        break;
-      case "parent_child_distance": 
-        //distanceMeasureLabel.innerHTML = "Parent-child Distance: " + distance;
-        edge_colored_tree(d3_nodes, d3_links, t_max, color_scale);
-        break;
-      default:
-        console.log("Please select a valid distance measure. If you have question email ealexander@carleton.edu");
-        break;
-    }
-  }
-}
 
 function getAllMutations(nodes) {
   var all_mutations = [];
@@ -2248,42 +1403,14 @@ $('.collapse').on('click', function(e) {
 });
 
 
-// toggle for visualization containers in multi-view
-function vizbox(container, legend, buttonID, title) {
-  var x = document.getElementById(container);
-  var x2 = document.getElementById(legend);
-  var y = document.getElementById(buttonID);
-  var label = document.getElementById(title);
-  if (x.style.display === "flex") {
-      x.style.display = "none";
-      x2.style.display = "none";
-      label.style.display = "none"
-      y.style.background = "#2C7A7A";
-  } 
-  else {
-      x.style.display = "flex";
-      x2.style.display = "block";
-      label.style.display = "block"
-      y.style.background = "#2C7A7A50";
-  }
-}
-
 function visualize(viewtype, svg1, svg2, json_data, distance_measure, scale) {
-
-    console.log("lilac")
 
   set_visualization_event_listeners(distance_measure);
   var tree1_data = json_data.node_contribution_dict_1;
   var tree2_data = json_data.node_contribution_dict_2;
   var data = [tree1_data, tree2_data]
   var distance = json_data.distance;
-  console.log("DIST", distance)
   distance = distance.toExponential();
-  console.log("DIST", distance)
-
-
-    console.log("WAIT WHAT ABOUT HERE")
-    console.log(json_data)
 
     var t1_edges_dict = json_data.t1_edges_dict
     var t2_edges_dict = json_data.t2_edges_dict
@@ -2301,20 +1428,16 @@ function visualize(viewtype, svg1, svg2, json_data, distance_measure, scale) {
   var t1_top5 = get_top_n_mutations(json_data.mutation_contribution_dict_1, 5).split(" ").join("");
   var t2_top5_label = document.getElementById("t2_top5_summary_element");
   var t2_top5 = get_top_n_mutations(json_data.mutation_contribution_dict_2, 5).split(" ").join("");
-  
-  //var shared_label = document.getElementById("shared-mutations");
 
   var shared_mutations = intersect(t1_mutations, t2_mutations);
   var t1_only_mutations = difference(t1_mutations, shared_mutations);
   var t2_only_mutations = difference(t2_mutations, shared_mutations);
 
   if (viewtype == "single") {
-    //shared_label.innerHTML='';
     t1_label.innerHTML='';
     t2_label.innerHTML='';
   }
   else {
-    //shared_label.innerHTML=shared_mutations;
     t1_label.innerHTML=t1_only_mutations;
     t2_label.innerHTML=t2_only_mutations;
   }
@@ -2344,14 +1467,10 @@ function visualize(viewtype, svg1, svg2, json_data, distance_measure, scale) {
       t2_edges_dict
   }
 
-    console.log("DOM DATA SUCCESSFUL")
-
     if (viewtype == "single") {
     visualize_singleview(json_data, distance_measure, dom_data);
   }
-  else {
-    visualize_multiview(json_data, distance_measure, svg1, svg2, scale, dom_data);
-  }
+ 
 }
 
 function singleView(dom_data) {
@@ -2412,29 +1531,8 @@ function displayInputOptions(viewtype){
   }
 }
 
-function multiView(dom_data) {
 
-  multiview_elements = document.querySelectorAll(".multiview"); 
-  multiview_elements.forEach(element => {
-    if (element.localName == "button") {
-      element.style.display = "block";
-      element.style.color = "#F5F5F5"
-      element.style.background = "#2C7A7A";
-    }
-  });
-
-  dom_data.top_five.style.display = "none";
-  dom_data.div.style.display = "none";
-  dom_data.legend.style.display = "none"
-
-  var btnsDisplayed = (dom_data.distance_btns.style.display === "inline-block");
-  dom_data.distance_btns.style.display = btnsDisplayed? "none": "inline-block"; 
-  dom_data.distance_dropdown.style.display = "none";
-  dom_data.singleview_btn.style.background = "#2C7A7A";
-  dom_data.singleview_btn.style.color = "#F5F5F5";
-  dom_data.multiview_btn.style.background = btnsDisplayed? "#2C7A7A": "#2C7A7A50";
-  dom_data.multiview_btn.style.color = btnsDisplayed? "black": "#F5F5F5";
-}
+  
 
 function calculateEdgeColorsTripartite(distanceMeasure, arr1, arr2) {
   let edges = [];
@@ -2513,40 +1611,6 @@ function calculateEdgeColorsTripartite(distanceMeasure, arr1, arr2) {
   return edges;
 }
 
-/*
-function calculateEdgeColorsTripartite(arr1, arr2) {
-    let edges = Array(),
-      edges_index = 0;
-    for (let i = 0; i < arr1.length; i++) {
-      let shared = 0;
-      for (let j = 0; j < arr2.length; j++) {
-          if ((arr1[i].parent == arr2[j].parent) && (arr1[i].child == arr2[j].child)) {
-            shared = 1;
-          }
-      }
-      if (!shared) {
-        edges[edges_index] = {"parent": arr1[i]["parent"], "child": arr1[i]["child"], "color": "#d95f02", "index": edges_index};
-        edges_index++;
-      }
-    }
-
-    // also check if there are any edges in arr2 that are not in arr1
-    for (let i = 0; i < arr2.length; i++) {
-      let shared = 0;
-      for (let j = 0; j < arr1.length; j++) {
-          if ((arr2[i].parent == arr1[j].parent) && (arr2[i].child == arr1[j].child)) {
-            //then the edge is shared
-            shared = 1;
-          }
-      }
-      if (!shared) {
-        edges[edges_index] = {"parent": arr2[i]["parent"], "child": arr2[i]["child"], "color": "#7570b3", "index": edges_index};
-        edges_index++;
-      }
-    }
-    return edges;
-}
-*/
 
 function intersectOrdering(mutationsT1, mutationsT2, mutationObjectsT1, mutationObjectsT2) {
   var lst = []; //makes a copy of mutationsT1
@@ -2637,41 +1701,24 @@ function createLinkedHighlighting(clickedElement, mutation){
         expanded = '1.2em';
     d3.select(clickedElement).style('cursor', 'pointer')
 
-    console.log("ice cream");
-    console.log(clickedElement);
-    console.log(mutation)
-
-
     let clicked_classes = clickedElement.getAttribute("class");
-
-    console.log("penguin");
 
     //get all of the mutations from the clicked_classes
     let these_classes = clicked_classes.split(" ");
-    console.log(these_classes)
     let class_muts = these_classes.filter((d) => d.includes("-node"));
-    console.log(class_muts)
     let all_mutations = class_muts.map((d) => d.split("-")[0]);
-    console.log(all_mutations)
+
 
     /* for non-node cases */
     if (all_mutations.length == 0) {
 	all_mutations.push(mutation);
     }
     
-
-    console.log(clicked_classes)
-    console.log(clicked_classes.includes("node_span"))
-
-
-    /*last piece here is to figure out why the colors aren't changing on highlight*/
-    
     //special case of just highlighting labels on tree if hovering over a node
-    //come back to this.........
       if (clicked_classes.includes("node_span_MAYBE")) {
-	console.log("just tree highlight")
+
 	var tree_items = d3.selectAll(".tree-node."+mutation+"-mutation-hover-label");
-	    //d3.selectAll(".tree-node");
+	    
 	  tree_items.style("font-size", d => {
 	return "0.8em"}
 		    ).style("transition", "font-size 0.5s");
@@ -2679,20 +1726,17 @@ function createLinkedHighlighting(clickedElement, mutation){
     }
     else {
 
-
-	//for (let i = 0; i < all_mutations.length; i++) {
 	
     d3.selectAll('.left-to-middle-edges')
     .style('opacity', b => {
-	if (all_mutations.includes(b.child)/* === mutation*/ || all_mutations.includes(b.descendant)/* === mutation*/) {
-	    console.log("in left edges here")
+	if (all_mutations.includes(b.child) || all_mutations.includes(b.descendant)) {
         return 1;
       }
       return 0.1;
     });
     d3.selectAll('.middle-to-right-edges')
     .style('opacity', b => {
-	if (all_mutations.includes(b.parent)/* === mutation*/ || all_mutations.includes(b.ancestor)/* === mutation*/) {
+	if (all_mutations.includes(b.parent) || all_mutations.includes(b.ancestor)) {
         return 1;
       }
       return 0.1;
@@ -2721,22 +1765,16 @@ function createLinkedHighlighting(clickedElement, mutation){
 
     var tripartite_labels_left = d3.selectAll(".left-of-"+mutation);
     tripartite_labels_left.style("fill", b=> {
-	
-	//if (b.parent === mutation) {
-	    //console.log("look over here")
+
 	    return highlight_color;
-	//}
-	//return "white";
+
     });
 
      var tripartite_labels_right = d3.selectAll(".right-of-"+mutation);
     tripartite_labels_right.style("fill", b=> {
 
-	//if (b.mutation === mutation) {
-	    //console.log("or look over here")
 	    return highlight_color;
-	//}
-	//return "white";
+
     });
     
 
@@ -2747,91 +1785,7 @@ function createLinkedHighlighting(clickedElement, mutation){
     items.style("fill", highlight_color);
     items.style("transition", "color 0.5s");
     items.style("cursor", "pointer");
-	//items.style("font-weight", "999");
-	
 
-	//basically, shrink all the labels that aren't the one we're hovering on
-
-	/*
-
-	let smaller = "10px";
-	
-	var items = d3.selectAll('.tree-node')
-    .filter(function() {
-        return !d3.select(this).classed(mutation + '-mutation-hover-label');
-    });
-
-	items.style("color","lightgray");
-    items.style("transition", "color 0.5s");
-	items.style("cursor", "pointer");
-	items.style("font-size", smaller)
-
-
-
-	//same deal for the heatmap and tripartite
-
-		var items = d3.selectAll('.rowLabel')
-    .filter(function() {
-        return !d3.select(this).classed(mutation + '-mutation-hover-label');
-    });
-
-	items.style("color","lightgray");
-    items.style("transition", "color 0.5s");
-	items.style("cursor", "pointer");
-	items.style("font-size", smaller)
-
-		var items = d3.selectAll('.columnLabel')
-    .filter(function() {
-        return !d3.select(this).classed(mutation + '-mutation-hover-label');
-    });
-
-	items.style("color","lightgray");
-    items.style("transition", "color 0.5s");
-	items.style("cursor", "pointer");
-	items.style("font-size", smaller)
-
-		var items = d3.selectAll('.left-labels')
-    .filter(function() {
-        return !d3.select(this).classed(mutation + '-mutation-hover-label');
-    });
-
-	items.style("color","lightgray");
-    items.style("transition", "color 0.5s");
-	items.style("cursor", "pointer");
-
-*/
-
-
-
-
-	
-    
-
-    
-
-    /*
-    var tripartite_left_labels = d3.selectAll('.left-labels')
-    tripartite_left_labels
-    .attr('fill', d => {
-      if (d.mutation === mutation) {
-        return 'red';
-      }
-      return 'black';
-    })
-    */
-
-    /*.style('font-size', d => {
-      if (d.mutation === mutation) {
-        return '1.40em';
-      }
-      return '13px';
-    }) */
-    /*.style('font-weight', d => {
-      if (d.mutation === mutation) {
-        return 'bold';
-      }
-      return 'normal';
-    })*/
 
     let mutation_class = '.'+mutation+'-mutation-hover-label';
 
@@ -2846,11 +1800,9 @@ function createLinkedHighlighting(clickedElement, mutation){
 
     d3.selectAll('.rowLabel'+mutation_class)
     .attr('fill', 'red')
-    //.style("font-size", expanded)
 
     d3.selectAll('.columnLabel'+mutation_class)
     .attr('fill', 'red')
-	//.style("font-size", expanded)
 
 
 
@@ -2880,13 +1832,8 @@ function removeLinkedHighlighting(clickedElement, mutation) {
     var items = d3.selectAll("." + mutation + "-mutation-hover-label");
     items.style("transition", "color 0.5s");
     items.style("color", mutation_table_color);
-    //items.style("font-weight", "normal");
-    items/*.style("font-size", (d, index, items) => {
-      if (items[index].localName == "span") {
-        return "13px"; 
-      }
-      return "0.7em";
-    }).style("transition", "font-size 0.5s");*/
+   
+  
     items.style("fill", (d, index, items) => {
       if (items[index].localName == "span") {
         return mutation_table_color;
@@ -2924,50 +1871,15 @@ function removeLinkedHighlighting(clickedElement, mutation) {
 	return "0.7em"}
 	       ).style("transition", "font-size 0.5s");
 
- 
-
-    /*
-    d3.selectAll('.heatmap-links')
-    .style('stroke-width', d => {
-      return "0.25";
-    })
-    .style('opacity', d => {
-      return 0.2;
-    })
-    */
-
-    /*
-    d3.selectAll('.columnHighlight')
-    .style('opacity', 0);
-
-    d3.selectAll('.rowHighlight')
-	.style('opacity', 0);
-*/
-
     let mutation_class = '.'+mutation+'-mutation-hover-label';
 
         let highlight_row = '.'+mutation+'-highlight-row',
       highlight_column = '.'+mutation+'-highlight-column';
 
-    /*
-    d3.selectAll('.rowLabel')
-    .attr('fill', d => {
-      return "black";
-    })
-    .style("font-size", font_size)
-    d3.selectAll('.columnLabel')
-    .attr('fill', d => {
-      return "black";
-    })
-    .style("font-size", font_size);
-    */
-
     d3.selectAll('.heatmap-links'+highlight_row)
-    //.style('opacity', 0);
     .attr("stroke-width", .25)
 
     d3.selectAll('.heatmap-links'+highlight_column)
-    //.style('opacity', 0);
     .attr("stroke-width", .25)
 
     d3.selectAll('.rowLabel'+mutation_class)
@@ -3009,7 +1921,7 @@ function createTripartite(distanceMeasure, t1_muts, t2_muts, t1_tripartite_edges
   var mutation_ordering = document.getElementById("intersection");
   if (mutation_ordering.checked) {
     if (distanceMeasure === "parent_child_distance") {
-      console.log("Yuh");
+ 
       total_mutations = d3.map(intersectOrdering(t1_muts, t2_muts, t1_mutation_objects, t2_mutation_objects), d => d.mutation); 
       var t1_tripartite_edges = d3.filter(t1_tripartite_edges, d => {
         return total_mutations.includes(d.parent) && total_mutations.includes(d.child);
@@ -3020,7 +1932,7 @@ function createTripartite(distanceMeasure, t1_muts, t2_muts, t1_tripartite_edges
     }
     else if (distanceMeasure === "ancestor_descendant_distance" || distanceMeasure === "incomparable_pair_recall"){
       total_mutations = d3.map(intersectOrdering(t1_muts, t2_muts, t1_mutation_objects, t2_mutation_objects), d => d.mutation); 
-      console.log("Here", total_mutations)
+      
       var t1_tripartite_edges = d3.filter(t1_tripartite_edges, d => {
         return total_mutations.includes(d.ancestor) && total_mutations.includes(d.descendant);
       })
@@ -3059,9 +1971,7 @@ function createTripartite(distanceMeasure, t1_muts, t2_muts, t1_tripartite_edges
   mutation_objects = d3.filter(mutation_objects, d => {
     return total_mutations.includes(d.mutation)
   })
-  console.log(total_mutations);
-  console.log(t1_tripartite_edges)
-  console.log(t2_tripartite_edges)
+ 
 
   var svg = d3.create('svg')
               .style('width', width)
@@ -3094,9 +2004,6 @@ function createTripartite(distanceMeasure, t1_muts, t2_muts, t1_tripartite_edges
 	.style('display', 'none')
 
 
-
-    console.log("bananas")
-
     let t1_mut_max = "";
     let t2_mut_max = "";
     for (let i=0; i<t1_muts.length; i++) {
@@ -3109,9 +2016,6 @@ function createTripartite(distanceMeasure, t1_muts, t2_muts, t1_tripartite_edges
 	    t2_mut_max = t2_muts[i];
 	}
     }
-
-    console.log(t1_mut_max)
-    console.log(t2_mut_max)
 
     mutation_max = Math.max(t1_mut_max.length, t2_mut_max.length);
     
@@ -3130,11 +2034,6 @@ function createTripartite(distanceMeasure, t1_muts, t2_muts, t1_tripartite_edges
   .style('opacity', defaultOpacity);
 
 
-    //find length of longest mutation
-    //that will dictate width
-    //switch around order of drawing so that lines stop at edge of box (or maybe give boundary points!)
-    //shift over the whole tripartite now that labels are in the middle
-
     
   svg.selectAll('.middle-circles')
   .data(mutation_objects)
@@ -3142,11 +2041,9 @@ function createTripartite(distanceMeasure, t1_muts, t2_muts, t1_tripartite_edges
     .classed('middle-circles', true)
 	.attr("width", mutation_max * 10)
 	.attr("height", 12)
-	//.attr('width', 100)
-	//.attr('heigh', 10)
 	.attr('x', xScale(1) - (mutation_max*10*.5) + 20)
   .attr('y', d => mutationScale(d.mutation) - 6)
-	.attr('stroke', "lightgray") //outline or no outline?
+	.attr('stroke', "lightgray") 
 	.attr('stroke-width', '1px')
   .attr('fill-opacity', 0)
 
@@ -3162,36 +2059,19 @@ function createTripartite(distanceMeasure, t1_muts, t2_muts, t1_tripartite_edges
 	.attr('opacity', defaultOpacity)
 
 
+    /* actually technically middle labels now...should fix naming conventions */
 
-
-
-    /* this is the current working version below */
-    
-
-    /*these are middle labels --> need to fix naming conventions!!!!! */
    svg.selectAll('.left-labels')
   .data(mutation_objects)
   .join('text')
-    //.classed('left-labels', true)
 	.attr("class", d => {
 
 	    let class_list = "left-labels "+d.mutation+"-mutation-hover-label";
 
-	    /*
-	    for (let i=0; i<up_relationships[d.mutation].length; i++) {
-		class_list += "right-of-" + up_relationships[d.mutation][i] + " ";
-	    }
-	    for (let i=0; i<down_relationships[d.mutation].length; i++) {
-		class_list += "left-of-" + down_relationships[d.mutation][i] + " ";
-	    }
-*/
-
 	    return class_list;
 	})
-    //.attr('x', xScale(0) + 125)
 	.attr('x', xScale(1) + 20)
   .attr('y', d => mutationScale(d.mutation) + 5)
-    //.attr('text-anchor', 'end')
 	.attr('text-anchor', 'middle')
   .text(d => d.mutation)
   .style('font-size', '13px')
@@ -3204,26 +2084,9 @@ function createTripartite(distanceMeasure, t1_muts, t2_muts, t1_tripartite_edges
     removeLinkedHighlighting(this, data.mutation);
   });
 
-
-
-    //maybe start with the labels colored white
-    //then on linked highlighting, color red
-    //going to have to connect linked highlight to edges because want all associated
-    //because hover-label won't do it because that is same name not connected...
-
-
-    /* working on adding more labels here */
-
-
-
-    /*something isn't working properly with the json :(*/
-
-    
-
      svg.selectAll('.labels-left')
   .data(mutation_objects)
   .join('text')
-    //.classed('left-labels', true)
 	.attr("class", d => {
 
 	    let class_list =  "labels-left ";
@@ -3238,27 +2101,20 @@ function createTripartite(distanceMeasure, t1_muts, t2_muts, t1_tripartite_edges
 	    return class_list;
 
 	})
-    //.attr('x', xScale(0) + 125)
+
 	.attr('x', xScale(0))
   .attr('y', d => mutationScale(d.mutation) + 5)
-    //.attr('text-anchor', 'end')
+  
 	.attr('text-anchor', 'end')
   .text(d => d.mutation)
 	.style('font-size', '13px')
 	.style("fill", "white")
   .style('font-family', 'Roboto Mono')
-  .style('transition', 'font-size 0.5s')
-  /*.on('mouseover', function(event, data) {
-    createLinkedHighlighting(this, data.parent);
-  })
-  .on('mouseout', function(event, data) {
-    removeLinkedHighlighting(this, data.parent);
-  })*/;
+  .style('transition', 'font-size 0.5s');
 
      svg.selectAll('.labels-right')
   .data(mutation_objects)
   .join('text')
-    //.classed('left-labels', true)
 	.attr("class", d => {
 
 	    let class_list = "labels-right ";
@@ -3274,79 +2130,17 @@ function createTripartite(distanceMeasure, t1_muts, t2_muts, t1_tripartite_edges
 
 	    
 	})
-    //.attr('x', xScale(0) + 125)
 	.attr('x', xScale(2) + 40)
   .attr('y', d => mutationScale(d.mutation) + 5)
-    //.attr('text-anchor', 'end')
 	.attr('text-anchor', 'start')
 	.text(d => d.mutation)
 	.style("fill", "white")
   .style('font-size', '13px')
   .style('font-family', 'Roboto Mono')
-  .style('transition', 'font-size 0.5s')
-  /*.on('mouseover', function(event, data) {
-    createLinkedHighlighting(this, data.child);
-  })
-  .on('mouseout', function(event, data) {
-    removeLinkedHighlighting(this, data.child);
-  })*/;
+  .style('transition', 'font-size 0.5s');
     
 
-    /*
-     svg.selectAll('.labels-left')
-  .data(mutation_objects)
-  .join('text')
-    //.classed('left-labels', true)
-	.attr("class", d => "labels-left "+d.mutation+"-tripartite-hover-left")
-    //.attr('x', xScale(0) + 125)
-	.attr('x', xScale(0))
-  .attr('y', d => mutationScale(d.mutation) + 5)
-    //.attr('text-anchor', 'end')
-	.attr('text-anchor', 'end')
-  .text(d => d.mutation)
-	.style('font-size', '13px')
-	.style("fill", "white")
-  .style('font-family', 'Roboto Mono')
-  .style('transition', 'font-size 0.5s')
-  .on('mouseover', function(event, data) {
-    createLinkedHighlighting(this, data.mutation);
-  })
-  .on('mouseout', function(event, data) {
-    removeLinkedHighlighting(this, data.mutation);
-  });
-
-     svg.selectAll('.labels-right')
-  .data(mutation_objects)
-  .join('text')
-    //.classed('left-labels', true)
-	.attr("class", d => "labels-right "+d.mutation+"-tripartite-hover-right")
-    //.attr('x', xScale(0) + 125)
-	.attr('x', xScale(2) + 40)
-  .attr('y', d => mutationScale(d.mutation) + 5)
-    //.attr('text-anchor', 'end')
-	.attr('text-anchor', 'start')
-	.text(d => d.mutation)
-	.style("fill", "white")
-  .style('font-size', '13px')
-  .style('font-family', 'Roboto Mono')
-  .style('transition', 'font-size 0.5s')
-  .on('mouseover', function(event, data) {
-    createLinkedHighlighting(this, data.mutation);
-  })
-  .on('mouseout', function(event, data) {
-    removeLinkedHighlighting(this, data.mutation);
-  });
-*/
-
-
-
-
-
-
-
     /* end of more labels section */
-
-
 
 
     if (gt_option == "no") {
@@ -3405,17 +2199,6 @@ function createTripartite(distanceMeasure, t1_muts, t2_muts, t1_tripartite_edges
   }
   div.append(svg.node())
     }
-
-
-
-
-
-
-
-
-
-
-
 
 
     
@@ -3708,8 +2491,7 @@ function createHeatmap(distanceMeasure, t1_muts, t2_muts, t1_edges, t2_edges, gt
 
 
   // taking the union or the intersection of the mutation sets  
-  console.log("t1 muts", t1_muts)
-  console.log("t2 muts", t2_muts)
+
   var intersection_radio_btn = document.getElementById("intersection");
   if (intersection_radio_btn.checked) {
       total_mutations = d3.map(intersectOrdering(t1_muts, t2_muts, t1_mutation_objects, t2_mutation_objects), d => d.mutation); 
@@ -3793,7 +2575,6 @@ function createHeatmap(distanceMeasure, t1_muts, t2_muts, t1_edges, t2_edges, gt
         return 'heatmap-links '+d.ancestor.mutation+'-highlight-row '+d.descendant.mutation+'-highlight-column'
       }
     })
-    //.classed('heatmap-links', true)
     .attr('x' , d => {
 	if (distanceMeasure === "parent_child_distance") {
          return xScale(d.parent.mutation);
@@ -3833,7 +2614,6 @@ function createHeatmap(distanceMeasure, t1_muts, t2_muts, t1_edges, t2_edges, gt
         return 'heatmap-links '+d.ancestor.mutation+'-highlight-row '+d.descendant.mutation+'-highlight-column'
       }
     })
-    //.classed('heatmap-links', true)
     .attr('x' , d => {
 	if (distanceMeasure === "parent_child_distance") {
          return xScale(d.parent.mutation);
@@ -3861,8 +2641,6 @@ function createHeatmap(distanceMeasure, t1_muts, t2_muts, t1_edges, t2_edges, gt
 		return "white";
 	    })
 	    .style('opacity', 0.5);
-
-
     }
 
     else {
@@ -3878,7 +2656,6 @@ function createHeatmap(distanceMeasure, t1_muts, t2_muts, t1_edges, t2_edges, gt
         return 'heatmap-links '+d.ancestor.mutation+'-highlight-row '+d.descendant.mutation+'-highlight-column'
       }
     })
-    //.classed('heatmap-links', true)
     .attr('x' , d => {
 	if (distanceMeasure === "parent_child_distance") {
          return xScale(d.parent.mutation);
@@ -3981,5 +2758,3 @@ function createHeatmap(distanceMeasure, t1_muts, t2_muts, t1_edges, t2_edges, gt
   console.log(svg.node());
   div.append(svg.node());
 }
-
-/* something about a script here....to be able to have the global variables from utils.js */

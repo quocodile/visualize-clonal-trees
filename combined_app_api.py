@@ -61,8 +61,6 @@ def calculation_contributions_and_node_mutation_relations(distance_measure, tree
     Converts Newick trees to DOT trees
   """
 
-  #tree1_data = Newick_2_dot.convert_newick_2_dot(tree1_data)
-  #tree2_data = Newick_2_dot.convert_newick_2_dot(tree2_data)
 
   tree_1_write_location = "t1.txt"
   tree_2_write_location = "t2.txt"
@@ -70,17 +68,10 @@ def calculation_contributions_and_node_mutation_relations(distance_measure, tree
   write_dot_tree_2_file(tree2_data, tree_2_write_location)
 
   node_contribution_dict_1, node_contribution_dict_2, mutation_contribution_dict_1, mutation_contribution_dict_2, node_mutations_dict_1, node_mutations_dict_2, distance, t1_mutations, t2_mutations, t1_bipartite_edges, t2_bipartite_edges, t1_edges_dict, t2_edges_dict, up_relationships, down_relationships = dist_meas_cont.dist_main(distance_measure, tree_1_write_location, tree_2_write_location)
-  #Currently, node_mutations_dict_1 and node_mutations_dict_2 are being calculated but not passed to frontend. There might be a future use for such dictionaries though (line below would pass them along).
-  #jsonObject = {"node_contribution_dict_1": node_contribution_dict_1, "node_contribution_dict_2": node_contribution_dict_2, "mutation_contribution_dict_1": mutation_contribution_dict_1, "mutation_contribution_dict_2": mutation_contribution_dict_2, "node_mutations_dict_1":node_mutations_dict_1, "node_mutations_dict_2":node_mutations_dict_2, "distance": distance}
-
-  print("SUCCESS???????")
   
   jsonObject = {"node_contribution_dict_1": node_contribution_dict_1, "node_contribution_dict_2": node_contribution_dict_2, "mutation_contribution_dict_1": mutation_contribution_dict_1, "mutation_contribution_dict_2": mutation_contribution_dict_2, "distance": distance, "t1_mutations": t1_mutations, "t2_mutations": t2_mutations, "t1_tripartite_edges": t1_bipartite_edges, "t2_tripartite_edges": t2_bipartite_edges, "t1_edges_dict": t1_edges_dict, "t2_edges_dict": t2_edges_dict, "up_relationships": up_relationships, "down_relationships": down_relationships}
 
   print(jsonObject)
-
-  print("aquamarine")
-  print(up_relationships)
   
   return(json.dumps(jsonObject))
 
@@ -100,8 +91,6 @@ def formatHandling(distance_measure):
         try: #assume both trees are newick format
             
             return calculation_contributions_and_node_mutation_relations(distance_measure, Newick_2_dot.convert_newick_2_dot(tree1_data), Newick_2_dot.convert_newick_2_dot(tree2_data))
-            
-            #return calculation_contributions_and_node_mutation_relations(distance_measure, Newick_2_dot.convert_newick_2_dot(tree1_data), Newick_2_dot.convert_newick_2_dot(tree2_data))
     
         except: #try one tree as DOT and one tree as newick
             try: #assume only tree 1 is newick

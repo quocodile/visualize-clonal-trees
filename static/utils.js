@@ -113,18 +113,9 @@ function get_top_n_mutations(tree_dict, n) {
   );
   var keys = items.map((e) => { return e[0] });
 
- 
-
-    //var tie_value =  mutation_contribution_dict[keys[n-1]];
 
     var v;
-    /*
-  for (v = 0; v < Math.min(n, keys.length); v++){
-    output_str = output_str.concat(keys[v])
-    if (v < Math.min(n, keys.length) - 1){
-      output_str = output_str.concat(", ")
-    }
-  }*/
+   
 
     var output_str = "";
     
@@ -141,37 +132,16 @@ function get_top_n_mutations(tree_dict, n) {
 	}
 	else {
 	    output_str = output_str.concat(keys[v])
-	    output_str = output_str.concat(",<br>"); //this should be a new line eventually....but maybe in dual_tree.js instead
+	    output_str = output_str.concat(",<br>"); 
 	}
 	
   }
 
 
-	/*
-    while (v < keys.length) {
-
-	if (mutation_contribution_dict[keys[v]] == tie_value) {
-	    output_str = output_str.concat(", ");
-	    output_str = output_str.concat(keys[v]);
-	    v++;
-	}
-	else {
-	    break;
-	}
-	
-    }
-*/
 
   
     
-/*
-  for (v = 0; v < Math.min(n, keys.length); v++){
-    output_str = output_str.concat(keys[v])
-    if (v < Math.min(n, keys.length) - 1){
-      output_str = output_str.concat(", ")
-    }
-  }
-*/
+
 
     
   console.log(output_str);
@@ -329,9 +299,7 @@ function fill_tree_scale_color_legend(multi_tree_prefix = "", t_max, t_min, scal
     labels.forEach(label => {
       label.innerHTML = Math.round(t_max * 1000000) / 1000000; 
     })
-    // label2.innerHTML = Math.round(t_max * 1000000) / 1000000; 
-    // label3.innerHTML = Math.round(t_max * 1000000) / 1000000; 
-    // label4.innerHTML = Math.round(t_max * 1000000) / 1000000; 
+  
   }
 }
 
@@ -353,53 +321,7 @@ function fill_in_table(tree_name = "t1", max_branching_factor, height, num_nodes
   document.getElementById(`${tree_name}-number-nodes`).innerHTML = num_nodes;
   document.getElementById(`${tree_name}-number-mutations`).innerHTML = num_mutations;
 
-    /*
-
-    
-    var top5array = top_5_mutations.split(",");
-
-    var top5HTML = [];
-    top5array.sort().forEach(function(mut){
-	//top5HTML.push('<div>'+mut+'</div>');
-	top5HTML.push('<li>' + mut + '</li>');
-    });
-
-    //var test = top5HTML.join('');
-
-    document.getElementById(`${tree_name}_top5_summary_element`).innerHTML = top5HTML.join(''); 
-    */
-
-
-
-    /*try moving this to dual_tree.js!!!!!*/
-
-    /*
-
-    var top5array = top_5_mutations.split(",");
-    var top5HTML = "";
-    
-    top5array.forEach(mutation => {
-	top5HTML +=
-	    //`<span style="font-family: monospace; font-weight: normal; cursor: pointer; color: black; fill: black; transition: font-size 0.5s ease 0s; font-size: 13px;" class="${mutation}-mutation-hover-label">${mutation}</span>, `;
-      `<span style="font-family:Monospace; font-weight: normal" class="${mutation}-mutation-hover-label">${mutation}</span>, `;
-  })
-    top5HTML = top5HTML.slice(0, -2);
-
-
-    //trees are identical (i.e. no contributors)
-    if (top_5_mutations == "") {
-	top5HTML += `<span style="font-family:Monospace; font-weight: normal">None</span>`;
-    }
-    
-
-    document.getElementById(`${tree_name}_top5_summary_element`).innerHTML = top5HTML;
-
-    */
-
-
-
-    
-
+   
 
     /*updating the contributor title with the appropriate measure*/
 
@@ -431,8 +353,6 @@ function fill_in_table(tree_name = "t1", max_branching_factor, height, num_nodes
 	document.getElementById('t2-measure-label').innerHTML = "Something new!";
     }
 
-    
-    //document.getElementById(`${tree_name}_top5_summary_element`).innerHTML = top_5_mutations;
 }
 
 

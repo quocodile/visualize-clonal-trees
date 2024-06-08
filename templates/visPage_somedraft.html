@@ -162,16 +162,6 @@
               </table>
 	      </div>
 
-	      
-<!--
-	      <div id="tree1-mutations-container">
-		<h3>Distinct Tree 1 Mutations</h3><p id="tree1-mutations"></p></div>
-
-
-	    
-	      <div id="tree1-contributors-container" >
-		<h3>Top 5 Contributors</h3><p id="t1_top5_summary_element"></p></div> -->
-
 	  </div> 
 	  
 
@@ -186,11 +176,7 @@
                         <g class="nodes"></g>
                     </g>
                     </svg>
-                <!--<div class="legend-component">
-                    <div class="legend-container" class="singleview" id="anyscale">
-                        <div class="legend"></div>
-                    </div>
-                </div>-->
+               
             </div>
            
 	 
@@ -221,12 +207,11 @@
 				<select name="distance_metric" id="distance_metric" onchange="submit_tree()">
 				    <option value="ancestor_descendant_distance">Ancestor-Descendant</option>
 				    <option value="parent_child_distance" selected>Parent-Child</option>
-				    <!--<option value="caset_distance">CASet</option>
-					<option value="disc_distance">DISC</option>-->
+				    
 					<option value="incomparable_pair_recall">Incomparable Pair</option>
 				</select>
 			    </div>
-			    <!--<div id="distance-measure-label"></div>-->
+			   
 			   
                     </div>
                 </div>
@@ -362,14 +347,7 @@
 		 
 	      </div>
                 
-<!--
-	      <div id="tree2-mutations-container">
-		<h3>Distinct Tree 2 Mutations</h3><p id="tree2-mutations"></p></div>
 
-
-<div id="tree2-contributors-container">
-  <h3>Top 5 Contributors</h3><p id="t2_top5_summary_element"></p></div>
--->
 
 	  </div>
 
@@ -385,11 +363,7 @@
                         <g class="nodes"></g>
                     </g>
                     </svg>
-                <!--<div class="legend-component">
-                    <div class="legend-container" class="singleview" id="anyscale">
-                        <div class="legend"></div>
-                    </div>
-                </div>-->
+                
             </div>
 
 
@@ -397,40 +371,6 @@
 
       </div>
       
-
-
-
-
-
-
-
-
-
-
-	
-	
-	      
-
-	     
-
-	      
-
-	
-
-
-	
-        <!--<div class="main-site-columns middle-column">-->
-
-	
-            
-            <!--</div>-->
-
-
-
-
-
-
-
 
 
  
@@ -457,33 +397,6 @@
 
 	  
 	  <div class="heatmap-component"></div>
-
-	  <!--
-	  <div id="right-column-spacer">
-	     <div id="tripartite-download-container">
-		  <div class="tooltip">
-		    
-		    <button class="download" id="downloadSVG1" onclick="downloadSVG('#svg1')">
-                     <img class="download-file-icon"style="cursor: pointer; width: 30px; height: auto;"src="{{ url_for('static', filename='download.png') }}" alt="download icon">
-		    </button>
-		    
-		    <span class="tooltiptext">Download tripartite</span>
-		  </div>
-                  <input style="display: none;" class="custom-file-input" type="file" id="file1" name="file1">
-	     </div>
-	    <div id="heatmap-download-container">
-		  <div class="tooltip">
-		    
-		    <button class="download" id="downloadSVG1" onclick="downloadSVG('#svg1')">
-                     <img class="download-file-icon"style="cursor: pointer; width: 30px; height: auto;"src="{{ url_for('static', filename='download.png') }}" alt="download icon">
-		    </button>
-		    
-		    <span class="tooltiptext">Download heatmap</span>
-		  </div>
-                  <input style="display: none;" class="custom-file-input" type="file" id="file1" name="file1">
-           </div>
-	  </div>
-	  -->
 
 	  
           <div class="tripartite-component"></div>
