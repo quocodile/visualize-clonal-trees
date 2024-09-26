@@ -84,24 +84,10 @@ def formatHandling(distance_measure):
     tree1_data = Newick_2_dot.alphabetize_data(tree1_data)
     tree2_data = Newick_2_dot.alphabetize_data(tree2_data)
 
-    try: #assume DOT format
-        return calculation_contributions_and_node_mutation_relations(distance_measure, tree1_data, tree2_data)
-  
-    except: #try newick format (and convert to DOT)
-        try: #assume both trees are newick format
-            
-            return calculation_contributions_and_node_mutation_relations(distance_measure, Newick_2_dot.convert_newick_2_dot(tree1_data), Newick_2_dot.convert_newick_2_dot(tree2_data))
-    
-        except: #try one tree as DOT and one tree as newick
-            try: #assume only tree 1 is newick
-                return calculation_contributions_and_node_mutation_relations(distance_measure,  Newick_2_dot.convert_newick_2_dot(tree1_data), tree2_data)
-      
-            except: #last possible combination, otherwise problematic input
-                try: #assume only tree 2 is newick
-                    return calculation_contributions_and_node_mutation_relations(distance_measure, tree1_data,  Newick_2_dot.convert_newick_2_dot(tree2_data))
-
-                except:
-                    raise Exception("problem in the input! :(") from None
+    try:
+        return calculation_contributions_and_node_mutation_relations(distance_measure, Newick_2_dot.convert_newick_2_dot(tree1_data), Newick_2_dot.convert_newick_2_dot(tree2_data))
+    except:
+        raise Exception("Please submit trees that are in proper Newick format.")
 
 
 @app.route('/api/parent_child_distance')

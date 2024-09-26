@@ -20,7 +20,7 @@ var heatMapFontSize = 0;
 
 
 
-window.addEventListener('resize', submit_tree(), true)
+//window.addEventListener('resize', submit_tree(), true)
 
 var gtOption = document.getElementById("ground_truth");
 
@@ -239,8 +239,8 @@ tree1file.addEventListener("change", function () {
     
     fr.readAsText(this.files[0]);
     fr.onload = function () {
-      tree1TextArea.value = fr.result
-      submit_tree();
+	tree1TextArea.value = fr.result
+	submit_tree();
     };  
 });
 
@@ -256,6 +256,9 @@ tree2file.addEventListener("change", function () {
       submit_tree();
   };  
 });
+
+
+
 
 
 
@@ -1340,12 +1343,18 @@ function submit_tree() {
   var tree1Input = tree1TextArea.value;
   var tree2Input = tree2TextArea.value;
   var tree1Type = "newick"//inputTypeTree1.value;
-  var tree2Type = "newick"//inputTypeTree2.value;
+    var tree2Type = "newick"//inputTypeTree2.value;
+
+    //only submit trees if we have both
+    if ((tree1Input == "") || (tree2Input == "")) {
+	alert("Please submit two trees.")
+    }
+    else {
 
   var baseURL = get_API_base_URL();
   var url = baseURL + distanceMetric.value + "?";
   var url_components = [url, "tree1=", tree1Input, "&tree2=", tree2Input, "&treeType1=", tree1Type, "&treeType2=", tree2Type]
-  url = url_components.join("");
+    url = url_components.join("");
 
   fetch(url)
   .then(response => response.json())
@@ -1379,6 +1388,7 @@ function submit_tree() {
 	 createHeatmap(distanceMetric.value, t1_muts, t2_muts, t1_tripartite_edges, t2_tripartite_edges, gt_option);
      }
   });
+    }
 }
 
 
