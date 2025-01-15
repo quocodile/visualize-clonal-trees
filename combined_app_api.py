@@ -86,8 +86,9 @@ def formatHandling(distance_measure):
 
     try:
         return calculation_contributions_and_node_mutation_relations(distance_measure, Newick_2_dot.convert_newick_2_dot(tree1_data), Newick_2_dot.convert_newick_2_dot(tree2_data))
-    except:
-        raise Exception("Please submit trees that are in proper Newick format.")
+    except Exception as e:
+        # raise Exception("Please submit trees that are in proper Newick format.")
+        return json.dumps({"Error": "Please submit trees that are in proper Newick format."})
 
 
 @app.route('/api/parent_child_distance')

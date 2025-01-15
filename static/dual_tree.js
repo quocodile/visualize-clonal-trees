@@ -1359,6 +1359,10 @@ function submit_tree() {
   fetch(url)
   .then(response => response.json())
   .then(json_data => {
+     if (json_data.Error) {
+       alert(json_data.Error)
+       return;
+     }
      console.log("distance measure", distanceMetric.value);
      visualize("single", null, null, json_data, distanceMetric.value, null);
      //console.log("Here!");
