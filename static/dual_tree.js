@@ -1,6 +1,8 @@
 
 var tree1TextArea = document.querySelector("#t1-manual-edit-textarea");
 var tree2TextArea = document.querySelector("#t2-manual-edit-textarea");
+var tree1Error = document.querySelector(".tree1-error");
+var tree2Error = document.querySelector(".tree2-error");
 var tree1file = document.getElementById("file1");
 var tree2file = document.getElementById("file2");
 var inputTypeTree1 = document.getElementById("input-type-tree1");
@@ -1346,10 +1348,16 @@ function submit_tree() {
     var tree2Type = "newick"//inputTypeTree2.value;
 
     //only submit trees if we have both
-    if ((tree1Input == "") || (tree2Input == "")) {
-	alert("Please submit two trees.")
+    if (tree1Input == "") {
+      tree1Error.innerHTML = "Please input Tree 1";
+    }
+    else if (tree2Input == "") {
+      alert("Please input Tree 2");
+      // tree2Error.innerHTML = "Please input Tree 2";
     }
     else {
+      tree1Error.innerHTML = "";
+      tree2Error.innerHTML = "";
 
   var baseURL = get_API_base_URL();
   var url = baseURL + distanceMetric.value + "?";
