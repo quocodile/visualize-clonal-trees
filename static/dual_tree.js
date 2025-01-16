@@ -1352,8 +1352,7 @@ function submit_tree() {
       tree1Error.innerHTML = "Please input Tree 1";
     }
     else if (tree2Input == "") {
-      alert("Please input Tree 2");
-      // tree2Error.innerHTML = "Please input Tree 2";
+      tree2Error.innerHTML = "Please input Tree 2";
     }
     else {
       tree1Error.innerHTML = "";
