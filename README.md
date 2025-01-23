@@ -1,4 +1,4 @@
-# visualize-clonal-trees
+# Visual Encodings for Clonal Trees (VECTr) 
 
 To run in command line:  python3 combined_app_api.py localhost 5000
 
