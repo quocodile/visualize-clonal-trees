@@ -1,6 +1,8 @@
 # Visual Encodings for Clonal Trees (VECTr) 
 
-The work in this repository is described in a paper written by Thea Traw, Quoc Nguyen, Dr. Layla Oesper, and Dr. Eric Oesper. 
+The work in this repository is described in a paper written by Thea Traw, Quoc Nguyen, Dr. Layla Oesper, and Dr. Eric Alexander.
+Specifically, this repository contains a Flask server that the user can run to start the tool, auxiliary scripts, and also sample
+input trees. 
 
 Although it has undergone many changes since then, this tool ultimately 
 first emerged as the capstone project of a group of students 
@@ -27,6 +29,8 @@ pydot==3.0.2
 ```
 python3 combined_app_api.py localhost 5000
 ```
+
+## Sample Trees
 
 ## Information
 
