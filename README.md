@@ -24,7 +24,9 @@ pydot==3.0.2
 
 ## Running VECTr
 
-Type in the command line: python3 combined_app_api.py localhost 5000
+```
+python3 combined_app_api.py localhost 5000
+```
 
 ## Information
 
