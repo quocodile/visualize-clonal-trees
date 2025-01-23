@@ -1,5 +1,19 @@
 # Visual Encodings for Clonal Trees (VECTr) 
 
+The work in this repository contains 
+
+Although it has undergone many changes since then, this tool ultimately 
+first emerged as the capstone project of a group of students 
+from the Computer Science Department of Carleton College, MN, 2022 2023. 
+The names of these students are as follows...
+
+- Sam Hiken
+- Shakeal Hodge
+- Josiah Misplon
+- Quoc Nguyen
+- Kanishk Pandey
+- Jimmy Zhong
+
 To run in command line:  python3 combined_app_api.py localhost 5000
 
 ----------------
