@@ -19,6 +19,20 @@ Comps advisor: Eric Alexander
 
 Example for starting app.py: python3 app.py localhost 5000
 
+## Package Requirements
+
+blinker==1.8.2
+click==8.1.7
+Flask==3.0.3
+itsdangerous==2.2.0
+Jinja2==3.1.4
+MarkupSafe==3.0.1
+networkx==3.4.1
+pydot==3.0.2
+pyparsing==3.2.0
+Werkzeug==3.0.4
+
+## Information
 
 The user selects a distance measure and also inputs two trees (either in the DOT or Newick format). dual_trees.js makes a GET request to api.py. If either tree is in the Newick format, api.py calls Newick_2_dot_2.py to convert the tree to DOT format. Then, api.py calls distance_measure_contributions.py which then calls the code for the user-selected distance measure. distance_measure_contributions.py then returns the relevant dictionaries for the nodes, mutations, and contributions, and this information is converted into a JSON object in api.py. This JSON object is then passed back to dual_tree.js which then uses D3 to visualize the two trees. 
 
