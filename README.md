@@ -30,17 +30,18 @@ Basic code structure as of 2023-03-11 (date per ISO 8601):
     - Contains a python file (utils.py) that contains functions shared between the distance measures - this mostly consists of various tree/node/mutation operations
     - Contains a python file (distance_measure_contribution.py) that, given a distance measure, gives the relevant dictionaries relating the nodes, mutations, and contributions, along with the distance between the two trees (this function interacts with api.py)
 - input_conversion
-        - Contains python files for converting Newick format trees to DOT format trees. 
-        - Contains roughly 100 simulated trees encoded in the DOT format, each in separate files. 
-        - Contains sample Newick format trees
-        - Contains DOT format trees that use real data
-    - static
-        - Contains JS and CSS files for each of the pages of our webapp
-        - utils.js contains general help functions for dual_tree.js
-        - dual_tree.js contains all the visualization functions and primarily uses D3 
-    - templates
-        - Contains our shared HTML basis for our webapp: index.html
-        - Contains an info page describing the different distance measures
+  - Contains python files for converting Newick format trees to DOT format trees. 
+  - Contains roughly 100 simulated trees encoded in the DOT format, each in separate files. 
+  - Contains sample Newick format trees
+  - Contains DOT format trees that use real data
+- static
+  - Contains JS and CSS files for each of the pages of our webapp
+  - utils.js contains general help functions for dual_tree.js
+  - dual_tree.js contains all the visualization functions and primarily uses D3 
+- templates
+  - Contains our shared HTML basis for our webapp: index.html
+  - Contains an info page describing the different distance measures
+
     api.py
         - Coordinates backend calls to distance_measure_contribution.py (returns JSON objects for each of the distance measure queries)
     app.py 
