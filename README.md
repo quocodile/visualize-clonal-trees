@@ -21,16 +21,11 @@ Example for starting app.py: python3 app.py localhost 5000
 
 ## Package Requirements
 
-blinker==1.8.2
-click==8.1.7
+```
 Flask==3.0.3
-itsdangerous==2.2.0
-Jinja2==3.1.4
-MarkupSafe==3.0.1
 networkx==3.4.1
 pydot==3.0.2
-pyparsing==3.2.0
-Werkzeug==3.0.4
+```
 
 ## Information
 
