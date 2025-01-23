@@ -175,16 +175,7 @@ window.onclick = function(event) {
     }
 }
 
-
-
-
-
-
 /*modals finished*/
-
-
-
-
 
 /*to indicate that files are being edited*/
 var addAsteriskTree1 = document.querySelector("#edit-tree1-icon");
@@ -1336,6 +1327,7 @@ function setNoContributionLegend() {
 }
 
 function submit_tree() {
+  console.log("Submitted");
   closeManualEditModal();
   setNoContributionLegend();
   /*
@@ -1347,21 +1339,25 @@ function submit_tree() {
   var tree1Type = "newick"//inputTypeTree1.value;
     var tree2Type = "newick"//inputTypeTree2.value;
 
-    //only submit trees if we have both
-    if (tree1Input == "") {
-      tree1Error.innerHTML = "Please input Tree 1";
+    if (tree1Input == "" && tree2Input != "") {
+      tree1Error.innerHTML = "Please upload Tree 1";
+      tree2Error.innerHTML = "";
     }
-    else if (tree2Input == "") {
-      tree2Error.innerHTML = "Please input Tree 2";
+    else if (tree2Input == "" && tree1Input != "") {
+      tree2Error.innerHTML = "Please upload Tree 2";
+      tree1Error.innerHTML = "";
     }
     else {
       tree1Error.innerHTML = "";
       tree2Error.innerHTML = "";
+    }
 
   var baseURL = get_API_base_URL();
+  console.log(baseURL)
   var url = baseURL + distanceMetric.value + "?";
+  console.log(url)
   var url_components = [url, "tree1=", tree1Input, "&tree2=", tree2Input, "&treeType1=", tree1Type, "&treeType2=", tree2Type]
-    url = url_components.join("");
+  url = url_components.join("");
 
   fetch(url)
   .then(response => response.json())
@@ -1399,7 +1395,6 @@ function submit_tree() {
 	 createHeatmap(distanceMetric.value, t1_muts, t2_muts, t1_tripartite_edges, t2_tripartite_edges, gt_option);
      }
   });
-    }
 }
 
 
