@@ -1,6 +1,6 @@
 # Visual Encodings for Clonal Trees (VECTr) 
 
-The work in this repository contains 
+The work in this repository is described in a paper written by Thea Traw, Quoc Nguyen, Dr. Layla Oesper, and Dr. Eric Oesper. 
 
 Although it has undergone many changes since then, this tool ultimately 
 first emerged as the capstone project of a group of students 
@@ -14,25 +14,6 @@ The names of these students are as follows...
 - Kanishk Pandey
 - Jimmy Zhong
 
-To run in command line:  python3 combined_app_api.py localhost 5000
-
-----------------
-
-Code repository for group COMPs at Computer Science Department of Carleton College, MN, 2022 - 2023
-
-Contributors:
-Josiah Misplon
-Quoc Nguyen
-Shakeal Hodge
-Sam Hiken
-Jimmy Zhong
-Kanishk Pandey
-
-Comps advisor: Eric Alexander
-
-
-Example for starting app.py: python3 app.py localhost 5000
-
 ## Package Requirements
 
 ```
@@ -41,12 +22,15 @@ networkx==3.4.1
 pydot==3.0.2
 ```
 
+## Running VECTr
+
+Type in the command line: python3 combined_app_api.py localhost 5000
+
 ## Information
 
 The user selects a distance measure and also inputs two trees (either in the DOT or Newick format). dual_trees.js makes a GET request to api.py. If either tree is in the Newick format, api.py calls Newick_2_dot_2.py to convert the tree to DOT format. Then, api.py calls distance_measure_contributions.py which then calls the code for the user-selected distance measure. distance_measure_contributions.py then returns the relevant dictionaries for the nodes, mutations, and contributions, and this information is converted into a JSON object in api.py. This JSON object is then passed back to dual_tree.js which then uses D3 to visualize the two trees. 
 
 Basic code structure as of 2023-03-11 (date per ISO 8601):
-
 
 - distance_measures
     - Contains a python file for each of the four distance measures we are supporting: Parent-Child, Ancestor-Descendent Caset and Disc, which have functions to calculate the per-node and per-mutation contributions for each distance measure
