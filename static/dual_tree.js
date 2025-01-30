@@ -764,7 +764,7 @@ function visualize_singleview(jsonData, distance_measure, dom_data) {
 
 
         var t1_max_branching_factor = get_branching_factor(dom_data.t1_nodes);
-      var t1_top5_mutations = get_top_n_mutations(jsonData.mutation_contribution_dict_1, 5);
+      var t1_top5_mutations = jsonData.mutation_contribution_dict_1 ? get_top_n_mutations(jsonData.mutation_contribution_dict_1, 5) : "";
       var t2_max_branching_factor = get_branching_factor(dom_data.t2_nodes);
       var t2_top5_mutations = jsonData.mutation_contribution_dict_2 ? get_top_n_mutations(jsonData.mutation_contribution_dict_2, 5) : "";
 
@@ -1435,8 +1435,8 @@ function visualize(viewtype, svg1, svg2, json_data, distance_measure, scale) {
     var t1_edges_dict = json_data.t1_edges_dict
     var t2_edges_dict = json_data.t2_edges_dict
 
-  var t1_nodes = d3.hierarchy(tree1_data).descendants();
-  var t1_mutations = getAllMutations(t1_nodes);
+  var t1_nodes = tree1_data ? d3.hierarchy(tree1_data).descendants() : [];
+  var t1_mutations = tree2_data ? getAllMutations(t1_nodes) : [];
   var t1_label = document.getElementById("tree1-mutations");
 
   var t2_nodes = tree2_data ? d3.hierarchy(tree2_data).descendants() : [];
@@ -1445,7 +1445,7 @@ function visualize(viewtype, svg1, svg2, json_data, distance_measure, scale) {
 
 
   var t1_top5_label = document.getElementById("t1_top5_summary_element");
-  var t1_top5 = get_top_n_mutations(json_data.mutation_contribution_dict_1, 5).split(" ").join("");
+  var t1_top5 = tree1_data ? get_top_n_mutations(json_data.mutation_contribution_dict_1, 5).split(" ").join("") : "";
   var t2_top5_label = document.getElementById("t2_top5_summary_element");
   var t2_top5 = tree2_data ? get_top_n_mutations(json_data.mutation_contribution_dict_2, 5).split(" ").join("") : "";
 
