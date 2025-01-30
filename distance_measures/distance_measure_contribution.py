@@ -161,8 +161,13 @@ def dist_main(distance_measure, filename_1, filename_2):
     elif distance_measure == "incomparable_pair":
         # constructing the necessary input data for the tripartite graph
         
-        t1_ad_pairs = IP.get_anc_desc_pairs(g_1)
-        t2_ad_pairs = IP.get_anc_desc_pairs(g_2)
+        #t1_ad_pairs = IP.get_anc_desc_pairs(g_1)
+        #t2_ad_pairs = IP.get_anc_desc_pairs(g_2)
+
+        this_tuple = IP.get_pair_differences(g_1,g_2)
+        t1_ad_pairs = this_tuple[0]
+        t2_ad_pairs = this_tuple[1]
+        
         for edge in t1_ad_pairs: 
           t1_bipartite_edges.append({"ancestor": edge[0], "descendant": edge[1]})
 

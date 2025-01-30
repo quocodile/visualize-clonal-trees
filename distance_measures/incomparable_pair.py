@@ -141,6 +141,8 @@ def get_contributions(g_1, g_2):
     #make sure that this for loop is calculating the correct contributions
     #see how this does for distinct mutations
     #see how this handles nodes with multiple mutations
+
+    print("CURRENTLY WORKING WITH THIS NEXT CHUNK")
     
     for pair in ad_distinct_set_1:
 
@@ -151,28 +153,42 @@ def get_contributions(g_1, g_2):
         anc_mut = pair[0]
         desc_node = utils.get_node_from_mutation(g_1,desc_mut)
 
-        mutation_contribution_dict_1[anc_mut]["contribution"] += 1
 
-        if pair in tree1_pathway_dict:
+        print("what could this be?")
+        print(mutation_contribution_dict_1)
 
-            for edge in tree1_pathway_dict[pair]:
 
-                print(edge)
+        if anc_mut in mutation_contribution_dict_1:
+            print(anc_mut)
+        
+            mutation_contribution_dict_1[anc_mut]["contribution"] += 1
 
-                key = utils.get_node_from_mutation(g_1,edge[0]) + utils.get_node_from_mutation(g_1,edge[1])
+            #if desc_mut in mutation_contribution_dict_1:
+            #    mutation_contribution_dict_1[desc_mut]["contribution"] += 1
+
+            if pair in tree1_pathway_dict:
+
+                for edge in tree1_pathway_dict[pair]:
+
+                    print(edge)
+
+                    key = utils.get_node_from_mutation(g_1,edge[0]) + utils.get_node_from_mutation(g_1,edge[1])
                 
-                if key in t1_edges_dictionary:
-                    print("hullo")
-                    t1_edges_dictionary[key] += 1
-                else:
-                    t1_edges_dictionary[key] = 1
-                
-                #mutation_contribution_dict_1[edge[1]]["contribution"] += 1 
-                #mutation_contribution_dict_1[edge[0]]["contribution"] += 1
+                    if key in t1_edges_dictionary:
+                        print("hullo")
+                        t1_edges_dictionary[key] += 1
+                    else:
+                        t1_edges_dictionary[key] = 1
+                    
+                    #mutation_contribution_dict_1[edge[1]]["contribution"] += 1 
+                    #mutation_contribution_dict_1[edge[0]]["contribution"] += 1
+
+            else:
+                print("pair not in dictionary")
+                print(pair)
 
         else:
-            print("pair not in dictionary")
-            print(pair)
+            print("this is a distinct mut I think")
 
         #node_contribution_dict_1[desc_node]["contribution"] += 1
 
@@ -190,25 +206,34 @@ def get_contributions(g_1, g_2):
         anc_mut = pair[0]
         desc_node = utils.get_node_from_mutation(g_2,desc_mut)
 
-        mutation_contribution_dict_2[anc_mut]["contribution"] += 1
 
-        if pair in tree2_pathway_dict:
+        if anc_mut in mutation_contribution_dict_2:
 
-            for edge in tree2_pathway_dict[pair]:
+            mutation_contribution_dict_2[anc_mut]["contribution"] += 1
 
-                key = utils.get_node_from_mutation(g_2,edge[0]) + utils.get_node_from_mutation(g_2,edge[1])
+            #if desc_mut in mutation_contribution_dict_2:
+            #    mutation_contribution_dict_2[desc_mut]["contribution"] += 1
+
+            if pair in tree2_pathway_dict:
+
+                for edge in tree2_pathway_dict[pair]:
+
+                    key = utils.get_node_from_mutation(g_2,edge[0]) + utils.get_node_from_mutation(g_2,edge[1])
                 
-                if key in t2_edges_dictionary:
-                    t2_edges_dictionary[key] += 1
-                else:
-                    t2_edges_dictionary[key] = 1
+                    if key in t2_edges_dictionary:
+                        t2_edges_dictionary[key] += 1
+                    else:
+                        t2_edges_dictionary[key] = 1
                 
-                #mutation_contribution_dict_1[edge[1]]["contribution"] += 1 
-                #mutation_contribution_dict_1[edge[0]]["contribution"] += 1
+                    #mutation_contribution_dict_1[edge[1]]["contribution"] += 1 
+                    #mutation_contribution_dict_1[edge[0]]["contribution"] += 1
 
+            else:
+                print("pair not in dictionary")
+                print(pair)
+                
         else:
-            print("pair not in dictionary")
-            print(pair)
+            print("looks like distinct mut t2")
 
         #node_contribution_dict_1[desc_node]["contribution"] += 1
 
@@ -284,6 +309,9 @@ def get_pair_differences(g_1,g_2):
     ad_pair_set_1 = get_anc_desc_pairs(g_1)
     ad_pair_set_2 = get_anc_desc_pairs(g_2)
 
+    print(ad_pair_set_1)
+    print(ad_pair_set_2)
+
     print("testing testing")
 
     ad_pair_set_1_ip = set()
@@ -291,11 +319,149 @@ def get_pair_differences(g_1,g_2):
 
     print("scopin")
 
+    t1_muts = set()
+    t2_muts = set()
+
     for pair in ad_pair_set_1:
+        t1_muts.add(pair[0])
+        t1_muts.add(pair[1])
+        
         ad_pair_set_1_ip.add((pair[1], pair[0]))
     for pair in ad_pair_set_2:
+        t2_muts.add(pair[0])
+        t2_muts.add(pair[1])
+        
         ad_pair_set_2_ip.add((pair[1], pair[0]))
 
+
+    print("mutations in eahc tree")
+    print(t1_muts)
+    print(t2_muts)
+    distinct_t1_muts = t1_muts - t2_muts
+    print(distinct_t1_muts)
+    distinct_t2_muts = t2_muts - t1_muts
+    print(distinct_t2_muts)
+
+
+    # make checklist
+    t1_checklist = {}
+    t1_included = set()
+    for mut in t1_muts:
+        t1_checklist[mut] = t1_muts - {mut} - t1_included
+        t1_included.add(mut)
+
+    t2_checklist = {}
+    t2_included = set()
+    for mut in t2_muts:
+        t2_checklist[mut] = t2_muts - {mut} - t2_included
+        t2_included.add(mut)
+
+    print("CHECKLISTS")
+    print(t1_checklist)
+    print(t2_checklist)
+
+
+    print("now finding DL pairs for each tree")
+    for pair in ad_pair_set_1 | ad_pair_set_1_ip: # that is a terrible variable name
+
+        if pair[1] in t1_checklist[pair[0]]:
+            t1_checklist[pair[0]].remove(pair[1])
+
+    print("t1 DL pairs")
+    print(t1_checklist)
+
+    t1_DL_pairs = {key: value for key, value in t1_checklist.items() if value != set()}
+    t1_DL = [frozenset([key, value]) for key, values in t1_DL_pairs.items() for value in values]
+
+
+    for pair in ad_pair_set_2 | ad_pair_set_2_ip: # that is still a terrible variable name
+
+        if pair[1] in t2_checklist[pair[0]]:
+            t2_checklist[pair[0]].remove(pair[1])
+
+    print("t2 DL pairs")
+    print(t2_checklist)
+
+    t2_DL_pairs = {key: value for key, value in t2_checklist.items() if value != set()}
+    t2_DL = [frozenset([key, value]) for key, values in t2_DL_pairs.items() for value in values]
+
+
+
+    # OK, so now we have the DL pairs for each tree
+    # this will be where the representation choices come in
+    # we basically want to identify if there is an AD pair on the other tree with one of these DL pairs
+
+    print("t1 DL")
+    print(t1_DL)
+    print("t2 DL")
+    print(t2_DL)
+
+    t1_DL_unique = set(t1_DL) - set(t2_DL)
+    print(t1_DL_unique)
+    t2_DL_unique = set(t2_DL) - set(t1_DL)
+    print(t2_DL_unique)
+
+
+    # So now we have the DL pairs unique to each tree
+    # convert back from frozensets
+    ADs_for_t1 = {tuple(fs) for fs in t2_DL_unique}
+    ADs_for_t2 = {tuple(fs) for fs in t1_DL_unique}
+    # but right now these might be in the wrong order for how the edge appears!
+
+    ADs_in_t1 = set()
+    for AD in ADs_for_t1:
+        if AD in ad_pair_set_1:
+            ADs_in_t1.add(AD)
+        elif (AD[1], AD[0]) in ad_pair_set_1:
+            ADs_in_t1.add((AD[1], AD[0]))
+        else:
+            ADs_in_t1.add(AD)
+             
+
+    print("ADs in t1!!!")
+    print(ADs_in_t1)
+
+    
+    ADs_in_t2 = set()
+    '''
+    for AD in ADs_for_t2:
+        if AD not in ad_pair_set_2:
+            if (AD[1], AD[0]) in ad_pair_set_2:
+                ADs_in_t2.add((AD[1], AD[0]))
+        else:
+            ADs_in_t2.add(AD)
+    '''
+    for AD in ADs_for_t2:
+        if AD in ad_pair_set_2:
+            ADs_in_t2.add(AD)
+        elif (AD[1], AD[0]) in ad_pair_set_2:
+            ADs_in_t2.add((AD[1], AD[0]))
+        else:
+            ADs_in_t2.add(AD)
+
+    print("ADs in t2!!!")
+    print(ADs_in_t2)
+
+    return ADs_in_t1, ADs_in_t2
+
+    
+
+   
+       
+
+    
+
+    
+
+    
+
+    
+
+    #USED TO BE THIS, COME BACK HERE
+    '''
+    print(ad_pair_set_1_ip)
+    print(ad_pair_set_2_ip)
+        
     diff1 = ad_pair_set_1 - ad_pair_set_2
     new_diff1 = diff1 - ad_pair_set_2_ip
 
@@ -312,7 +478,14 @@ def get_pair_differences(g_1,g_2):
 
     print(new_diff1)
     print(new_diff2)
-    
+    '''
+
+
+    ##############
+
+
+
+    # not sure what this was
     '''
     for pair in diff1:
         if (pair[1], pair[0]) in diff1_ip:
@@ -333,7 +506,11 @@ def get_pair_differences(g_1,g_2):
     #ad_distinct_set_1 = ad_pair_set_1 - ad_pair_set_2
     #ad_distinct_set_2 = ad_pair_set_2 - ad_pair_set_1
 
-    return new_diff1, new_diff2
+    #COME BACK TO THE RETURN STATEMENT
+    #print("WHAT THE RETURN SHOULD LOOK LIKE")
+    #print(new_diff1)
+    #print(new_diff2)
+    #return new_diff1, new_diff2
     
     #return ad_distinct_set_1, ad_distinct_set_2
 

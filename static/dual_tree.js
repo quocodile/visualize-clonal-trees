@@ -117,8 +117,8 @@ legendExplanationButton.onclick = function() {
 	distance_citation.innerHTML = "Kiya Govek, Camden Sikes, and Layla Oesper. 2018. A Consensus Approach to Infer Tumor Evolutionary Histories. In Proceedings of the 2018 ACM International Conference on Bioinformatics, Computational Biology, and Health Informatics (BCB '18), 63–72.";
     }
     if (distance_metric == "incomparable_pair_recall") {
-	distance_explanation_title.innerHTML = "<b>Incomparable Pair (IP) distance</b>";
-	distance_explanation.innerHTML = "The IP distance measure sums the number of distinct lineage mutation pairs that are present in one tree but not the other. In our implementation, each unique pair contributes 1 to the edge. The contribution of each mutation is determined by the number of contributing pairs it appears in.  Please find the original paper here.";
+	distance_explanation_title.innerHTML = "<b>Distinct Lineage (DL) distance</b>";
+	distance_explanation.innerHTML = "The DL distance measure sums the number of distinct lineage mutation pairs that are present in one tree but not the other. In our implementation, each unique pair contributes 1 to the edge. The contribution of each mutation is determined by the number of contributing pairs it appears in.  Please find the original paper here.";
 	distance_citation.innerHTML = "Citation goes here.";
     }
     
