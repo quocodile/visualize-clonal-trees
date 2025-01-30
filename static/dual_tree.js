@@ -529,7 +529,9 @@ function visualize_singleview(jsonData, distance_measure, dom_data) {
 
   var svg_names = ['svg1', 'svg2'];
     for (var i = 0; i < 2; i++) {
-
+      if (data[i] == null) {
+        continue;
+      }
     var cur_svg = svg_names[i];
     var root = d3.hierarchy(data[i]);
     var tree = d3.tree();
@@ -764,7 +766,7 @@ function visualize_singleview(jsonData, distance_measure, dom_data) {
         var t1_max_branching_factor = get_branching_factor(dom_data.t1_nodes);
       var t1_top5_mutations = get_top_n_mutations(jsonData.mutation_contribution_dict_1, 5);
       var t2_max_branching_factor = get_branching_factor(dom_data.t2_nodes);
-      var t2_top5_mutations = get_top_n_mutations(jsonData.mutation_contribution_dict_2, 5);
+      var t2_top5_mutations = jsonData.mutation_contribution_dict_2 ? get_top_n_mutations(jsonData.mutation_contribution_dict_2, 5) : "";
 
 
     if (svg_names[i] == "svg1") {
@@ -1208,7 +1210,7 @@ function edge_colored_tree(d3_nodes, d3_links, t_max, t_min, scale, t1_only_muta
           return "lightgray";
         }
         else {
-          return scale(d.target.data.contribution);
+	  return d.target.data.contribution ? scale(d.target.data.contribution) : "lightgray";
         }
       })
 	.style("stroke-width", function(d) {
@@ -1216,7 +1218,7 @@ function edge_colored_tree(d3_nodes, d3_links, t_max, t_min, scale, t1_only_muta
 		return 2;
         }
         else {
-          return edge_width_scale(d.target.data.contribution);
+	    return d.target.data.contribution ? edge_width_scale(d.target.data.contribution) : 2;
         }
 
 	})
@@ -1367,14 +1369,15 @@ function submit_tree() {
        return;
      }
      console.log("distance measure", distanceMetric.value);
+     console.log("json data", json_data);
      visualize("single", null, null, json_data, distanceMetric.value, null);
      //console.log("Here!");
      var t1_muts = json_data.t1_mutations;
-     var t2_muts = json_data.t2_mutations;
+     var t2_muts = json_data.t2_mutations ? json_data.t2_mutations : [];
      var t1_tripartite_edges = json_data.t1_tripartite_edges;
-      var t2_tripartite_edges = json_data.t2_tripartite_edges;
+      var t2_tripartite_edges = json_data.t2_tripartite_edges ? json_data.t2_tripartite_edges : [];
       var t1_edges_dict = json_data.t1_edges_dict;
-      var t2_edges_dict = json_data.t2_edges_dict;
+      var t2_edges_dict = json_data.t2_edges_dict ? json_data.t2_edges_dict : [];
 
       var up_relationships = json_data.up_relationships;
       var down_relationships = json_data.down_relationships;
@@ -1435,19 +1438,19 @@ function visualize(viewtype, svg1, svg2, json_data, distance_measure, scale) {
   var t1_mutations = getAllMutations(t1_nodes);
   var t1_label = document.getElementById("tree1-mutations");
 
-  var t2_nodes = d3.hierarchy(tree2_data).descendants();
-  var t2_mutations = getAllMutations(t2_nodes);
+  var t2_nodes = tree2_data ? d3.hierarchy(tree2_data).descendants() : [];
+  var t2_mutations = tree2_data ? getAllMutations(t2_nodes) : [];
   var t2_label = document.getElementById("tree2-mutations");
 
 
   var t1_top5_label = document.getElementById("t1_top5_summary_element");
   var t1_top5 = get_top_n_mutations(json_data.mutation_contribution_dict_1, 5).split(" ").join("");
   var t2_top5_label = document.getElementById("t2_top5_summary_element");
-  var t2_top5 = get_top_n_mutations(json_data.mutation_contribution_dict_2, 5).split(" ").join("");
+  var t2_top5 = tree2_data ? get_top_n_mutations(json_data.mutation_contribution_dict_2, 5).split(" ").join("") : "";
 
-  var shared_mutations = intersect(t1_mutations, t2_mutations);
-  var t1_only_mutations = difference(t1_mutations, shared_mutations);
-  var t2_only_mutations = difference(t2_mutations, shared_mutations);
+  var shared_mutations = tree1_data && tree2_data ? intersect(t1_mutations, t2_mutations) : [];
+  var t1_only_mutations = tree1_data && tree2_data ? difference(t1_mutations, shared_mutations) : [];
+  var t2_only_mutations = tree1_data && tree2_data ? difference(t2_mutations, shared_mutations) : [];
 
   if (viewtype == "single") {
     t1_label.innerHTML='';

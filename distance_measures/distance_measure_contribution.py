@@ -8,6 +8,7 @@ import distance_measures.ancestor_descendant as AD
 import distance_measures.disc as DISC
 import distance_measures.caset as CASet
 import distance_measures.parent_child as PC
+import os
 
 
 import distance_measures.incomparable_pair as IP
@@ -22,11 +23,22 @@ def dist_main(distance_measure, filename_1, filename_2):
     Note:
         This is for use with api.py.
     """
-    g_1 = nx.DiGraph(nx.nx_pydot.read_dot(filename_1))
-    g_2 = nx.DiGraph(nx.nx_pydot.read_dot(filename_2))
+
+    if os.path.getsize(filename_2) == 0:
+      dot1 = nx.nx_pydot.read_dot(filename_1)
+      g_1 = nx.DiGraph(dot1)
+      node_contribution_dict_1, mutation_contribution_dict_1, node_mutations_dict_1 = utils.initialize_core_dictionaries(g_1)
+      node_contribution_tree_1 = json_graph.tree_data(g_1, root=utils.get_root(g_1))
+      return (node_contribution_tree_1, None, mutation_contribution_dict_1, None, node_mutations_dict_1, None, 1, [], [], [], [], None, None, None, None)
+
+    dot1 = nx.nx_pydot.read_dot(filename_1)
+    dot2 = nx.nx_pydot.read_dot(filename_2)
+    g_1 = nx.DiGraph(dot1)
+    g_2 = nx.DiGraph(dot2)
 
     t1_bipartite_edges = [] 
     t2_bipartite_edges = [] 
+
     t1_mutations = list(utils.get_all_mutations(g_1))
     t2_mutations = list(utils.get_all_mutations(g_2))
 
