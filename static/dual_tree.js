@@ -1232,6 +1232,7 @@ function edge_colored_tree_ad(d3_nodes, d3_links, t_max, t_min, scale, t1_only_m
     let edge_width_scale = d3.scaleLinear().domain([t_min, t_max]).range([5, 10]);
 
     let edges_dict = t1_edges_dict;
+    console.log(t1_edges_dict);
     if (svg_id == 1) {
 	edges_dict = t2_edges_dict;
     }
@@ -1276,7 +1277,7 @@ function edge_colored_tree_ad(d3_nodes, d3_links, t_max, t_min, scale, t1_only_m
 
 	    var key = d.source.data.id + d.target.data.id;
 
-	    if (key in edges_dict) {
+	    if (edges_dict && key in edges_dict) {
 		return scale(edges_dict[key]);
 	    }
 	    else {
@@ -1288,7 +1289,7 @@ function edge_colored_tree_ad(d3_nodes, d3_links, t_max, t_min, scale, t1_only_m
 
 	    var key = d.source.data.id + d.target.data.id;
 
-	    if (key in edges_dict) {
+	    if (edges_dict && key in edges_dict) {
 		return edge_width_scale(edges_dict[key]);
 	    }
 	    else {
