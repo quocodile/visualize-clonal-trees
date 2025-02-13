@@ -2,7 +2,7 @@
 
 The work in this repository is described in a paper written by Thea Traw, Quoc Nguyen, Dr. Layla Oesper, and Dr. Eric Alexander.
 Specifically, this repository contains a Flask server that the user can run to start the tool, auxiliary scripts, and also sample
-input trees. 
+input trees. If you have any questions regarding this tool, please direct them towards loesper@carleton.edu or ealexander@carleton.edu. 
 
 Although it has undergone many changes since then, this tool ultimately 
 first emerged as the capstone project of a group of students 
