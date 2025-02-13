@@ -30,6 +30,16 @@ pydot==3.0.2
 python3 combined_app_api.py localhost 5000
 ```
 
+## Use cases
+
+### Comparing against a ground-truth tree.
+
+1. Upload each of your trees.
+
+2. Select which tree to designate as the ground-truth.
+
+![Full screenshot of VECTr, annotated to show how to designate a ground-truth tree.](documentation/ground-truth-image-1.png)
+
 ## Sample Trees
 
 ## Information
