@@ -1915,6 +1915,19 @@ function removeLinkedHighlighting(clickedElement, mutation) {
 // D3 implementation of the tripartite graph
 function createTripartite(distanceMeasure, t1_muts, t2_muts, t1_tripartite_edges, t2_tripartite_edges, up_relationships, down_relationships, gt_option) {
 
+    if (distanceMeasure != "incomparable_pair_recall") {
+
+
+	//reveal the div if not DL
+
+		let uncover_tripartite = document.getElementsByClassName("tripartite-component");
+	uncover_tripartite[0].style.display = "block";
+
+
+
+
+	
+    
   // some default values for styling  
   var defaultOpacity = 0.2
   var defaultStroke = "black";
@@ -2348,6 +2361,17 @@ function createTripartite(distanceMeasure, t1_muts, t2_muts, t1_tripartite_edges
   }
   div.append(svg.node())
     }
+    }
+
+    else {
+
+	console.log("in here......")
+
+	let cover_tripartite = document.getElementsByClassName("tripartite-component");
+
+	cover_tripartite[0].style.display = "none";
+
+    }
 }
 
 function calculateEdgeColorsHeatMap(edges1, edges2, mutations1, mutations2, total_mutations) {
@@ -2497,7 +2521,9 @@ function createHeatmap(distanceMeasure, t1_muts, t2_muts, t1_edges, t2_edges, gt
   var mutation_objects = [] 
   var t1_mutation_objects = [] 
   var t2_mutation_objects = [] 
-  var total_mutations = [] 
+    var total_mutations = []
+
+
 
   // initializing some dictionaries 
   t1_muts.forEach(mut => {
@@ -2575,9 +2601,35 @@ function createHeatmap(distanceMeasure, t1_muts, t2_muts, t1_edges, t2_edges, gt
   else if (distanceMeasure === "ancestor_descendant_distance" || distanceMeasure === "incomparable_pair_recall") {
     edgeColorsHeatMap = calculateEdgeColorsHeatMapAncestorDescendant(edges1, edges2, mutations1, mutations2, mutations_list)
 
-    row_title = "Ancestor";
-    column_title = "Descendant";
+      if (distanceMeasure == "incomparable_pair_recall") {
+	  row_title = "Branch 1";
+	  column_title = "Branch 2";
+      }
+      else {
+	  row_title = "Ancestor";
+	  column_title = "Descendant";
+      }
   }
+
+
+
+
+    //set up the textures for distinct mutations
+    const t1_texture = textures
+		      .lines()
+		      .size(6)
+		      .strokeWidth(1.5)
+	  .orientation("2/8")
+	  .background("#d95f02")
+    svg.call(t1_texture);
+
+    const t2_texture = textures
+		      .lines()
+		      .size(6)
+		      .strokeWidth(1.5)
+	  .orientation("6/8")
+	  .background("#7570b3")
+    svg.call(t2_texture);
 
 
 
@@ -2615,7 +2667,77 @@ function createHeatmap(distanceMeasure, t1_muts, t2_muts, t1_edges, t2_edges, gt
     .attr("stroke-width", 0.25)
     .attr('width', (width - margin.left - margin.right) / mutations_order.size + 'px') 
     .attr('height', (height - margin.top - margin.bottom) / mutations_order.size + 'px')
-    .attr('fill', d => d.color)
+	//.attr('fill', d => d.color)
+	    .attr('fill', function(d) {
+
+		//also adds texture to the distinct mutations for all distance measures
+
+		//want the color to match which tree the DL is actually on
+		if (distanceMeasure == "incomparable_pair_recall") {
+
+	    	    if (d.color == "#7570b3") {
+
+			if (!t2_muts.includes(d.descendant.mutation) || !t2_muts.includes(d.ancestor.mutation)) {
+			    return t1_texture.url();
+			} 			
+			return "#d95f02";
+		    }
+		    else if (d.color == "#d95f02") {
+
+			if (!t1_muts.includes(d.descendant.mutation) || !t1_muts.includes(d.ancestor.mutation)) {
+			    return t2_texture.url();
+			}
+			return "#7570b3";
+		    }
+		    return "white";
+		}
+		else if (distanceMeasure == "ancestor_descendant_distance") {
+
+		     if (d.color == "#7570b3") {
+
+			if (!t1_muts.includes(d.descendant.mutation) || !t1_muts.includes(d.ancestor.mutation)) {
+			    return t2_texture.url();
+			} 			
+			return "#7570b3";
+		    }
+		    else if (d.color == "#d95f02") {
+
+			if (!t2_muts.includes(d.descendant.mutation) || !t2_muts.includes(d.ancestor.mutation)) {
+			    return t1_texture.url();
+			}
+			return "#d95f02";
+		    }
+		    else if (d.color == "lightgrey") {
+			return "lightgrey";
+		    }
+		    
+		    return "white";
+		 
+		}
+		else { //parent_child
+
+		     if (d.color == "#7570b3") {
+
+			if (!t1_muts.includes(d.child.mutation) || !t1_muts.includes(d.parent.mutation)) {
+			    return t2_texture.url();
+			} 			
+			return "#7570b3";
+		    }
+		    else if (d.color == "#d95f02") {
+
+			if (!t2_muts.includes(d.child.mutation) || !t2_muts.includes(d.parent.mutation)) {
+			    return t1_texture.url();
+			}
+			return "#d95f02";
+		    }
+		    return "white";
+		}
+
+		//else {
+		//return d.color;
+		//}
+	 	
+	    })
 	    .style('opacity', 0.5);
 
 
