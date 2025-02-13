@@ -37,8 +37,10 @@ python3 combined_app_api.py localhost 5000
 1. Upload each of your trees.
 
 2. Select which tree to designate as the ground-truth. 
+
 ![Full screenshot of VECTr, annotated to show how to designate a ground-truth tree.](documentation/ground-truth-image-1.png)
 
 3. The ground-truth tree should now be demphasized in the node-link diagram and its relationships removed from the tripartite and heatmap. Only extraneous parental/ancestral relationships found in the non ground-truth tree are represented. For example, the (APC_2, FUS) relationship is not found in the ground-truth tree, so its edge is colored in red in Tree 2, the non ground-truth tree in this example.  
+
 ![Full screenshot of VECTr, emphasizing a unique parent-child pair in the non ground-truth tree.](documentation/ground-truth-image-2.png)
 
