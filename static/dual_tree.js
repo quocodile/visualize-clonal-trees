@@ -5,6 +5,8 @@ var tree1Error = document.querySelector(".tree1-error");
 var tree2Error = document.querySelector(".tree2-error");
 var tree1file = document.getElementById("file1");
 var tree2file = document.getElementById("file2");
+var tree1AltUpload = document.getElementById("tree1-alt-upload");
+var tree2AltUpload = document.getElementById("tree2-alt-upload");
 var inputTypeTree1 = document.getElementById("input-type-tree1");
 var inputTypeTree2 = document.getElementById("input-type-tree2");
 var submitTreesBtn = document.getElementById("submit-trees-btn");
@@ -250,7 +252,17 @@ tree2file.addEventListener("change", function () {
   };  
 });
 
+tree2AltUpload.addEventListener("change", function () {
+  var fr = new FileReader();
+    fr.readAsText(this.files[0]);
 
+    tree2_filename = this.files[0].name;
+    
+    fr.onload = function () {
+      tree2TextArea.value = fr.result
+      submit_tree();
+  };  
+});
 
 
 
@@ -1345,14 +1357,18 @@ function submit_tree() {
     if (tree1Input == "" && tree2Input != "") {
       tree1Error.innerHTML = "Please upload Tree 1";
       tree2Error.innerHTML = "";
+      document.querySelector(".tree2-messages-container").style.display = "none";
     }
     else if (tree2Input == "" && tree1Input != "") {
       tree2Error.innerHTML = "Please upload Tree 2";
       tree1Error.innerHTML = "";
+      document.querySelector(".tree1-messages-container").style.display = "none";
     }
     else {
       tree1Error.innerHTML = "";
       tree2Error.innerHTML = "";
+      document.querySelector(".tree1-messages-container").style.display = "none";
+      document.querySelector(".tree2-messages-container").style.display = "none";
     }
 
   var baseURL = get_API_base_URL();

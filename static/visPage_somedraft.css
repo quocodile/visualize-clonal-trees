@@ -144,14 +144,25 @@ header {
 }
 
 
-.tree1-error {
+.tree1-messages-container {
   position: absolute;
   width: 100%;
   height: 100%;
-  top: 50%;
   color: #d95f02;
   text-align: center;
   font-size: 2.5em;
+}
+
+.tree1-messages-flex {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tree1-error {
+  cursor: pointer;
 }
 
 .tree2-info {
@@ -161,17 +172,26 @@ header {
     
 }
 
-.tree2-error {
+.tree2-messages-container {
   position: absolute;
   width: 100%;
   height: 100%;
-  top: 50%;
   color: #7570b3;
   text-align: center;
   font-size: 2.5em;
 }
 
+.tree2-messages-flex {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
+.tree2-error {
+  cursor: pointer;
+}
 
 .site-container > .right-column > div {
   /*border-bottom: 1px solid black;*/
