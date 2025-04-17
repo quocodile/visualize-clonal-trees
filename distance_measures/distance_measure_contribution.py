@@ -16,7 +16,7 @@ import distance_measures.incomparable_pair as IP
 def dist_main(distance_measure, filename_1, filename_2):
     """
     Required:
-        - The distance_measure selected as a string and wo filesnames, each corresponding to a file containing a DOT tree
+        - The distance_measure selected as a string and two filesnames, each corresponding to a file containing a DOT tree
     Returns:
         - Node-to-contribution, mutation-to-contribution, and node-to-mutation dictionaries
             for both trees under the selected distance measure
@@ -25,20 +25,34 @@ def dist_main(distance_measure, filename_1, filename_2):
     """
 
     if os.path.getsize(filename_2) == 0:
-      dot1 = nx.nx_pydot.read_dot(filename_1)
+      try:
+        dot1 = nx.nx_pydot.read_dot(filename_1)
+      except Exception as e:
+          raise(TypeError("Error parsing the input string. Is it Newick?\t1"))
       g_1 = nx.DiGraph(dot1)
       node_contribution_dict_1, mutation_contribution_dict_1, node_mutations_dict_1 = utils.initialize_core_dictionaries(g_1)
       node_contribution_tree_1 = json_graph.tree_data(g_1, root=utils.get_root(g_1))
       return (node_contribution_tree_1, None, mutation_contribution_dict_1, None, node_mutations_dict_1, None, 1, [], [], [], [], None, None, None, None)
     elif os.path.getsize(filename_1) == 0:
-      dot2 = nx.nx_pydot.read_dot(filename_2)
+      try:
+        dot2 = nx.nx_pydot.read_dot(filename_2)
+      except Exception as e:
+        raise(TypeError("Error parsing the input string. Is it Newick?\t2"))
       g_2 = nx.DiGraph(dot2)
       node_contribution_dict_2, mutation_contribution_dict_2, node_mutations_dict_2 = utils.initialize_core_dictionaries(g_2)
       node_contribution_tree_2 = json_graph.tree_data(g_2, root=utils.get_root(g_2))
       return (None, node_contribution_tree_2, None, mutation_contribution_dict_2, None, node_mutations_dict_2, 1, [], [], [], [], None, None, None, None)
 
-    dot1 = nx.nx_pydot.read_dot(filename_1)
-    dot2 = nx.nx_pydot.read_dot(filename_2)
+    dot1 = None
+    dot2 = None
+    try:
+      dot1 = nx.nx_pydot.read_dot(filename_1)
+    except Exception as e:
+      raise(TypeError("Error parsing the input string. Is it Newick?\t1"))
+    try:
+      dot2 = nx.nx_pydot.read_dot(filename_2)
+    except Exception as e:
+      raise(TypeError("Error parsing the input string. Is it Newick?\t2"))
     g_1 = nx.DiGraph(dot1)
     g_2 = nx.DiGraph(dot2)
 

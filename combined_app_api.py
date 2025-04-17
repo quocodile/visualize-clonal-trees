@@ -84,6 +84,9 @@ def formatHandling(distance_measure):
     tree1_data = Newick_2_dot.alphabetize_data(tree1_data)
     tree2_data = Newick_2_dot.alphabetize_data(tree2_data)
 
+
+    print("Tree 1:", tree1_data)
+    print("Tree 2:", tree2_data)
     try:
         if tree1_data and tree2_data: 
           return calculation_contributions_and_node_mutation_relations(distance_measure, Newick_2_dot.convert_newick_2_dot(tree1_data), Newick_2_dot.convert_newick_2_dot(tree2_data))
@@ -92,8 +95,8 @@ def formatHandling(distance_measure):
         elif tree2_data:
           return calculation_contributions_and_node_mutation_relations(distance_measure, tree1_data, Newick_2_dot.convert_newick_2_dot(tree2_data))
     except Exception as e:
-        raise e
-        return json.dumps({"Error": "Please submit trees that are in proper Newick format."})
+        error_message, tree = str(e).split('\t')
+        return json.dumps({"Error": error_message, "Tree": int(tree)})
 
 
 @app.route('/api/parent_child_distance')

@@ -1382,7 +1382,26 @@ function submit_tree() {
   .then(response => response.json())
   .then(json_data => {
      if (json_data.Error) {
-       alert(json_data.Error)
+       error_message = json_data.Error.split(". ");
+       if (json_data.Tree == 1) {
+         document.querySelector(".tree1-messages-container").style.display = "block";
+         document.querySelectorAll(".tree1-error").forEach(function(element) {
+           element.innerHTML = ""
+	   element.style.color = "red";
+         });
+         tree1Error.innerHTML = error_message[0] + ". "; 
+         document.querySelectorAll(".tree1-error")[1].innerHTML = error_message[1];
+       }
+       else {
+         document.querySelector(".tree2-messages-container").style.display = "block";
+         document.querySelectorAll(".tree2-error").forEach(function(element) {
+           element.innerHTML = ""
+	   element.style.color = "red";
+         });
+         tree2Error.innerHTML = error_message[0] + ". "; 
+         document.querySelectorAll(".tree2-error")[1].innerHTML = error_message[1];
+       }
+
        return;
      }
      console.log("distance measure", distanceMetric.value);
