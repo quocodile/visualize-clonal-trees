@@ -2765,6 +2765,9 @@ function createHeatmap(distanceMeasure, t1_muts, t2_muts, t1_edges, t2_edges, gt
 			}
 			return "#d95f02";
 		    }
+		    else if (d.color == "lightgrey") {
+			return "lightgrey";
+		    }
 		    return "white";
 		}
 
