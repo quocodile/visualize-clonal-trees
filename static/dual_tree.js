@@ -2599,8 +2599,8 @@ function createHeatmap(distanceMeasure, t1_muts, t2_muts, t1_edges, t2_edges, gt
   let font_size = '0.90em',
       expanded = '1.2em';
 
-  let row_title = "Parent",
-      column_title = "Child"; 
+  let row_title = "Child",
+      column_title = "Parent"; 
 
   let mutations_list = mutation_objects_dups_removed,
       mutations_order = total_mutations,
@@ -2641,8 +2641,8 @@ function createHeatmap(distanceMeasure, t1_muts, t2_muts, t1_edges, t2_edges, gt
 	  column_title = "Branch 2";
       }
       else {
-	  row_title = "Ancestor";
-	  column_title = "Descendant";
+	  row_title = "Descendant";
+	  column_title = "Ancestor";
       }
   }
 
@@ -2764,6 +2764,9 @@ function createHeatmap(distanceMeasure, t1_muts, t2_muts, t1_edges, t2_edges, gt
 			    return t1_texture.url();
 			}
 			return "#d95f02";
+		    }
+		    else if (d.color == "lightgrey") {
+			return "lightgrey";
 		    }
 		    return "white";
 		}
