@@ -16,7 +16,7 @@ The names of these students are as follows...
 - Kanishk Pandey
 - Jimmy Zhong
 
-You can find a link to video presentation of VECTr ![here](https://drive.google.com/file/d/12SlExHQrFKjXgo9Rll639npgdTFRlEih/view?usp=sharing)
+You can find a link to video presentation of VECTr [here](https://drive.google.com/file/d/12SlExHQrFKjXgo9Rll639npgdTFRlEih/view?usp=sharing)
 
 ## Package Requirements
 
